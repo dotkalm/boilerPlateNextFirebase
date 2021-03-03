@@ -156,6 +156,7 @@ const Tiger = props => {
 					onFocus={handleFocus}
 					rows="1"
 				/>
+				<div> maxResults: 
 				<input type='number' 
 					key="number" 
 					className='quantity' 
@@ -165,6 +166,7 @@ const Tiger = props => {
 					value={quantity.current}
 					rows="1"
 				/>
+			</div>
 			</div>
 			<div className='all'>
 				<div className="history">
