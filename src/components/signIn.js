@@ -25,24 +25,9 @@ const SignInComponent = props => {
 
 	return(
 		<div>
-			<button onClick={handleClick} name='t'>
-				tw
-			</button>
 			<button onClick={handleClick} name='g'>
-				goo
+				goog
 			</button>
-			<br/>
-			<div className="form">
-				<input type='text' key="email" className='select' 
-					name="email" placeholder='email' value={user.email} 
-					onChange={onChange} rows="1"/>
-				<input type='password' key="password" className='select' 
-					name="password" placeholder='password' value={user.password} 
-					onChange={onChange} rows="1"/>
-				<button onClick={submit} disabled={!isDisabled}>
-					login
-				</button>
-			</div>
 		</div>
 	)
 } 

@@ -22,10 +22,6 @@ export const getIdTokenResult = () => firebase && firebase.auth.currentUser !== 
 export const loginWithGoogle = () => {
 	firebase.googleProvider
 		.addScope('email')
-		.addScope('https://mail.google.com')
-		.addScope('https://www.googleapis.com/auth/spreadsheets')
-		.addScope('https://www.googleapis.com/auth/cloud-platform')
-		.addScope('https://www.googleapis.com/auth/devstorage.full_control')
 	
 	return firebase.auth.signInWithPopup(firebase.googleProvider)
 }
@@ -68,7 +64,7 @@ export const login = async provider => {
 	}
 	if(auth){
 		const result = await getIdTokenResult()
-		if(result.claims.admin){
+		if(results && result.claims && result.claims.admin){
 			Router.push('/upload')
 		}else{
 			return result

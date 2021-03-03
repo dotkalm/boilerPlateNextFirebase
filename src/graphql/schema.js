@@ -8,6 +8,7 @@ import {
 	AddressResults,
 } from './types'
 import { geocode } from '../server/geocode'
+import { time } from '../server/time'
 import { getDoc, getCollection } from '../server/firebaseNode'
 import {
 	mutationWithClientMutationId,
@@ -79,7 +80,7 @@ const RootQuery = new GraphQLObjectType({
 						console.log(args, 'db running')
 						return time(args, request, db).then(array => {
 							const [ time ] = array
-							return time 
+							return time.now 
 						})
 					}else{
 						console.log(args, 'startDb')
@@ -88,7 +89,7 @@ const RootQuery = new GraphQLObjectType({
 							db = client
 							return time(args, request, client).then(array => {
 								const [ time ] = array
-								return time 
+								return time.now 
 							})
 						})
 					}
