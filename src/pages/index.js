@@ -17,20 +17,8 @@ const Home = ({ artwork, userAgent }) => {
 	const viewData = artwork || []
   return (
     <App>
-		{
-			isMobile 
-				? 
-					<Mobile
-						images={viewData}
-						router={router}
-					/>
-				: 
-					<ImagesComponent 
-						router={router}
-						images={viewData}
-					/>
-		}
-    </App>
+			hi
+		</App>
   )
 }
 

@@ -71,6 +71,29 @@ const RootQuery = new GraphQLObjectType({
 					}
 				}
 			},
+			time: {
+				type: GraphQLString,
+				resolve: (parentValue, args, r) => {
+					const start = process.hrtime() 
+					if(db !== undefined){
+						console.log(args, 'db running')
+						return time(args, request, db).then(array => {
+							const [ time ] = array
+							return time 
+						})
+					}else{
+						console.log(args, 'startDb')
+						return parentValue.db().connect().then(client => {
+							console.log('db started')
+							db = client
+							return time(args, request, client).then(array => {
+								const [ time ] = array
+								return time 
+							})
+						})
+					}
+				}
+			},
 			singleView: {
 				type: SingleView,
 				args: {

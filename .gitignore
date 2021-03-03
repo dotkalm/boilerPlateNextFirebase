@@ -1,8 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .runtimeconfig.json
 serviceAccount.json
-client_secret_908464081209-j6m6rnmhpq9sbm120ad7br71f9fhrf8d.apps.googleusercontent.com.json
-joelholmbergdotcom-271104-ae1386269ac3.json
 *.pem
 *.vim
 .env
@@ -10,7 +8,7 @@ joelholmbergdotcom-271104-ae1386269ac3.json
 /node_modules
 /.pnp
 .pnp.js
-
+src/next.config.js
 next.config.js
 # testing
 /coverage

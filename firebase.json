@@ -17,7 +17,7 @@
     }
   },
   "hosting": {
-		"site": "nextjh",
+		"site": "tiger-bow",
 		"cleanUrls": true,
 		"public": "public/",
 		"rewrites": [
@@ -29,7 +29,7 @@
   },
   "functions": {
     "runtime": "nodejs10",
-    "source": "src/functions",
+    "source": ".",
     "predeploy": [
       "npm --prefix \"$PROJECT_DIR\" install",
       "npm --prefix \"$PROJECT_DIR\" run build"
