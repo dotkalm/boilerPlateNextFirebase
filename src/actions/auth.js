@@ -28,32 +28,6 @@ export const loginWithGoogle = () => {
 export const loginWithTwitter = () => {
 	return firebase.auth.signInWithPopup(firebase.twitterProvider)
 }
-export const getGmail = async string => {
-	const sendToFlask = async () => {
-		const token = await firebase.auth.currentUser.getIdToken(true)
-		const isAdmin = await firebase.auth.currentUser.getIdTokenResult()
-		const data = new FormData();
-		try {
-			const url = `${process.env.REACT_APP_BACKEND_URL}/api/v1/gmail/`
-			const obj = {
-				method: 'POST',
-				credentials: 'include',
-				body: data,
-				headers: {
-					'enctype': 'multipart/form-data',
-					'Authorization': token,
-				}
-			}
-			const registerResponse = await fetch(url, obj)
-			const parsedResponse = await registerResponse.json()
-			return parsedResponse
-		}catch(err){
-			console.log(err, 54)
-			return err
-		}
-	}
-	const levels = await sendToFlask()
-}
 export const login = async provider => {
 	let auth 
 	if(provider === 'g'){
@@ -64,8 +38,8 @@ export const login = async provider => {
 	}
 	if(auth){
 		const result = await getIdTokenResult()
-		if(results && result.claims && result.claims.admin){
-			Router.push('/upload')
+		if(result && result.claims && result.claims.admin){
+			Router.push('/')
 		}else{
 			return result
 		}
@@ -81,7 +55,6 @@ export const signIn = auth => {
 		return idToken
 	})
 }
-
 export const checkLogged = new Promise((resolve, reject) => { 
 	const handleAuthStateChanged = async user => {
 		const token = await getIdToken()
@@ -97,7 +70,6 @@ export const checkLogged = new Promise((resolve, reject) => {
 		return firebase.auth.onAuthStateChanged(handleAuthStateChanged)
 	}
 })
-
 export const emailLogin = async (email, password) => {
 	try {
 		const auth = await firebase.auth

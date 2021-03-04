@@ -14,8 +14,10 @@ export const geocoderQuery = async ({ type, params }) => {
 			argsArray.push(`${key}: "${params[key]}"`)
 		}
 	}
+	console.log(argsArray)
 	if(argsArray.length == 2 && type === 'address'){
 		args = `(${argsArray.join(' ')})`
+		console.log(args)
 		const queryString = `
 			{
 				${type}${args}{
@@ -32,7 +34,6 @@ export const geocoderQuery = async ({ type, params }) => {
 		}
 		const idToken = await getIdToken()
 		const request = getRequest(idToken, queryString)
-		console.log(`${backendUrl}/api/graphql`, queryString)
 		const f = await fetch(`${backendUrl}/api/graphql`, request)
 		const rr = await f.json()
 		if(rr && rr.data && rr.data.address){

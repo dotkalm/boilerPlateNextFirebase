@@ -30,12 +30,7 @@ const Tiger = props => {
 						const stringArray = s.split(' ')
 						const copyString = [ ...stringArray ] 
 						const zip = parseInt(copyString.pop())
-						let addressString = ''
-						if(zip !== NaN && stringArray[stringArray.length -1].length < 4){
-							addressString = copyString.join(' ')
-						}else{
-							addressString = s
-						}
+						let addressString = s 
 						const geoParams = {
 							type: 'address',
 							params: {

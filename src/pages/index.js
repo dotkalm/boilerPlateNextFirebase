@@ -1,34 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import App from '../components/App'
-import Image from 'next/image'
-import styled from 'styled-components'
-import { removeUndefined } from '../shared/utils/removeUndefined'
-import { query } from '../actions/storage'
-import { getCollection } from '../server/firebaseNode'
-import ImagesComponent from '../components/images' 
-import Mobile from '../components/mobile' 
-import { useRouter } from 'next/router'
-import MobileDetect from 'mobile-detect'
-
-const Home = ({ artwork, userAgent }) => {
-	const router = useRouter()
-	const md = new MobileDetect(userAgent)
-	const isMobile = md.mobile()
-	const viewData = artwork || []
+import Auth from '../components/Auth'
+import Tiger from '../components/Tiger' 
+import removeUndefined from '../shared/utils/removeUndefined'
+const Home = ({ userAgent }) => {
   return (
-    <App>
-			hi
-		</App>
+		<Auth>
+			<App>
+				<Tiger/>
+			</App>
+		</Auth>
   )
 }
 
 export const getStaticProps = async ({ req }) => {
 	let userAgent
-	if (req) { 
+	if(req){ 
 		userAgent = req.headers['user-agent'] 
 	}
-	const artwork = await getCollection('documentation')
-	const obj = { artwork, userAgent } 
+	const obj = { userAgent } 
 	removeUndefined(obj)
 	return { props: { ...obj } }
 }
