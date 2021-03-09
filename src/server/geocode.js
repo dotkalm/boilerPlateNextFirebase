@@ -4,7 +4,15 @@ export const geocode = async ({ address, quantity }, request, db) => {
 	const idToken = request.headers.authorization
 	const user = await getLogin(idToken)
 	const result = new Promise((resolve, reject) => {
-    const textString = 'SELECT g.rating, (addy).address As stno, (addy).streetname As street, (addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip FROM geocode($1, $2) As g'
+    const textString = `
+		SELECT g.rating, 
+			(addy).address As stno, 
+			(addy).streetname As street, 
+			(addy).streettypeabbrev As styp, 
+			(addy).location As city, 
+			(addy).stateabbrev As st,
+			(addy).zip, addy 
+		FROM geocode($1, $2) As g`
 		console.log(textString, [address, quantity], 8)
 		db.query(textString, [address, quantity], (err, res) => {
 			if(err){

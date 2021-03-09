@@ -36,6 +36,7 @@ export const geocoderQuery = async ({ type, params }) => {
 		const request = getRequest(idToken, queryString)
 		const f = await fetch(`${backendUrl}/api/graphql`, request)
 		const rr = await f.json()
+		console.log(rr)
 		if(rr && rr.data && rr.data.address){
 			const { executionMs, predictions } = rr.data.address
 			return { executionMs, predictions: unpack(predictions) }

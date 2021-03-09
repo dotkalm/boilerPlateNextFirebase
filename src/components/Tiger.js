@@ -13,72 +13,61 @@ const Tiger = props => {
 		current: '',
 	})
 	const [ cursor, setCursor ] = useState(0)
-	const [ submitStatus, setSubmitStatus ] = useState('idle')
+	const [ submitStatus, setSubmitStatus ] = useState('waiting')
 	const [ predictions, setPredictions ] = useState([])
 	const [ logs, setLogs ] = useState([])
-	const apiCallDependencyArray = [ quantity, query, submitStatus ]
+	const apiCallDependencyArray = [ quantity, cursor, query, submitStatus, predictions, logs ]
 	useEffect(() => {
 		const queryArray = query.current.split(' ')
 		const requestGeocode = () => {
-			if(submitStatus === 'idle'){
-				for(let i=0; i<apiCallDependencyArray.length-1; i++){
-					const { previous, current } = apiCallDependencyArray[i]
-					if(previous !== current && query.current !== ''){
-						setSubmitStatus('fetching')
-						const s = query.current
-						const q = quantity.current
-						const stringArray = s.split(' ')
-						const copyString = [ ...stringArray ] 
-						const zip = parseInt(copyString.pop())
-						let addressString = s 
-						const geoParams = {
-							type: 'address',
-							params: {
-								address: addressString,
-								quantity: q,
-							}
-						}
-						geocoderQuery(geoParams).then(results => {
-							if(Array.isArray(results.predictions)){
-								setPredictions(results.predictions)
-							}
-							setQuantity({
-								previous: quantity.current,
-								current: quantity.current
-							})
-							setQuery({
-								previous: query.current,
-								current: query.current
-							})
-							setLogs([ {
-								searchString: query.current,
-								executionMs: results.executionMs,
-							}, ...logs ])
-							setSubmitStatus('idle')
-						})
-					}
+			const { previous, current } = apiCallDependencyArray[2]
+			setSubmitStatus('fetching')
+			const s = query.current
+			const q = quantity.current
+			const stringArray = s.split(' ')
+			const copyString = [ ...stringArray ] 
+			const zip = parseInt(copyString.pop())
+			let addressString = s 
+			const geoParams = {
+				type: 'address',
+				params: {
+					address: addressString,
+					quantity: q,
 				}
 			}
+			geocoderQuery(geoParams).then(results => {
+				if(Array.isArray(results.predictions)){
+					setPredictions(results.predictions)
+				}
+				setQuantity({
+					previous: quantity.current,
+					current: quantity.current
+				})
+				setQuery({
+					previous: query.current,
+					current: query.current
+				})
+				setLogs([ {
+					searchString: query.current,
+					executionMs: results.executionMs,
+				}, ...logs ])
+				setSubmitStatus('waiting')
+			})
 		}
-		if(queryArray.length > 4){
-			for(let index=0;index<queryArray.length;index++){
-				const el = queryArray[index]
-				if(statesSet.has(el)){
-					requestGeocode()
-					break
-				}
-			}
+		if(submitStatus === 'loading'){
+			console.log('request')
+			requestGeocode()
 		}
 	}, apiCallDependencyArray)
 	const onChange = event => {
 		const { name, value } = event.target
 		if(name === "querystring"){
-			if(submitStatus === 'idle'){
+			if(submitStatus === 'waiting'){
 				const cursorPosition = event.target.selectionStart 
 				setCursor(cursorPosition)
 				setQuery({
 					previous: query.current,
-					current: value.replace(/\"/,''),
+					current: value,
 				})
 			}
 		}
@@ -93,6 +82,15 @@ const Tiger = props => {
 	}
 	const handleFocus = event => {
 		event.target.selectionStart = cursor		
+	}
+ 	const	handleKeyPress = event => {
+		if(event.key === 'Enter'){
+			console.log('enter press here!')
+			setSubmitStatus('loading')
+		}
+	}
+ 	const	handlePress = event => {
+		setSubmitStatus('loading')
 	}
 	const mapResults = predictions.map((element, index) => {
 		const { 
@@ -138,7 +136,9 @@ const Tiger = props => {
 		)
 	})
 	return(
-		<TigerStyle>
+		<TigerStyle
+			onKeyPress={handleKeyPress}
+		>
 			<div className='content'>
 				<input 
 					type='text'
@@ -161,6 +161,11 @@ const Tiger = props => {
 					value={quantity.current}
 					rows="1"
 				/>
+				<button
+					onClick={handlePress}
+				>
+					search
+				</button>
 			</div>
 			</div>
 			<div className='all'>
@@ -170,9 +175,14 @@ const Tiger = props => {
 					{mapHistory}
 				</div>
 			</div>
-			<div id='predictionContainer'>
-				{mapResults}
-			</div>
+			{submitStatus === 'loading' 
+				? 
+					'...loading' 
+				:
+					<div id='predictionContainer'>
+						{mapResults}
+					</div>
+			}
 		</TigerStyle>
 	)
 }

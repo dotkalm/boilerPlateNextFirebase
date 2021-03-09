@@ -143,6 +143,59 @@ export const PredictionType = new GraphQLObjectType({
 		country: { type: GraphQLString },
 	})
 })
+export const FeatNamesType = new GraphQLObjectType({
+	name: 'FeatNames',
+	description: 'feat names from us census 2020',
+	interfaces: [nodeInterface],
+	fields: () => ({
+		id: globalIdField(),
+		gid       : { type: GraphQLInt },
+		tlid      : { type: GraphQLInt },
+		fullname  : { type: GraphQLString },
+		name      : { type: GraphQLString },
+		predirabrv: { type: GraphQLString },
+		pretypabrv: { type: GraphQLString },
+		prequalabr: { type: GraphQLString },
+		sufdirabrv: { type: GraphQLString },
+		suftypabrv: { type: GraphQLString },
+		sufqualabr: { type: GraphQLString },
+		predir    : { type: GraphQLString },
+		pretyp    : { type: GraphQLString },
+		prequal   : { type: GraphQLString },
+		sufdir    : { type: GraphQLString },
+		suftyp    : { type: GraphQLString },
+		sufqual   : { type: GraphQLString },
+		linearid  : { type: GraphQLString },
+		mtfcc     : { type: GraphQLString },
+		paflag    : { type: GraphQLString },
+		statefp   : { type: GraphQLString },
+	})
+})
+export const PlaceType = new GraphQLObjectType({
+	name: 'Place',
+	description: 'place from us census',
+	fields: () => ({
+		gid      : {type: GraphQLInt }, 
+		statefp  : {type: GraphQLString }, 
+		placefp  : {type: GraphQLString }, 
+		placens  : {type: GraphQLString }, 
+		plcidfp  : {type: GraphQLString }, 
+		name     : {type: GraphQLString }, 
+		namelsad : {type: GraphQLString }, 
+		lsad     : {type: GraphQLString }, 
+		classfp  : {type: GraphQLString }, 
+		cpi      : {type: GraphQLString }, 
+		pcicbsa  : {type: GraphQLString }, 
+		pcinecta : {type: GraphQLString }, 
+		mtfcc    : {type: GraphQLString }, 
+		funcstat : {type: GraphQLString }, 
+		aland    : {type: GraphQLInt }, 
+		awater   : {type: GraphQLInt }, 
+		intptlat : {type: GraphQLString }, 
+		intptlon : {type: GraphQLString }, 
+		shape    : { type: GraphQLString },
+	})
+})
 export const { connectionType: PredictionConnection } = connectionDefinitions({
 	nodeType: PredictionType,
 })

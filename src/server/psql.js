@@ -13,7 +13,7 @@ const instanceId = process.env.PSQL_INSTANCE_ID
 	
 
 
-//This worked for me: postgres://user:password@localhost/mydb?host=/cloudsql/myproject:us-east4:test
+//postgres://user:password@localhost/mydb?host=/cloudsql/myproject:us-east4:test
 //Use postgresql://USER:PASS@127.0.0.1/ying-staging?host=/cloudsql/DATABASE_NAME
 
 
