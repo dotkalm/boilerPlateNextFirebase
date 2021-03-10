@@ -171,6 +171,26 @@ export const FeatNamesType = new GraphQLObjectType({
 		statefp   : { type: GraphQLString },
 	})
 })
+export const AddrType = new GraphQLObjectType({
+	name: 'Addr',
+	description: 'addr from us census',
+	fields: () => ({
+		gid       : {type: GraphQLInt },
+		tlid      : {type: GraphQLInt },
+		fromhn    : {type: GraphQLString },
+		tohn      : {type: GraphQLString },
+		side      : {type: GraphQLString },
+		zip       : {type: GraphQLString },
+		plus4     : {type: GraphQLString },
+		fromtyp   : {type: GraphQLString },
+		totyp     : {type: GraphQLString },
+		fromarmid : {type: GraphQLInt },
+		toarmid   : {type: GraphQLInt },
+		arid      : {type: GraphQLString },
+		mtfcc     : {type: GraphQLString },
+		statefp   : {type: GraphQLString },
+	})
+})
 export const PlaceType = new GraphQLObjectType({
 	name: 'Place',
 	description: 'place from us census',
