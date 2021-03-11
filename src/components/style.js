@@ -5,7 +5,11 @@ export const PageContainer = styled.div`
 		margin: 0;
 	}
 `
-const Wrapper = styled.div`
+export const LoaderWrapper = styled.div`
+	height: 200px;
+`
+
+export const Wrapper = styled.div`
 	display: flex;
   justify-content: center;
   align-items: center;

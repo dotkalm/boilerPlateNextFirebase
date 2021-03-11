@@ -1,49 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react';
-import findCenter from 'shared/util/findCenter'
+import FindCenter from '../shared/utils/findCenter'
 import { LoaderWrapper } from './style'
 import Loader from './Loader'
-
+import geometry from './trashfile'
 const MapTools = props => {
 	const [ loadingState, setLoadingState ] = useState('open')
-	const [ center, setCenter ] = useState({
-		lat: 39.95,
-		lng: -78.33
-	})
-	const { utility } = props
-	const [ shapes, setShapes ] = useState(null)
-	const [ zoom, setZoom ] = useState(11)
+	const [ paths, setPaths ] = useState([])
+	const [ center, setCenter ] = useState({ lat: 34.121833, lng: -118.85473})
+	const [ zoom, setZoom ] = useState(20)
 	useEffect(() => {
-		const asyncShapes = async () => {
-			const { uid, name, service, state } = props.utility
-			const data = await getUtilityShapes(uid)
-			const newCenter = findCenter(data)
-			if(data.length > 0){
-				setCenter(newCenter)
-				setShapes(data.shapes)
-			}else{
-				setCenter(true)
-			}
-			return data
+		if(paths.length === 0){
+			console.log(geometry)
+			setPaths(geometry)
+			setLoadingState('loaded')
 		}
-		if(loadingState === 'open'){
-			setLoadingState('loading')
-			asyncShapes().then(rr => {
-				setShapes(rr)
-				setLoadingState('loaded')
-			})
-		}
-	}, [ shapes, utility, center, loadingState ])
+	}, [ paths, props.paths, center, zoom, loadingState ])
+	const amount = 26
 	const handleApiLoaded = (map, maps) => {
-		return shapes.map(shape => {
-			const utilityPolygon = new maps.Polygon({
-				paths: shape,
-				strokeColor: "#FF0000",
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: "#FF0000",
-				fillOpacity: 0.35
+		return paths.map((path, index) => {
+			console.log(path)
+			let r = amount * index
+			let g = 255 - (amount * index)
+			let b = amount * index 
+			const rgb = [r,g,b]
+			for(let i = 0; i<3; i++){
+				if(rgb[i] < 0){
+					rgb[i] = Math.abs(rgb[i])
+				}
+				if(rgb[i] > 255){
+					rgb[i] = rgb[i] % 255
+				}
+			}
+			const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+			const utilityPolygon = new maps.Polyline({
+				path,
+				strokeColor: color,
+				strokeOpacity: 1,
+				strokeWeight: 8
 			})
 			utilityPolygon.setMap(map)
 		})
@@ -57,18 +52,14 @@ const MapTools = props => {
 	}
 	return (
 		<div style={{ height: '100em', width: '100%' }}>
-		{shapes 
-			? 
-				<GoogleMapReact
-					bootstrapURLKeys={{ key: process.env.GOOGLE_BROWSER_KEY }}
-					defaultCenter={center}
-					defaultZoom={zoom}
-					yesIWantToUseGoogleMapApiInternals 
-					onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-				>
-				</GoogleMapReact>
-			: ''
-		}
+			<GoogleMapReact
+				bootstrapURLKeys={{ key: '' }}
+				defaultCenter={center}
+				defaultZoom={zoom}
+				yesIWantToUseGoogleMapApiInternals 
+				onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+			>
+			</GoogleMapReact>
 		</div>
 	);
 }

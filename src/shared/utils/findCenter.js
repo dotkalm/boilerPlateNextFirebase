@@ -1,3 +1,4 @@
+//DO THIS ON THE SERVER
 const getBoundingBox = array => {
 	let S = Infinity 
 	let N = -Infinity 
@@ -24,7 +25,7 @@ const getBoundingBox = array => {
 	return { N, E, S, W } 
 }
 
-const findCenter = array => {
+const FindCenter = array => {
 	const box = getBoundingBox(array.flat(1))
 	const { N, E, S, W } = box
 	const lat = (N + S) / 2
@@ -32,4 +33,4 @@ const findCenter = array => {
 	return { lat, lng, box } 
 }
 
-export default findCenter
+export default FindCenter
