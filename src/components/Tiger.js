@@ -3,6 +3,8 @@ import { Button, TigerStyle } from './style'
 import { useRouter } from 'next/router'
 import statesSet from '../shared/statesSet'
 import { geocoderQuery } from '../actions/geocoder'
+import MapTools from './mapTool'
+
 const Tiger = props => {
 	const [ quantity, setQuantity ] = useState({
 		previous: 10,
@@ -183,6 +185,7 @@ const Tiger = props => {
 						{mapResults}
 					</div>
 			}
+			<MapTools/>
 		</TigerStyle>
 	)
 }

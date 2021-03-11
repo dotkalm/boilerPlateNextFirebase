@@ -24,7 +24,7 @@ const getBoundingBox = array => {
 	return { N, E, S, W } 
 }
 
-export const findCenter = array => {
+const findCenter = array => {
 	const box = getBoundingBox(array.flat(1))
 	const { N, E, S, W } = box
 	const lat = (N + S) / 2
@@ -32,3 +32,4 @@ export const findCenter = array => {
 	return { lat, lng, box } 
 }
 
+export default findCenter

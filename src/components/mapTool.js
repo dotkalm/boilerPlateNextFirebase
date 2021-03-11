@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react';
-import { findCenter } from 'shared/util/array'
-import Loader from 'shared/components/Loader'
-
-const LoaderWrapper = styled.div`
-	height: 200px;
-`
+import findCenter from 'shared/util/findCenter'
+import { LoaderWrapper } from './style'
+import Loader from './Loader'
 
 const MapTools = props => {
 	const [ loadingState, setLoadingState ] = useState('open')

@@ -5,6 +5,12 @@ export const PageContainer = styled.div`
 		margin: 0;
 	}
 `
+const Wrapper = styled.div`
+	display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`
 export const TigerStyle = styled.div`
 	body{
 		margin: 0;
