@@ -1,4 +1,5 @@
-const { Pool } = require('pg');
+import { Pool } from 'pg'
+
 const home = process.env.HOME
 const owner =	process.env.OWNER
 const socketPath = process.env.PSQL_SOCKETPATH

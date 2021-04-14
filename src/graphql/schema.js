@@ -6,6 +6,7 @@ import {
 	SingleView, 
 	PredictionConnection,
 	AddressResults,
+	CountyType,
 } from './types'
 import { geocode } from '../server/geocode'
 import { time } from '../server/time'
@@ -31,6 +32,7 @@ const {
 	GraphQLList,
 } = graphql
 let db
+
 const RootQuery = new GraphQLObjectType({
 	name: 'Query',
 	fields: (args, request) => {
@@ -105,6 +107,23 @@ const RootQuery = new GraphQLObjectType({
 				},
 				resolve: (parentValue, args, r) => {
 					return getDoc('documentation', args.uid)
+				}
+			},
+			County: {
+				type: CountyType,
+				args: {
+					city: {
+						description: 'county',
+						type: new GraphQLNonNull(GraphQLString),
+					}, 	
+					state: {
+						description: 'state',
+						type: new GraphQLNonNull(GraphQLString),
+					},
+				},
+				resolve: (parentValue, args, r)) => {
+					{ city, state } = args
+					return retrieveCounty(city, state)
 				}
 			},
 			documentation: {

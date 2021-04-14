@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react';
 import FindCenter from '../shared/utils/findCenter'
@@ -10,17 +10,46 @@ const MapTools = props => {
 	const [ paths, setPaths ] = useState([])
 	const [ center, setCenter ] = useState({ lat: 34.121833, lng: -118.85473})
 	const [ zoom, setZoom ] = useState(20)
+	const [ divRef, setDivRef ] = useState(useRef(null))
+
 	useEffect(() => {
 		if(paths.length === 0){
-			console.log(geometry)
 			setPaths(geometry)
 			setLoadingState('loaded')
 		}
 	}, [ paths, props.paths, center, zoom, loadingState ])
+
+	useEffect(() => {
+		if (loadingState == 'loaded' && divRef.current){
+			const { current } = divRef
+
+			const lookRecurse = node => {
+				const { childNodes } = node
+				const element = childNodes.item(0)
+				if(element){
+					childNodes.forEach(child => {
+						const children = lookRecurse(child)
+						const attr = child.attributes
+						if(attr != undefined){
+							for(let i = 0; i<attr.length; i++){
+								const { name, value } = attr[i]
+								if(value == 'dismissButton'){
+									console.log(name, value, typeof(value), child)
+									setTimeout(child.click(), 300)
+								}
+							}
+						}
+					})
+				}
+			}
+
+			lookRecurse(current)
+		}
+	}, [ loadingState, divRef ])
+
 	const amount = 26
 	const handleApiLoaded = (map, maps) => {
 		return paths.map((path, index) => {
-			console.log(path)
 			let r = amount * index
 			let g = 255 - (amount * index)
 			let b = amount * index 
@@ -51,7 +80,9 @@ const MapTools = props => {
 		)
 	}
 	return (
-		<div style={{ height: '100em', width: '100%' }}>
+		<div style={{ height: '100em', width: '100%' }}
+			ref={divRef}
+		>
 			<GoogleMapReact
 				bootstrapURLKeys={{ key: '' }}
 				defaultCenter={center}

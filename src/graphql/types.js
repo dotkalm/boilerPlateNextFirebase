@@ -171,6 +171,17 @@ export const FeatNamesType = new GraphQLObjectType({
 		statefp   : { type: GraphQLString },
 	})
 })
+export const CountyType = new GraphQLObjectType({
+	name: 'Addr',
+	description: 'addr from us census',
+	fields: () => ({
+		statefp   : { type: GraphQLString },
+		countyfp 	: { type: GraphQLString },
+		intptlat  : { type: GraphQLString }, 
+		intptlon  : { type: GraphQLString }, 
+		the_geom 	: { type: GraphQLString },
+	})
+})
 export const AddrType = new GraphQLObjectType({
 	name: 'Addr',
 	description: 'addr from us census',
