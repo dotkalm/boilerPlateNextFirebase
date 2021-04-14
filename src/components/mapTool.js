@@ -10,7 +10,30 @@ const MapTools = props => {
 	const [ paths, setPaths ] = useState([])
 	const [ center, setCenter ] = useState({ lat: 34.121833, lng: -118.85473})
 	const [ zoom, setZoom ] = useState(20)
+	const [ ready, setReady ] = useState(false)
 	const [ divRef, setDivRef ] = useState(useRef(null))
+
+
+	const lookRecurse = node => {
+		const { childNodes } = node
+		const element = childNodes.item(0)
+		if(element){
+			childNodes.forEach(child => {
+				const children = lookRecurse(child)
+				const attr = child.attributes
+				if(attr != undefined){
+					for(let i = 0; i<attr.length; i++){
+						const { name, value } = attr[i]
+						if(value == 'dismissButton'){
+							console.log(name, value, typeof(value), child)
+							child.click()
+						}
+					}
+				}
+			})
+		}
+	}
+
 
 	useEffect(() => {
 		if(paths.length === 0){
@@ -20,30 +43,12 @@ const MapTools = props => {
 	}, [ paths, props.paths, center, zoom, loadingState ])
 
 	useEffect(() => {
-		if (loadingState == 'loaded' && divRef.current){
-			const { current } = divRef
-
-			const lookRecurse = node => {
-				const { childNodes } = node
-				const element = childNodes.item(0)
-				if(element){
-					childNodes.forEach(child => {
-						const children = lookRecurse(child)
-						const attr = child.attributes
-						if(attr != undefined){
-							for(let i = 0; i<attr.length; i++){
-								const { name, value } = attr[i]
-								if(value == 'dismissButton'){
-									console.log(name, value, typeof(value), child)
-									setTimeout(child.click(), 300)
-								}
-							}
-						}
-					})
-				}
+		if (loadingState == 'loaded' ){
+			const callback = () => {
+				const { current } = divRef
+				lookRecurse(current)
 			}
-
-			lookRecurse(current)
+			setTimeout(callback, 2000)
 		}
 	}, [ loadingState, divRef ])
 

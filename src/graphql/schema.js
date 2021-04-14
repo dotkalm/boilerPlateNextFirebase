@@ -121,8 +121,8 @@ const RootQuery = new GraphQLObjectType({
 						type: new GraphQLNonNull(GraphQLString),
 					},
 				},
-				resolve: (parentValue, args, r)) => {
-					{ city, state } = args
+				resolve: (parentValue, args, r) => {
+					const { city, state } = args
 					return retrieveCounty(city, state)
 				}
 			},
