@@ -185,7 +185,9 @@ const Tiger = props => {
 						{mapResults}
 					</div>
 			}
-			<MapTools/>
+			<MapTools
+				ui={props.ui}
+			/>
 		</TigerStyle>
 	)
 }

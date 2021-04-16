@@ -47,3 +47,20 @@ export const predictionFragment = `
 		}
 	}
 `
+
+export const countyFragment = `
+	fragment CountyFragment on Addr {
+		statefp
+		countyfp
+		intptlon
+		intptlat
+		the_geom{
+			edges{
+				node{
+					lat
+					lng
+				}
+			}
+		}
+	} 
+`

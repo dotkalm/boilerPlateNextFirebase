@@ -5,27 +5,53 @@ import FindCenter from '../shared/utils/findCenter'
 import { LoaderWrapper } from './style'
 import Loader from './Loader'
 import geometry from './trashfile'
+import { fetchBoundary } from '../actions/boundaries'
 const MapTools = props => {
+	const { height, width } = props.ui
+
 	const [ loadingState, setLoadingState ] = useState('open')
 	const [ paths, setPaths ] = useState([])
-	const [ center, setCenter ] = useState({ lat: 34.121833, lng: -118.85473})
-	const [ zoom, setZoom ] = useState(20)
+	const [ center, setCenter ] = useState(null)
+	const [ zoom, setZoom ] = useState(10)
 	const [ ready, setReady ] = useState(false)
 	const [ divRef, setDivRef ] = useState(useRef(null))
+	const [ boundaries, setBoundaries ] = useState(null)
+	const [ fetchingState, setFetchingState ] = useState(null)
 
-
-	const lookRecurse = node => {
+	useEffect(() => {
+		if(boundaries === null && fetchingState == null){
+			setFetchingState('fetching')
+			const county = 'Los Angeles'
+			const state = 'California'
+			fetchBoundary({ type: 'County', params: { county, state } })
+				.then(geom => {
+					const { intptlat, intptlon, the_geom } = geom
+					setCenter({lat: intptlat, lng: intptlon})
+					setFetchingState('done')
+					const { edges } = the_geom
+					console.log(edges)
+					for(let i = 0; i < edges.length; i++){
+						const { node } = edges[i]
+						edges[i] = node
+					}
+					setPaths([edges])
+				})
+		}
+	}, [ boundaries, fetchingState, center ])
+	const findDismissButton = node => {
 		const { childNodes } = node
 		const element = childNodes.item(0)
 		if(element){
 			childNodes.forEach(child => {
-				const children = lookRecurse(child)
+				const children = findDismissButton(child)
 				const attr = child.attributes
 				if(attr != undefined){
 					for(let i = 0; i<attr.length; i++){
 						const { name, value } = attr[i]
+						if(name == 'src' && value.includes('https://maps.googleapis.com/maps/') && value.includes('styles!')){
+							child.setAttribute(name, value.replace(/styles!.*/, 'styles!'))
+						}
 						if(value == 'dismissButton'){
-							console.log(name, value, typeof(value), child)
 							child.click()
 						}
 					}
@@ -34,21 +60,23 @@ const MapTools = props => {
 		}
 	}
 
+	const callback = () => {
+		const { current } = divRef
+		findDismissButton(current)
+	}
 
 	useEffect(() => {
-		if(paths.length === 0){
-			setPaths(geometry)
-			setLoadingState('loaded')
-		}
-	}, [ paths, props.paths, center, zoom, loadingState ])
-
-	useEffect(() => {
-		if (loadingState == 'loaded' ){
-			const callback = () => {
-				const { current } = divRef
-				lookRecurse(current)
+		if(fetchingState == 'done'){
+			if(paths.length === 0){
+				console.log(center)
+				setLoadingState('loaded')
 			}
-			setTimeout(callback, 2000)
+		}
+	}, [ fetchingState, paths, props.paths, zoom, loadingState ])
+
+	useEffect(() => {
+		if (loadingState == 'loaded' && fetchingState == 'done'){
+			setTimeout(callback, 1000)
 		}
 	}, [ loadingState, divRef ])
 
@@ -77,16 +105,24 @@ const MapTools = props => {
 			utilityPolygon.setMap(map)
 		})
 	}
-	if(loadingState !== 'loaded'){
+	if(loadingState !== 'loaded' && fetchingState == 'done'){
 		return(
 			<LoaderWrapper>
 				<Loader />
 			</LoaderWrapper>
 		)
 	}
+	const traverseDom = () => {
+		setTimeout(callback, 1000)
+	}
+
 	return (
-		<div style={{ height: '100em', width: '100%' }}
+		<div style={{ height: `${height - 300}px`, width: '95%', margin: '2.5%' }}
 			ref={divRef}
+			onDrag={traverseDom}
+			onDragEnd={traverseDom}
+			onClick={traverseDom}
+			onWheel={traverseDom}
 		>
 			<GoogleMapReact
 				bootstrapURLKeys={{ key: '' }}

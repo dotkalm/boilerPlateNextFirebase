@@ -2,21 +2,12 @@ import { getIdToken } from './auth'
 import unpack from '../shared/utils/unpack'
 import { predictionFragment } from './fragments'
 import { defaultOptions, queryParams, getRequest } from './request'
+import prepareArgs from '../shared/utils/prepareArgs'
 
 let backendUrl = process.env.GRAPHQL_SERVER
 export const geocoderQuery = async ({ type, params }) => {
-	let args = ''
-	const argsArray = [] 
-	for(const key in params){
-		if(key === 'quantity'){
-			argsArray.push(`${key}: ${params[key]}`)
-		}else{
-			argsArray.push(`${key}: "${params[key]}"`)
-		}
-	}
-	console.log(argsArray)
-	if(argsArray.length == 2 && type === 'address'){
-		args = `(${argsArray.join(' ')})`
+	const args = prepareArgs(params)
+	if(args != ' ' && type === 'address'){
 		console.log(args)
 		const queryString = `
 			{

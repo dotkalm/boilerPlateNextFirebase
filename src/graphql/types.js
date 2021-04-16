@@ -171,15 +171,54 @@ export const FeatNamesType = new GraphQLObjectType({
 		statefp   : { type: GraphQLString },
 	})
 })
+export const PolylineType = new GraphQLObjectType({
+	name: 'Polylines',
+	description: 'many points',
+	interfaces: [nodeInterface],
+	fields: () => ({
+		id: globalIdField(),
+		lat: { type: GraphQLFloat },
+		lng: { type: GraphQLFloat },
+	})
+})
 export const CountyType = new GraphQLObjectType({
 	name: 'Addr',
 	description: 'addr from us census',
+	interfaces: [nodeInterface],
 	fields: () => ({
+		id: globalIdField(),
 		statefp   : { type: GraphQLString },
 		countyfp 	: { type: GraphQLString },
-		intptlat  : { type: GraphQLString }, 
-		intptlon  : { type: GraphQLString }, 
-		the_geom 	: { type: GraphQLString },
+		intptlat  : { type: GraphQLFloat }, 
+		intptlon  : { type: GraphQLFloat }, 
+		the_geom	: { 
+			type: PointConnection,
+			resolve: ({the_geom}, args) => {
+				const shape = JSON.parse(the_geom)
+				const { coordinates } = shape
+				const [ arr ] = coordinates[0]
+				let fullcount = 0
+				const points = Array(arr.length).fill({lat:null,lng:null})
+				for(let i = 0; i < arr.length; i++){
+					const current = arr[i]
+					let { lat, lng } = points[i] 
+					points[i].lat = current[1]
+					points[i].lng = current[0]
+					fullcount = fullcount + (current.length - 1)
+				}
+				return connectionFromArray(points, args)
+			}
+		},
+	})
+})
+export const PointType = new GraphQLObjectType({
+	name: 'PointType',
+	description: 'lt and lng',
+	interfaces: [nodeInterface],
+	fields: () => ({
+		id: globalIdField(),
+		lat: { type: GraphQLFloat },
+		lng: { type: GraphQLFloat },
 	})
 })
 export const AddrType = new GraphQLObjectType({
@@ -232,6 +271,9 @@ export const { connectionType: PredictionConnection } = connectionDefinitions({
 })
 export const { connectionType: ColumnConnection } = connectionDefinitions({
 	nodeType: ColumnType,
+})
+export const { connectionType: PointConnection } = connectionDefinitions({
+	nodeType: PointType,
 })
 export const { connectionType: ColorConnection } = connectionDefinitions({
 	nodeType: ColorType,

@@ -8,7 +8,8 @@ import {
 	AddressResults,
 	CountyType,
 } from './types'
-import { geocode } from '../server/geocode'
+import { geocode, getCounty } from '../server/geocode'
+import { queryLocal } from '../server/sqlite'
 import { time } from '../server/time'
 import { getDoc, getCollection } from '../server/firebaseNode'
 import {
@@ -112,7 +113,7 @@ const RootQuery = new GraphQLObjectType({
 			County: {
 				type: CountyType,
 				args: {
-					city: {
+					county: {
 						description: 'county',
 						type: new GraphQLNonNull(GraphQLString),
 					}, 	
@@ -122,8 +123,7 @@ const RootQuery = new GraphQLObjectType({
 					},
 				},
 				resolve: (parentValue, args, r) => {
-					const { city, state } = args
-					return retrieveCounty(city, state)
+					return getCounty(args)
 				}
 			},
 			documentation: {
