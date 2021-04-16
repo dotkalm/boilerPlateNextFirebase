@@ -202,7 +202,6 @@ export const CountyType = new GraphQLObjectType({
 					let { lat, lng } = points[i] 
 					points[i] = { lat: arr[i][1], lng: arr[i][0] } 
 				}
-				console.log(points)
 				return connectionFromArray(points, args)
 			}
 		},

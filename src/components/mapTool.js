@@ -99,7 +99,7 @@ const MapTools = props => {
 					path,
 					strokeColor: color,
 					strokeOpacity: 1,
-					strokeWeight: 8
+					strokeWeight: 2
 				})
 				utilityPolygon.setMap(map)
 		})
