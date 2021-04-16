@@ -29,7 +29,6 @@ const MapTools = props => {
 					setCenter({lat: intptlat, lng: intptlon})
 					setFetchingState('done')
 					const { edges } = the_geom
-					console.log(edges)
 					for(let i = 0; i < edges.length; i++){
 						const { node } = edges[i]
 						edges[i] = node
@@ -96,13 +95,13 @@ const MapTools = props => {
 				}
 			}
 			const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
-			const utilityPolygon = new maps.Polyline({
-				path,
-				strokeColor: color,
-				strokeOpacity: 1,
-				strokeWeight: 8
-			})
-			utilityPolygon.setMap(map)
+				const utilityPolygon = new maps.Polyline({
+					path,
+					strokeColor: color,
+					strokeOpacity: 1,
+					strokeWeight: 8
+				})
+				utilityPolygon.setMap(map)
 		})
 	}
 	if(loadingState !== 'loaded' && fetchingState == 'done'){

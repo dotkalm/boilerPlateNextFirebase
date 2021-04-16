@@ -197,15 +197,12 @@ export const CountyType = new GraphQLObjectType({
 				const shape = JSON.parse(the_geom)
 				const { coordinates } = shape
 				const [ arr ] = coordinates[0]
-				let fullcount = 0
 				const points = Array(arr.length).fill({lat:null,lng:null})
 				for(let i = 0; i < arr.length; i++){
-					const current = arr[i]
 					let { lat, lng } = points[i] 
-					points[i].lat = current[1]
-					points[i].lng = current[0]
-					fullcount = fullcount + (current.length - 1)
+					points[i] = { lat: arr[i][1], lng: arr[i][0] } 
 				}
+				console.log(points)
 				return connectionFromArray(points, args)
 			}
 		},
