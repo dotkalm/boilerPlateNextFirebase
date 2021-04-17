@@ -75,7 +75,7 @@ const MapTools = props => {
 
 	useEffect(() => {
 		if (loadingState == 'loaded' && fetchingState == 'done'){
-			setTimeout(callback, 1000)
+			setTimeout(callback, 2000)
 		}
 	}, [ loadingState, divRef ])
 
@@ -112,7 +112,7 @@ const MapTools = props => {
 		)
 	}
 	const traverseDom = () => {
-		setTimeout(callback, 1000)
+		setTimeout(callback, 2000)
 	}
 
 	return (
