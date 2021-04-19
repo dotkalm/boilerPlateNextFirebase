@@ -1,16 +1,25 @@
-import Koa from 'koa'
-import { verifyRequest } from '@shopify/koa-shopify-auth'
-import { default: Shopify, ApiVersion } from '@shopify/shopify-api'
-import { default: createShopifyAuth } from '@shopify/koa-shopify-auth'
+import { Auth } from "shopify-admin-api";
 
-Shopify.Context.initialize({
-	API_KEY: process.env.SHOPIFY_API_KEY,
-	API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-	SCOPES: process.env.SHOPIFY_API_SCOPES.split(","),
-	HOST_NAME: process.env.SHOPIFY_APP_URL.replace(/https:\/\//, ""),
-	API_VERSION: ApiVersion.October20,
-	IS_EMBEDDED_APP: true,
-	SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
-	})
+const urlFromUser = "https://example.myshopify.com";
+const isValidUrl = await Auth.isValidMyShopifyDomain(urlFromUser
+
+const redirectUrl = "https://example.com/my/redirect/url";
+
+const code = request.QueryString["code"];
+const shopUrl = request.QueryString["shop"];
+
+const qs = request.QueryString;
+const isAuthentic = await Auth.isAuthenticRequest(qs, shopifySecretKey);
+
+if (isAuthentic) {
+
+    //Request is authentic.
+} else {
+
+    //Request is not authentic and should not be acted on.
+
+}
 
 
+
+const accessToken = await Auth.authorize(code, shopUrl, shopifyApiKey, shopifySecretKey)
