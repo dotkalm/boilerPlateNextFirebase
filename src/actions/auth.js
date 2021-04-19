@@ -80,7 +80,6 @@ export const emailLogin = async (email, password) => {
 		if(auth){
 			auth.additionalUserInfo['profile'] = { email }
 			const result = await getIdTokenResult()
-			console.log(result)
 			if(result.claims.admin){
 				Router.push('/upload')
 			}else if(result.claims.guest){
