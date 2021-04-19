@@ -37,6 +37,7 @@ const Home = ({ userAgent }) => {
 
 export const getStaticProps = async ({ req }) => {
 	let userAgent
+	console.log(req.headers)
 	if(req){ 
 		userAgent = req.headers['user-agent'] 
 	}

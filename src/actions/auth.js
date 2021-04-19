@@ -77,7 +77,6 @@ export const emailLogin = async (email, password) => {
 			.catch(err => {
 				return { ...err, error: true }
 			})
-		console.log(auth)
 		if(auth){
 			auth.additionalUserInfo['profile'] = { email }
 			const result = await getIdTokenResult()
