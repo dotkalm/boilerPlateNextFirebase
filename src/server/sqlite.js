@@ -10,7 +10,6 @@ export const queryLocal = (table, fields, where, params) => {
 		const countsql = `SELECT count(*) FROM ${table} ${where}`
 		db.get(countsql, params, (err, row) => {
 			const quantity = row['count(*)']
-			console.log(quantity)
 			const sql = `SELECT ${fields} FROM ${table} ${where}` 
 			db.all(sql, params, (err, rows) => {
 				if(err){

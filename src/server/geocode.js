@@ -14,7 +14,6 @@ export const geocode = async ({ address, quantity }, request, db) => {
 			(addy).stateabbrev As st,
 			(addy).zip, addy 
 		FROM geocode($1, $2) As g`
-		console.log(textString, [address, quantity], 8)
 		db.query(textString, [address, quantity], (err, res) => {
 			if(err){
 				console.log(err, 11)
@@ -40,7 +39,6 @@ export const getState = name => {
 export const getCounty = async args => {
 	const { county , state } = args
 	const [ { statefp } ] = await getState(state)
-	console.log(statefp)
 	const fieldsArray = [ 'statefp', 'countyfp', 'intptlat', 'intptlon', 'the_geom' ]	
 	const fields = `${fieldsArray.join(', ')}` 
 
@@ -54,7 +52,6 @@ export const getCounty = async args => {
 			where = `${where} AND ${paramsKey[i]} = ?`
 		}
 	}
-	console.log('counties', fields, where, params)
 
 	const counties = await queryLocal('counties', fields, where, params) 
 	return counties[0]

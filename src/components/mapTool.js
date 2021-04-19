@@ -4,7 +4,6 @@ import GoogleMapReact from 'google-map-react';
 import FindCenter from '../shared/utils/findCenter'
 import { LoaderWrapper } from './style'
 import Loader from './Loader'
-import geometry from './trashfile'
 import { fetchBoundary } from '../actions/boundaries'
 const MapTools = props => {
 	const { height, width } = props.ui
@@ -15,7 +14,7 @@ const MapTools = props => {
 	const [ zoom, setZoom ] = useState(10)
 	const [ ready, setReady ] = useState(false)
 	const [ divRef, setDivRef ] = useState(useRef(null))
-	const [ boundaries, setBoundaries ] = useState(null)
+	const [ boundaries, setBoundaries ] = useState(true)
 	const [ fetchingState, setFetchingState ] = useState(null)
 
 	useEffect(() => {

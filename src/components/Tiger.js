@@ -58,7 +58,7 @@ const Tiger = props => {
 		}
 		if(submitStatus === 'loading'){
 			console.log('request')
-			requestGeocode()
+			//requestGeocode()
 		}
 	}, apiCallDependencyArray)
 	const onChange = event => {
