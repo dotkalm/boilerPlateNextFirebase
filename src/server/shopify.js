@@ -1,4 +1,5 @@
-import { parseUrl } from '../actions/url'
+const { parseUrl } require('../actions/url')
+
 const openDoor = async url => {
 	const params = parseUrl(url)
 	if(params != null){
