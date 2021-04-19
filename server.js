@@ -14,6 +14,7 @@ const app = next({
 const handle = app.getRequestHandler()
 
 exports.nextjsFunc = functions.https.onRequest((req, res) => {
+	console.log(req.url)
 	req.url = req.url || '/'
 	return app.prepare().then(() => handle(req, res))
 })
