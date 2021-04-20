@@ -1,8 +1,7 @@
-const url  = require('url')
+import url from 'url'
 
-exports.parseUrl = str => {
-	console.log(str, 4)
-	const regExpString = '/^\/\?/'
+export const parseUrl = str => {
+	const regExpString = '^\/\?'
 	const regex = new RegExp(regExpString)
 	if(str.match(regex)){
 		const newstring = str.replace(regex, '')

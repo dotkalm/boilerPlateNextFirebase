@@ -4,7 +4,6 @@ const { join } = require('path')
 const { getIpAddress } = require('./src/shared/getIpAddress')
 const dev = process.env.NODE_ENV !== 'production'
 const nextjsDistDir = join('src', require('./src/next.config.js').distDir)
-const { openDoor } = require('./src/server/shopify')
 
 const app = next({
   dev,
@@ -16,6 +15,5 @@ const handle = app.getRequestHandler()
 
 exports.nextjsFunc = functions.https.onRequest((req, res) => {
 	req.url = req.url || '/'
-	console.log(openDoor(req.url.slice()))
 	return app.prepare().then(() => handle(req, res))
 })

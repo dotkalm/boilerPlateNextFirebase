@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import { openShop } from '../server/shopify'
 import { checkLogged, login, logOut, emailLogin } from '../actions/auth'
 import AuthHeader from './AuthHeader'
 import useSWR from "swr";
+import { useRouter } from 'next/router'
 
 const FirebaseAuth = ({children}) => {
+	const router = useRouter()
 	const [ user, setUser ] = useState(null)
 	const uFunc = async () => {
 		try{
+			const shop = await openShop(router.asPath)
 			const u = await checkLogged
 			setUser(u.user.claims)
 			return u.user.claims
