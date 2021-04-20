@@ -1,17 +1,10 @@
-import Shopify, { ApiVersion } from "@shopify/shopify-api";
-import { Auth } from "shopify-admin-api"
 import { parseUrl } from '../actions/url'
 const shopifyApiKey = process.env.SHOPIFY_API_KEY
 const shopifySecretKey = process.env.SHOPIFY_API_SECRET
 
 const makeToken = async obj => {
 	const { hmac, shop, timestamp } = obj 
-	console.log(obj, 8)
-	const isValidUrl = await Auth.isValidMyShopifyDomain(shop)
-	console.log(isValidUrl, 10)
-	const accessToken = await Auth.authorize(hmac, shop, shopifyApiKey, shopifySecretKey)
-	console.log(accessToken, 10)
-	return accessToken
+	return hmac
 }
 
 export const openShop = url => {

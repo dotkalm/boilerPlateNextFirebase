@@ -17,3 +17,5 @@ exports.nextjsFunc = functions.https.onRequest((req, res) => {
 	req.url = req.url || '/'
 	return app.prepare().then(() => handle(req, res))
 })
+
+
