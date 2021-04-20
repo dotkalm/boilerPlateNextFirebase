@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { checkLogged, login, logOut, emailLogin } from '../actions/auth'
+import { openShop } from '../shared/shopify'
 import AuthHeader from './AuthHeader'
 import useSWR from "swr";
 import { useRouter } from 'next/router'
@@ -15,7 +16,6 @@ const FirebaseAuth = ({children}) => {
 			return u.user.claims
 		}catch(e){
 			setUser({error: e})
-			console.log(e)
 			return e
 		}
 
@@ -38,6 +38,8 @@ const FirebaseAuth = ({children}) => {
 			</div>
 		)
 	}else if(user && user.error){
+		const { query } = router
+		openShop(router.query)
 		return (
 			<div>
 				{typeof user.admin !== 'boolean'
