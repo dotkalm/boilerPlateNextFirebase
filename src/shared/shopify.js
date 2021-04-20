@@ -1,4 +1,11 @@
-const { parseUrl } = require('url')
+import { parseUrl } from '../actions/url'
+const shopifyApiKey = process.env.SHOPIFY_API_KEY
+const shopifySecretKey = process.env.SHOPIFY_API_SECRET
+
+const makeToken = async obj => {
+	const { hmac, shop, timestamp } = obj 
+	return hmac
+}
 
 export const openShop = ({ url, hostname, body })=> {
 	const params = parseUrl(url)

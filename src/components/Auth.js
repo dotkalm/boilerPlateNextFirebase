@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { openShop } from '../server/shopify'
 import { checkLogged, login, logOut, emailLogin } from '../actions/auth'
 import AuthHeader from './AuthHeader'
 import useSWR from "swr";
@@ -10,12 +9,13 @@ const FirebaseAuth = ({children}) => {
 	const [ user, setUser ] = useState(null)
 	const uFunc = async () => {
 		try{
-			const shop = await openShop(router.asPath)
 			const u = await checkLogged
+			console.log(u, `\n line 12`)
 			setUser(u.user.claims)
 			return u.user.claims
 		}catch(e){
 			setUser({error: e})
+			console.log(e)
 			return e
 		}
 

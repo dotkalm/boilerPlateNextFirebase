@@ -37,6 +37,9 @@ const Home = ({ userAgent }) => {
 
 export const getStaticProps = async ({ req }) => {
 	let userAgent
+	if(req){
+		console.log(req, 41)
+	}
 	const obj = { userAgent } 
 	removeUndefined(obj)
 	return { props: { ...obj } }
