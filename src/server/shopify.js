@@ -1,3 +1,4 @@
+import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import { Auth } from "shopify-admin-api"
 import { parseUrl } from '../actions/url'
 const shopifyApiKey = process.env.SHOPIFY_API_KEY
