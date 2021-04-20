@@ -11,13 +11,6 @@ const project = process.env.PSQL_PROJECT
 const zone = process.env.PSQL_ZONE
 const instanceId = process.env.PSQL_INSTANCE_ID
 
-	
-
-
-//postgres://user:password@localhost/mydb?host=/cloudsql/myproject:us-east4:test
-//Use postgresql://USER:PASS@127.0.0.1/ying-staging?host=/cloudsql/DATABASE_NAME
-
-
 const regex = new RegExp(owner)
 const host = home && home.match(regex) ? '127.0.0.1' : `${socketPath}/${project}:${zone}:${instanceId}` 
 const creds = {
@@ -34,6 +27,5 @@ const creds = {
 	},
 	operatorsAliases: false
 }
-console.log(creds)
 const pool = new Pool(creds)
 export default pool 

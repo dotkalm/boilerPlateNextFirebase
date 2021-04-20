@@ -7,7 +7,6 @@ export const getIdToken = () => firebase && firebase.auth.currentUser !== null &
 export const getIdTokenResult = () => firebase && firebase.auth.currentUser !== null && firebase.auth.currentUser
 	.getIdTokenResult()
 	.then(idTokenResult => {
-		console.log(idTokenResult)
 		if(!idTokenResult.claims.admin){
 			return !idTokenResult.claims.guest ? false : idTokenResult 
 		}else{

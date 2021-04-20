@@ -1,7 +1,7 @@
-import url from 'url'
+const url  = require('url')
 
-export const parseUrl = str => {
-
+exports.parseUrl = str => {
+	console.log(str, 4)
 	const regExpString = '/^\/\?/'
 	const regex = new RegExp(regExpString)
 	if(str.match(regex)){

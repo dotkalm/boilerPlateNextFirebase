@@ -14,7 +14,7 @@ const MapTools = props => {
 	const [ zoom, setZoom ] = useState(10)
 	const [ ready, setReady ] = useState(false)
 	const [ divRef, setDivRef ] = useState(useRef(null))
-	const [ boundaries, setBoundaries ] = useState(true)
+	const [ boundaries, setBoundaries ] = useState(null)
 	const [ fetchingState, setFetchingState ] = useState(null)
 
 	useEffect(() => {
@@ -90,7 +90,7 @@ const MapTools = props => {
 					rgb[i] = Math.abs(rgb[i])
 				}
 				if(rgb[i] > 255){
-					rgb[i] = rgb[i] % 255
+					rgb[i] = rgb[i] % 255 
 				}
 			}
 			const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`

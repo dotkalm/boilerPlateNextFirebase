@@ -22,7 +22,6 @@ const FirebaseAuth = ({children}) => {
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
 	}
-	console.log(user)
 	if(user && (user.admin || user.guest)){
 		const childrenWithProps = React
 			.Children
