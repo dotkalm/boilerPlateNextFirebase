@@ -1,4 +1,5 @@
 import * as graphql from 'graphql'
+import Mutation from './mutation'
 import { 
 	documentationConnection, 
 	nodeField, 
@@ -142,6 +143,7 @@ const RootQuery = new GraphQLObjectType({
 
 const Schema = new graphql.GraphQLSchema({
 	query: RootQuery,
+	mutation: Mutation,
 })
 export default Schema
 

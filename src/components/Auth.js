@@ -27,10 +27,6 @@ const FirebaseAuth = ({children}) => {
 				console.log({ shop, timestamp, hmac })
 				setShop(shopHeader)
 				uFunc()
-				const url=`
-				https://${shop}/admin/oauth/authorize?client_id={api_key}&scope={scopes}&redirect_uri={redirect_uri}&state={nonce}&grant_options[]={access_mode}
-				`
-
 			}
 		})
 	}

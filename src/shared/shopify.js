@@ -1,11 +1,42 @@
-const shopifyApiKey = process.env.SHOPIFY_API_KEY
-const shopifySecretKey = process.env.SHOPIFY_API_SECRET
+import prepareArgs from './utils/prepareArgs'
+import { defaultOptions, queryParams, getRequest } from '../actions/request'
+let backendUrl = process.env.GRAPHQL_SERVER
 
 const makeToken = async obj => {
 	const { hmac, shop, timestamp } = obj 
 	return hmac
 }
 
+export const shopifyServer = async ({ type, params }) => {
+	const args = prepareArgs(params)
+	if(args != ' '){
+		console.log(args)
+		const queryString = `
+			{
+					addStore${args}{
+					predictions {
+						...StoreFragment
+					}
+				}
+			}
+			${storeFragment}
+		`
+		if(window && window.location && window.location.origin === process.env.GRAPHQL_LOCAL_SERVER){
+			backendUrl = process.env.GRAPHQL_LOCAL_SERVER
+		}
+		const idToken = hmac 
+		const request = getRequest(idToken, queryString)
+		const f = await fetch(`${backendUrl}/api/graphql`, request)
+		const rr = await f.json()
+		console.log(rr)
+		if(rr && rr.data && rr.data.address){
+			const { executionMs, predictions } = rr.data.address
+			return { executionMs, predictions: unpack(predictions) }
+		}else{
+			return rr
+		}
+	}
+}
 export const openShop = async ({ 
 	query, 
 	pathname, 
@@ -18,9 +49,10 @@ export const openShop = async ({
 	isReady,
 	isPreview
 }) => {
-	if(query != null){
-		console.log(Object.keys(query))
+if(query != null){
 		if(Object.keys(query).length > 0){
+			const { hmac, shop, timestamp } = query
+			const args = prepareArgs({ shop, timestamp, hmac })
 			return query
 		}
 	}

@@ -1,6 +1,6 @@
 const { parseUrl } = require('url')
 
-export const openShop = ({ url, hostname, body })=> {
+export const openShop = ({ url, hostname, body }) => {
 	const params = parseUrl(url)
 	if(params != null){
 		const hmac = params.get("hmac")
@@ -14,3 +14,7 @@ export const openShop = ({ url, hostname, body })=> {
 	}
 }
 
+export const checkShop = async (parent, args, request) => {
+	console.log(request.args)
+	return args 
+}
