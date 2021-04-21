@@ -6,11 +6,23 @@ const makeToken = async obj => {
 	return hmac
 }
 
-export const openShop = query => {
+export const openShop = async ({ 
+	query, 
+	pathname, 
+	asPath,
+	isFallback,
+	basePath,
+	locale,
+	locales,
+	defaultLocale,
+	isReady,
+	isPreview
+}) => {
 	if(query != null){
-		console.log(query, `\n line 17, X-Shopify-Hmac-SHA256 `)
-	}else{
-		return null
+		console.log(Object.keys(query))
+		if(Object.keys(query).length > 0){
+			return query
+		}
 	}
 }
 

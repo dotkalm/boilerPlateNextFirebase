@@ -4,6 +4,7 @@ serviceAccount.json
 *.pem
 *.vim
 .env
+*.env
 # dependencies
 /node_modules
 /.pnp

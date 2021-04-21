@@ -4,6 +4,7 @@ const { join } = require('path')
 const { getIpAddress } = require('./src/shared/getIpAddress')
 const dev = process.env.NODE_ENV !== 'production'
 const nextjsDistDir = join('src', require('./src/next.config.js').distDir)
+const ngrok = require('ngrok');
 
 const app = next({
   dev,

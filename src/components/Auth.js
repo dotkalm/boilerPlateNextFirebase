@@ -8,10 +8,10 @@ import { useRouter } from 'next/router'
 const FirebaseAuth = ({children}) => {
 	const router = useRouter()
 	const [ user, setUser ] = useState(null)
+	const [ shop, setShop ] = useState(null)
 	const uFunc = async () => {
 		try{
 			const u = await checkLogged
-			console.log(u, `\n line 12`)
 			setUser(u.user.claims)
 			return u.user.claims
 		}catch(e){
@@ -20,8 +20,19 @@ const FirebaseAuth = ({children}) => {
 		}
 
 	}
-	if(user === null){
-		uFunc()
+	if(shop === null){
+		openShop(router).then(shopHeader => {
+			if(user === null && shopHeader !== undefined){
+				const { shop, timestamp, hmac } = shopHeader 
+				console.log({ shop, timestamp, hmac })
+				setShop(shopHeader)
+				uFunc()
+				const url=`
+				https://${shop}/admin/oauth/authorize?client_id={api_key}&scope={scopes}&redirect_uri={redirect_uri}&state={nonce}&grant_options[]={access_mode}
+				`
+
+			}
+		})
 	}
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
