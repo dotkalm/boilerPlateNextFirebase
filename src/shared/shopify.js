@@ -49,7 +49,6 @@ if(query != null){
 		if(Object.keys(query).length > 0){
 			const { hmac, shop, timestamp } = query
 			const obj = { type: 'addStore', params: query }
-			console.log(obj)
 			return shopifyServer(obj)
 		}
 	}
