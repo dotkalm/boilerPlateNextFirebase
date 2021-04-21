@@ -26,7 +26,7 @@ export const { nodeInterface, nodeField } = nodeDefinitions(
 )
 
 export const addShopType = new GraphQLInputObjectType({
-	name: 'AddNewUserInputType',
+	name: 'AddShopType',
 	fields: () => ({
 		name: { type: new GraphQLNonNull(GraphQLString) },
 		timestamp: { type: new GraphQLNonNull(GraphQLInt) },
