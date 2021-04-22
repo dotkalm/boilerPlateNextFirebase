@@ -10,26 +10,30 @@ const makeToken = async obj => {
 export const shopifyServer = async ({ type, params }) => {
 	const args = prepareArgs(params)
 	if(args != ' '){
-		console.log(args, 13)
 		const queryString = `mutation{
-			${type}${args}{
+			addStore(
+				${type} : ${args}
+			){
 				Shop{
 					name
 				}
 			}
 		}
 		`
-		console.log(queryString)
-		if(window && window.location && window.location.origin === process.env.GRAPHQL_LOCAL_SERVER){
+		if(
+			window 
+			&& window.location 
+			&& window.location.origin === process.env.GRAPHQL_LOCAL_SERVER
+		){
 			backendUrl = process.env.GRAPHQL_LOCAL_SERVER
 		}
 		const idToken = params.hmac 
 		const request = getRequest(idToken, queryString)
-		console.log(request, 28)
+		console.log(request)
 		const f = await fetch(`${backendUrl}/api/graphql`, request)
 		const rr = await f.json()
-		console.log(rr)
-		}else{
+		console.log(rr, 30)
+	}else{
 			return rr
 		}
 }
@@ -48,7 +52,7 @@ export const openShop = async ({
 if(query != null){
 		if(Object.keys(query).length > 0){
 			const { hmac, shop, timestamp } = query
-			const obj = { type: 'addStore', params: query }
+			const obj = { type: 'shop', params: query }
 			return shopifyServer(obj)
 		}
 	}

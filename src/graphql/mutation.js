@@ -21,6 +21,7 @@ const Mutation = new GraphQLObjectType({
 	return ({
 		addStore: {
 			type: ShopType,
+			description: 'a shop',
 			args: {
 				shop: { type: addShopType }
 			},
