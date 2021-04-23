@@ -15,6 +15,6 @@ export const openShop = ({ url, hostname, body }) => {
 }
 
 export const checkShop = async (parent, args, request) => {
-	console.log(request.headers, args, 18)
+	console.log(request.headers,'\n', args, '\n', request.body.query,'\n',18)
 	return args 
 }

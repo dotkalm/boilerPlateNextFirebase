@@ -12,14 +12,24 @@ export const shopifyServer = async ({ type, params }) => {
 	if(args != ' '){
 		const queryString = `mutation{
 			addStore(
-				${type} : ${args}
-			){
+				shop : {
+					hmac:
+						"cb80706e0e80325fc7218e3f4bed60aadf237f3dae7bd2afd1492d8da9bfa756"
+					shop:
+						"thingsinmycartry.myshopify.com"
+					timestamp:
+						"1618966768"
+				}
+			)
+			{
 				Shop{
 					name
 				}
 			}
 		}
 		`
+
+		console.log(queryString)
 		if(
 			window 
 			&& window.location 
@@ -29,7 +39,6 @@ export const shopifyServer = async ({ type, params }) => {
 		}
 		const idToken = params.hmac 
 		const request = getRequest(idToken, queryString)
-		console.log(request)
 		const f = await fetch(`${backendUrl}/api/graphql`, request)
 		const rr = await f.json()
 		console.log(rr, 30)
