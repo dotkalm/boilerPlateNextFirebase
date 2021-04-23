@@ -7,3 +7,12 @@ export const setDoc = async (collectionName, obj, uid) => {
 	.catch(err => err)
 }
 
+export const getDoc = async (collectionName, uid) => {
+	const doc = await firebase.db.collection(collectionName).doc(uid).get(obj)
+	if (!doc.exists) {
+		return null
+	} else {
+		return doc.data()
+	}
+}
+

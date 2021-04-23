@@ -51,6 +51,7 @@ export const setDoc = async (collectionName, obj, uid) => {
 }
 
 export const getDoc = async (collectionName, uid) => {
+	console.log(collectionName, uid, 54)
 	const db = admin.firestore()
 	const doc = await db.collection(collectionName).doc(uid).get()
 	if (!doc.exists) {

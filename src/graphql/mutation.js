@@ -27,6 +27,11 @@ const Mutation = new GraphQLObjectType({
 			},
 			resolve(parent, args, request){
 				return checkShop(parent, args, request).then(rr => {
+					if(rr === null){
+						//REDIRECT TO SIGN IN
+					}else{
+						console.log(args.name, '<-- shop exists what is shared secret to move frwd?')
+					}
 			})}
 		}
 	})
