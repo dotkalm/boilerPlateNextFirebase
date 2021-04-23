@@ -17,21 +17,17 @@ const demoHeader = {
   cookie: process.env.GA_SC,
 } 
 
-const demoQuery = {
-  shop: {
-    name: process.env.DEMO_SHOP,
-    timestamp: Date.now(),
-    hmac: process.env.DEMO_HMAC 
-  }
-} mutation{
-	addStore(
-    shop:
-      {
-        name:"things in my car"
-        timestamp: 123465434
-        hmac: "ewtgdfsgfgag"
-      }
-  ){
-    name
-  }
-}
+export const demoQuery = `  
+	mutation{
+		addStore(
+			shop:
+				{
+					name:"${process.env.DEMO_SHOPIFY_URL}"
+					timestamp: ${Date.now()} 
+					hmac: "${process.env.DEMO_HMAC}"
+				}
+		){
+			name
+		}
+	}
+`

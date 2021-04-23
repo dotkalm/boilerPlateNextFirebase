@@ -29,7 +29,7 @@ export const addShopType = new GraphQLInputObjectType({
 	name: 'AddShopType',
 	fields: () => ({
 		name: { type: new GraphQLNonNull(GraphQLString) },
-		timestamp: { type: new GraphQLNonNull(GraphQLInt) },
+		timestamp: { type: new GraphQLNonNull(GraphQLFloat) },
 		hmac: { type: new GraphQLNonNull(GraphQLString) },
 	})
 })
