@@ -1,6 +1,10 @@
 import { parseUrl } from 'url'
 import { getDoc } from './firebaseNode'
 
+export const install = async shop => {
+	const { name, timestamp, hmac } = shop 
+}
+
 export const openShop = ({ url, hostname, body }) => {
 	const params = parseUrl(url)
 	if(params != null){
@@ -14,10 +18,13 @@ export const openShop = ({ url, hostname, body }) => {
 		return null
 	}
 }
+export const redirect = async merchant => {
+	console.log('merchant already signed installed app')
+}
 
 export const checkShop = async (parent, args, request) => {
-	const { name, timestamp, hmac } = args
-	console.log(args, 20)
-	const exists = await getDoc('merchants', name)
-	print(exists)
+	const { shop } = args
+	const { name, timestamp, hmac } = shop 
+	const merchant = await getDoc('merchants', name)
+	return merchant 
 }
