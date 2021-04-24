@@ -27,7 +27,7 @@ const Mutation = new GraphQLObjectType({
 				},
 				resolve(parent, args, request){
 					return checkShop(parent, args, request).then(merchant => {
-						console.log(merchant)
+						console.log(merchant, 30)
 						return merchant
 					})
 				}

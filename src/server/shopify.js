@@ -41,10 +41,11 @@ export const checkShop = async (parent, args, request) => {
 	const { shop } = args
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)
-	if(merchant === undefined){
+	if(merchant && merchant.error){
 		const authenticatedMerchant = await verifyHmac(shop)
 		console.log(authenticatedMerchant, 42)
 		return authenticatedMerchant
+	}else{
+		return merchant 
 	}
-	return merchant 
 }
