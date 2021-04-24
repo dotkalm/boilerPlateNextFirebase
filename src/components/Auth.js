@@ -5,7 +5,7 @@ import AuthHeader from './AuthHeader'
 import useSWR from "swr";
 import { useRouter } from 'next/router'
 
-const FirebaseAuth = ({children}) => {
+const FirebaseAuth = ({ children }) => {
 	const router = useRouter()
 	const [ user, setUser ] = useState(null)
 	const [ shop, setShop ] = useState(null)

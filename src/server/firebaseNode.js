@@ -94,3 +94,6 @@ export const getLogin = async idToken => {
 	.catch(err => console.log(devTimestamp, err, 'line 913'))
 }
 
+export const mintToken = async => {
+	return admin.auth().createCustomToken(hmac)
+}

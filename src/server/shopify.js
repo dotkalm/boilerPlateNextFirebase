@@ -1,23 +1,38 @@
-import { parseUrl } from 'url'
-import { getDoc } from './firebaseNode'
+import { getDoc, mintToken } from './firebaseNode'
+import { makeQueryString } from '../shared/utils/queryString'
+import crypto from 'crypto' 
+import timingSafeCompare from 'tsscmp'
 
-export const install = async shop => {
-	const { name, timestamp, hmac } = shop 
-}
+export const verifyHmac = shopData => {
+	const sansHmac = new Object
 
-export const openShop = ({ url, hostname, body }) => {
-	const params = parseUrl(url)
-	if(params != null){
-		const hmac = params.get("hmac")
-		const shop = params.get("shop")
-		const timestamp = params.get("timestamp")
-		const obj = { hmac, shop, timestamp }
-		console.log(obj, `\n^^^^^^^^^ line 11 ^^^^^^^^^`)
-		return shop
-	}else{
-		return null
+	for(const key in shopData){
+		if(key != 'hmac'){
+			sansHmac[key] = shop[key]
+		}
 	}
+
+	const keys = Object.keys(sansHmac).push('state').sort() 
+
+	const nonce = crypto.randomBytes(16).toString('base64') 
+	shopData['state'] = nonce
+
+	const newArray = new Array(keys.length).fill({key: null, value: null})
+	for(let i = 0; i < newArray.length; i++){
+		const key = keys[i] 
+		newArray[i].key = key 
+		newArray[i].value = shopData[key] 
+	}
+	const qS = makeQueryString(newArray)
+	console.log(qS, 24)
+	const hmac = crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
+		.digest("hex")
+	console.log(hmac, shopData.hmac, nonce, 29)
+	const good = timingSafeCompare(hmac, shopData.hmac)
+	console.log(good, 28)
+	return good
 }
+
 export const redirect = async merchant => {
 	console.log('merchant already signed installed app')
 }
@@ -26,5 +41,10 @@ export const checkShop = async (parent, args, request) => {
 	const { shop } = args
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)
+	if(merchant === undefined){
+		const authenticatedMerchant = await verifyHmac(shop)
+		console.log(authenticatedMerchant, 42)
+		return authenticatedMerchant
+	}
 	return merchant 
 }

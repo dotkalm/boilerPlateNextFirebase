@@ -18,28 +18,21 @@ import { checkShop, redirect, install } from '../server/shopify'
 const Mutation = new GraphQLObjectType({
 	name: 'Mutation',
 	fields: (args, request) => {
-	return ({
-		addStore: {
-			type: ShopType,
-			description: 'a shop',
-			args: {
-				shop: { type: addShopType }
-			},
-			resolve(parent, args, request){
-				return checkShop(parent, args, request).then(merchant => {
-					if(merchant === undefined){
-						const { shop } = args 
-						return install(shop).then(authenticatedMerchant => {
-							console.log(authenticatedMerchant, 32)
-							return authenticatedMerchant
-						})
-					}else{
-						console.log(args.name, '<-- shop exists what is shared secret to move frwd?')
-						return redirect()
-					}
-			})}
-		}
-	})
+		return ({
+			addStore: {
+				type: ShopType,
+				description: 'a shop',
+				args: {
+					shop: { type: addShopType }
+				},
+				resolve(parent, args, request){
+					return checkShop(parent, args, request).then(merchant => {
+						console.log(merchant)
+						return merchant
+					})
+				}
+			}
+		})
 	}
 })
 export default Mutation

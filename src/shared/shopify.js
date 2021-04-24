@@ -1,4 +1,5 @@
 import prepareArgs from './utils/prepareArgs'
+import { getDoc } from '../actions/firebase'
 import { demoQuery, demoHeader } from './const'
 import { defaultOptions, queryParams, getRequest } from '../actions/request'
 let backendUrl = process.env.GRAPHQL_SERVER
@@ -20,7 +21,6 @@ export const shopifyServer = async ({ type, params }) => {
 		}
 		const idToken = params.hmac 
 		const request = getRequest(idToken, demoQuery)
-		console.log(demoQuery)
 		const f = await fetch(`${backendUrl}/api/graphql`, request)
 		const rr = await f.json()
 		console.log(rr, 25)
