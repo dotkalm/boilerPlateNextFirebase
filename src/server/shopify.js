@@ -8,7 +8,7 @@ export const verifyHmac = shopData => {
 
 	for(const key in shopData){
 		if(key != 'hmac'){
-			sansHmac[key] = shop[key]
+			sansHmac[key] = shopData[key]
 		}
 	}
 
