@@ -2,7 +2,6 @@ import { getDoc, mintToken } from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
-
 export const verifyHmac = shopData => {
 	const sansHmac = new Object
 
@@ -15,24 +14,29 @@ export const verifyHmac = shopData => {
 	
 	const unsortedKeys = Object.keys(sansHmac)
 	console.log(unsortedKeys)
-
+	unsortedKeys.push('state')
 	const keys = unsortedKeys.sort()
 	console.log(keys, 21)
 
-	const nonce = crypto.randomBytes(16).toString('base64') 
 	
 	const newArray = new Array(keys.length).fill({key: null, value: null})
 	for(let i = 0; i < keys.length; i++){
 		const key = keys[i] 
-		newArray[i] = { key: keys[i], value: shopData[keys[i]] }
+		if(key === 'state'){
+			newArray[i] = { key: keys[i], value: nonce }
+		}else{
+			newArray[i] = { key: keys[i], value: shopData[keys[i]] }
+		}
 	}
-	console.log(newArray, 31)
 	const qS = makeQueryString(newArray)
-	const hmac = crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
-		.digest("hex")
-	console.log(hmac, '<------ NEW HMAC', 35)
-	console.log(shopData.hmac, '<------ SHOPIFY HMAC', 36)
-	const good = timingSafeCompare(hmac, shopData.hmac)
+	console.log(newArray, 31)
+	const hmac = Buffer.from(crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
+		.update(qS)
+		.digest("hex"), 'utf-8')
+	const providedHmac = Buffer.from(shopData.hmac, 'utf-8')
+	console.log(hmac, '<------ NEW HMAC', 39)
+	console.log(providedHmac)
+	const good = timingSafeCompare(hmac, providedHmac)
 	return good
 }
 
@@ -45,10 +49,10 @@ export const checkShop = async (parent, args, request) => {
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)
 	if(merchant && merchant.error){
-		console.log(shop)
-		const authenticatedMerchant = await verifyHmac(shop)
-		console.log(authenticatedMerchant, 42)
-		return authenticatedMerchant
+		const nonce = crypto.randomBytes(16).toString('base64') 
+		const redirectURL = `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
+
+		return { redirect: redirectURL }
 	}else{
 		return merchant 
 	}

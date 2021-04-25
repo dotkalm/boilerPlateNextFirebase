@@ -12,9 +12,9 @@ export const makeMutation = object => {
 					}
 			){
 				name
+				redirectURL
 			}
 		}
 	`
-	console.log(mutation, 18)
 	return mutation
 }

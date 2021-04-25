@@ -13,20 +13,11 @@ const makeToken = async obj => {
 export const shopifyServer = async ({ type, params }) => {
 	const args = prepareArgs(params)
 	if(args != ' '){
-		if(
-			window 
-			&& window.location 
-			&& window.location.origin === process.env.GRAPHQL_LOCAL_SERVER
-		){
-			backendUrl = process.env.GRAPHQL_LOCAL_SERVER
-		}
-		console.log(params)
 		const idToken = params.hmac 
 		const mutation = makeMutation(params)
-		const request = getRequest(idToken, mutation)
+		const request = getRequest(null, mutation)
 		const f = await fetch(`${backendUrl}/api/graphql`, request)
 		const rr = await f.json()
-		console.log(rr, 25)
 	}else{
 			return rr
 		}
