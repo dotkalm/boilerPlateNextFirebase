@@ -11,8 +11,14 @@ export const verifyHmac = shopData => {
 			sansHmac[key] = shopData[key]
 		}
 	}
+	console.log(sansHmac, 14)
+	
+	const unsortedKeys = Object.keys(sansHmac)
+	console.log(unsortedKeys)
+	unsortedKeys.push('state')
 
-	const keys = Object.keys(sansHmac).push('state').sort() 
+	const keys = unsortedKeys.sort()
+	console.log(keys, 21)
 
 	const nonce = crypto.randomBytes(16).toString('base64') 
 	shopData['state'] = nonce
@@ -20,16 +26,14 @@ export const verifyHmac = shopData => {
 	const newArray = new Array(keys.length).fill({key: null, value: null})
 	for(let i = 0; i < newArray.length; i++){
 		const key = keys[i] 
-		newArray[i].key = key 
-		newArray[i].value = shopData[key] 
+		newArray[i]['key'] = key 
+		newArray[i]['value'] = shopData[key] 
 	}
+	console.log(newArray, shopData)
 	const qS = makeQueryString(newArray)
-	console.log(qS, 24)
 	const hmac = crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
 		.digest("hex")
-	console.log(hmac, shopData.hmac, nonce, 29)
 	const good = timingSafeCompare(hmac, shopData.hmac)
-	console.log(good, 28)
 	return good
 }
 
@@ -42,6 +46,7 @@ export const checkShop = async (parent, args, request) => {
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)
 	if(merchant && merchant.error){
+		console.log(shop)
 		const authenticatedMerchant = await verifyHmac(shop)
 		console.log(authenticatedMerchant, 42)
 		return authenticatedMerchant
