@@ -15,13 +15,11 @@ export const verifyHmac = shopData => {
 	
 	const unsortedKeys = Object.keys(sansHmac)
 	console.log(unsortedKeys)
-	unsortedKeys.push('state')
 
 	const keys = unsortedKeys.sort()
 	console.log(keys, 21)
 
 	const nonce = crypto.randomBytes(16).toString('base64') 
-	shopData['state'] = nonce
 	
 	const newArray = new Array(keys.length).fill({key: null, value: null})
 	for(let i = 0; i < keys.length; i++){
@@ -32,7 +30,8 @@ export const verifyHmac = shopData => {
 	const qS = makeQueryString(newArray)
 	const hmac = crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
 		.digest("hex")
-	console.log(hmac, '\n', shopData.hmac, 35)
+	console.log(hmac, '<------ NEW HMAC', 35)
+	console.log(shopData.hmac, '<------ SHOPIFY HMAC', 36)
 	const good = timingSafeCompare(hmac, shopData.hmac)
 	return good
 }

@@ -17,6 +17,7 @@ const demoHeader = {
   cookie: process.env.GA_SC,
 } 
 
+
 export const demoQuery = `  
 	mutation{
 		addStore(
