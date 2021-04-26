@@ -59,8 +59,9 @@ export const checkLogged = new Promise((resolve, reject) => {
 		const token = await getIdToken()
 		const isAdmin = await getIdTokenResult() 
 		if(user && user.uid){
+			const { uid } = user
 			const obj = { 
-				uid: user.uid, 
+				uid, 
 				token, 
 				user: isAdmin, 
 				isAdmin: isAdmin !== false ? true : false 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { withRouter } from 'next/router'
 import App from '../../components/App'
 import Auth from '../../components/Auth'
 
@@ -9,4 +10,4 @@ const InstallFlow = props => {
 		</Auth>
   )
 }
-export default InstallFlow
+export default withRouter(InstallFlow)

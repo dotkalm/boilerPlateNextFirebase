@@ -22,27 +22,16 @@ export const shopifyServer = async ({ type, params }) => {
 		return rr
 	}
 }
-export const openShop = async ({ 
-	query, 
-	pathname, 
-	asPath,
-	isFallback,
-	basePath,
-	locale,
-	locales,
-	defaultLocale,
-	isReady,
-	isPreview
-}) => {
-if(query != null){
+export const openShop = async () => {
+	const { router } = Router
+	const { query } = router
+	if(query != null){
 		if(Object.keys(query).length > 0){
-			const { hmac, shop, timestamp } = query
 			const obj = { type: 'shop', params: query }
 			const response = await shopifyServer(obj)
-			console.log(response)
 			if(response && response.data && response.data.addStore){
-				const { redirectURL } = response.data.addStore
-				console.log(redirectURL)
+				console.log(response.data.addStore, router.query)
+				const { redirectURL, name } = response.data.addStore
 				return Router.push(redirectURL) 
 			}
 		}

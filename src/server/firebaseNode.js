@@ -40,18 +40,17 @@ export const getCollection = async (collectionName, queryArray)  => {
 	})
 }
 export const setDoc = async (collectionName, obj, uid) => {
-	const db = admin.firestore()
-	return db.collection(collectionName).doc(uid).set(obj, err => {
-		if(err){
-			return err
-		} else {
-			return 'success'
-		}
-	})
+	try{
+		const db = admin.firestore()
+		return db.collection(collectionName).doc(uid).set(obj)
+			.then(() => 'SUCCESS')
+	}catch(err){
+		console.log(err)
+		return err
+	}
 }
 
 export const getDoc = async (collectionName, uid) => {
-	console.log(collectionName, uid, 54)
 	const db = admin.firestore()
 	const doc = await db.collection(collectionName).doc(uid).get()
 	if (!doc.exists) {

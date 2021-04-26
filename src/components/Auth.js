@@ -11,9 +11,11 @@ const FirebaseAuth = ({ children }) => {
 	const [ shop, setShop ] = useState(null)
 	const uFunc = async () => {
 		try{
-			console.log('why>>>>?????')
 			const u = await checkLogged
-			setUser(u.user.claims)
+			console.log(u)
+			if(u.user.claims){
+				setUser(u.user.claims)
+			}
 			return u.user.claims
 		}catch(e){
 			setUser({error: e})
@@ -22,10 +24,7 @@ const FirebaseAuth = ({ children }) => {
 
 	}
 	if(shop === null){
-		openShop(router).then(response => {
-				console.log(response)
-		})
-	}else{
+		openShop()
 	}
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
@@ -43,8 +42,7 @@ const FirebaseAuth = ({ children }) => {
 			</div>
 		)
 	}else if(user && user.error){
-		const { query } = router
-		openShop(router.query)
+		openShop()
 		return (
 			<div>
 				{typeof user.admin !== 'boolean'

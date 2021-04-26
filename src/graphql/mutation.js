@@ -26,10 +26,8 @@ const Mutation = new GraphQLObjectType({
 					shop: { type: addShopType }
 				},
 				resolve(parent, args, request){
-					return checkShop(parent, args, request).then(merchant => {
-						console.log(merchant, '<--- redirect after install')
-						return merchant
-					})
+					console.log(request.headers['Authorization'])
+					return checkShop(parent, args, request)
 				}
 			}
 		})
