@@ -51,8 +51,7 @@ export const checkShop = async (parent, args, request) => {
 	if(merchant && merchant.error){
 		const nonce = crypto.randomBytes(16).toString('base64') 
 		const redirectURL = `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
-
-		return { redirect: redirectURL }
+		return { redirectURL }
 	}else{
 		return merchant 
 	}

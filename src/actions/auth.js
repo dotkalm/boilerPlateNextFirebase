@@ -59,7 +59,12 @@ export const checkLogged = new Promise((resolve, reject) => {
 		const token = await getIdToken()
 		const isAdmin = await getIdTokenResult() 
 		if(user && user.uid){
-			const obj = { uid: user.uid, token, user: isAdmin, isAdmin: isAdmin !== false ? true : false }
+			const obj = { 
+				uid: user.uid, 
+				token, 
+				user: isAdmin, 
+				isAdmin: isAdmin !== false ? true : false 
+			}
 			return resolve(obj)
 		}else{
 			return reject("NOT AUTHORIZED")

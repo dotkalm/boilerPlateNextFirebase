@@ -3,7 +3,7 @@ import { checkLogged, login, logOut, emailLogin } from '../actions/auth'
 import { openShop } from '../shared/shopify'
 import AuthHeader from './AuthHeader'
 import useSWR from "swr";
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 
 const FirebaseAuth = ({ children }) => {
 	const router = useRouter()
@@ -11,6 +11,7 @@ const FirebaseAuth = ({ children }) => {
 	const [ shop, setShop ] = useState(null)
 	const uFunc = async () => {
 		try{
+			console.log('why>>>>?????')
 			const u = await checkLogged
 			setUser(u.user.claims)
 			return u.user.claims
@@ -21,18 +22,15 @@ const FirebaseAuth = ({ children }) => {
 
 	}
 	if(shop === null){
-		openShop(router).then(shopHeader => {
-			if(user === null && shopHeader !== undefined){
-				const { shop, timestamp, hmac } = shopHeader 
-				console.log({ shop, timestamp, hmac })
-				setShop(shopHeader)
-				uFunc()
-			}
+		openShop(router).then(response => {
+				console.log(response)
 		})
+	}else{
 	}
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
 	}
+
 	if(user && (user.admin || user.guest)){
 		const childrenWithProps = React
 			.Children
