@@ -15,8 +15,7 @@ const app = next({
 const handle = app.getRequestHandler()
 
 exports.nextjsFunc = functions.https.onRequest((req, res) => {
-	const host = req.get('x-forwarded-host')
-	console.log(host, '<--- host')
+	console.log(req.get('x-forwarded-host'), '<--- x-forwarded-host')
 	req.url = req.url || '/'
 	return app.prepare().then(() => handle(req, res))
 })
