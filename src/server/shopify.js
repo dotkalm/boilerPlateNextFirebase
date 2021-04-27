@@ -58,6 +58,7 @@ export const oAuthExchange = async (shop, request) => {
 						}
 					}else{
 						const json = await oAuthRequest(shop.name, shop.code)
+						const { } = json 
 						return json 
 					}
 				}

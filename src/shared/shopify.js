@@ -17,7 +17,6 @@ export const shopifyServer = async ({ type, params }) => {
 		if(args != ' '){
 			const idToken = params.hmac 
 			const mutation = makeMutation(params)
-			console.log(mutation)
 			const request = getRequest(null, mutation)
 			const f = await fetch(`${backendUrl}/api/graphql`, request)
 			const rr = await f.json()
@@ -37,10 +36,10 @@ export const openShop = async () => {
 				const obj = { type: 'shop', params: query }
 				const response = await shopifyServer(obj)
 				if(response && response.data && response.data.addStore){
-					const { redirectURL, name } = response.data.addStore
+					const { redirectURL } = response.data.addStore
 					if(!redirectURL){
-						console.log(query, name)
-						return name 
+						console.log(response.data.addStore)
+						return response.data.addStore
 					}else{
 						console.log({ redirectURL, name })
 						return Router.push(redirectURL) 
