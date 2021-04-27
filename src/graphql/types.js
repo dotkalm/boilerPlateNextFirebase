@@ -243,6 +243,7 @@ export const ShopType = new GraphQLObjectType({
 	fields: () => ({
 		name			 	: {	type: GraphQLString	},
 		redirectURL	: {	type: GraphQLString	},
+		token: {	type: GraphQLString	},
 	})
 })
 export const PlaceType = new GraphQLObjectType({

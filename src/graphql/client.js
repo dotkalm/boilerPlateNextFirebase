@@ -1,5 +1,5 @@
 export const makeMutation = object => {
-	const { hmac, shop, timestamp } = object
+	const { hmac, shop, timestamp, state, host, code } = object
 	
 	const mutation = `
 		mutation{
@@ -9,10 +9,14 @@ export const makeMutation = object => {
 						name:"${shop}"
 						timestamp: ${timestamp} 
 						hmac: "${hmac}"
+						state: "${state}"
+						host: "${host}"
+						code: "${code}"
 					}
 			){
 				name
 				redirectURL
+				token
 			}
 		}
 	`

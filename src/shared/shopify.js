@@ -29,9 +29,11 @@ export const openShop = async () => {
 		if(query != null){
 			if(Object.keys(query).length > 0){
 				const obj = { type: 'shop', params: query }
+				console.log(query)
 				const response = await shopifyServer(obj)
 				if(response && response.data && response.data.addStore){
 					const { redirectURL, name } = response.data.addStore
+					console.log({ redirectURL, name })
 					return Router.push(redirectURL) 
 				}
 			}

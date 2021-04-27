@@ -38,12 +38,12 @@ export const verifyHmac = shopData => {
 	return good
 }
 
-export const redirect = async merchant => {
-	console.log('merchant already signed installed app')
+export const oAuthExchange = async (shop, request) => {
+		const { name } = shop 
+		const merchant = await getDoc('merchants', name)
+		return { name : 'NO' }
 }
-
-export const checkShop = async (parent, args, request) => {
-	const { shop } = args
+export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)
 	if(merchant && merchant.error){
@@ -54,8 +54,8 @@ export const checkShop = async (parent, args, request) => {
 		if(success === 'SUCCESS'){
 			return { redirectURL }
 		}
-	}else{
-		const { referer } =  request.headers
+	}else if(merchant && !merchant.error){
+		const { referer } =  request.header
 		console.log(merchant, args.shop, referer, 57)
 		return merchant 
 	}

@@ -4,10 +4,9 @@ import App from '../../components/App'
 import Auth from '../../components/Auth'
 
 const InstallFlow = props => {
-	console.log(props, 7)
   return (
 		<Auth>
-			<App/>
+			callback
 		</Auth>
   )
 }

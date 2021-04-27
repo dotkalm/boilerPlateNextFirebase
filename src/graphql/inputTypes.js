@@ -31,5 +31,8 @@ export const addShopType = new GraphQLInputObjectType({
 		name: { type: new GraphQLNonNull(GraphQLString) },
 		timestamp: { type: new GraphQLNonNull(GraphQLFloat) },
 		hmac: { type: new GraphQLNonNull(GraphQLString) },
+		state: { type: GraphQLString },
+		host: { type: GraphQLString },
+		code: { type: GraphQLString },
 	})
 })

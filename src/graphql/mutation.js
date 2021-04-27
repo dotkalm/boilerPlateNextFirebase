@@ -13,7 +13,7 @@ const {
 	GraphQLList,
 	GraphQLBoolean,
 } = graphql
-import { checkShop, redirect, install } from '../server/shopify'
+import { checkShop, oAuthExchange, install } from '../server/shopify'
 
 const Mutation = new GraphQLObjectType({
 	name: 'Mutation',
@@ -26,8 +26,13 @@ const Mutation = new GraphQLObjectType({
 					shop: { type: addShopType }
 				},
 				resolve(parent, args, request){
-					console.log(request.headers['Authorization'])
-					return checkShop(parent, args, request)
+					if(args.shop && args.shop.state !== 'undefined'){
+						console.log(args.shop, 30)
+						return oAuthExchange(args.shop, request)
+					}else{
+						console.log(args.shop, 33)
+						return checkShop(parent, args.shop, request)
+					}
 				}
 			}
 		})
