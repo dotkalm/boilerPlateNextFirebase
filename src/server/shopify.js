@@ -9,7 +9,6 @@ import { oAuthRequest } from './oAuth'
 export const verifyHmac = shopData => {
 
 	const { name } = shopData
-	console.log(shopData, 12)
 	const sansHmac = { ...shopData }  
 	delete sansHmac['hmac']
 	delete sansHmac['name']
@@ -23,14 +22,12 @@ export const verifyHmac = shopData => {
 		newArray[i] = { key: keys[i], value: sansHmac[key] }
 	}
 	const qS = makeQueryString(newArray)
-	console.log(qS, newArray)
+	console.log(newArray)
 	const hmac = Buffer.from(crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
 		.update(qS)
 		.digest("hex"), 'utf-8')
 	const providedHmac = Buffer.from(shopData.hmac, 'utf-8')
-	const truth = timingSafeCompare(hmac, providedHmac)
-	console.log(hmac.toString(),'<------ NEW HMAC')
-	console.log(providedHmac.toString(), '<------ PROVIDED HMAC', truth)
+	const truth = timingSafeCompare(hmac.toString(), providedHmac.toString())
 	return truth
 }
 
@@ -46,13 +43,23 @@ export const oAuthExchange = async (shop, request) => {
 					console.log(merchant.state, shop.state)
 					throw new Error('nonce mismatch')
 				}else{
-					const hmacCompare = await verifyHmac({...shop})
-					console.log(shop, hmacCompare, 54)
-					const hostname = Buffer.from(shop.host, 'base64').toString() 
-					console.log(hostname, 57)
-					const json = await oAuthRequest(shop.name, shop.code)
-					console.log(json, 59)
-					return { ...shop, ...json } 
+					const hmacCompare = verifyHmac(shop)
+					const shopRegExp = shop.name.match(shopRegex)
+					if(!hmacCompare){
+						throw new Error('hmac mismatch')
+					}else if(!shopRegExp){
+						if(shop.name.match(/^http/)){
+							const httpsRegExp = shop.name.match(httpsRegex)
+							if(!httpsRegExp){
+								throw new Error('bad shopname')
+							}
+						}else{
+							throw new Error('bad shopname')
+						}
+					}else{
+						const json = await oAuthRequest(shop.name, shop.code)
+						return json 
+					}
 				}
 			}else{
 				throw new Error('no state')
