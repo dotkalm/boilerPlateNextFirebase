@@ -38,7 +38,8 @@ export const openShop = async () => {
 				if(response && response.data && response.data.addStore){
 					const { redirectURL } = response.data.addStore
 					if(!redirectURL){
-						console.log(response.data.addStore)
+						const oo = response.data.addStore
+						console.log(oo, 42)
 						return response.data.addStore
 					}else{
 						console.log({ redirectURL, name })

@@ -12,7 +12,7 @@ const FirebaseAuth = ({ children }) => {
 	const uFunc = async () => {
 		try{
 			const u = await checkLogged
-			console.log(u)
+			console.log(u, 15)
 			if(u.user.claims){
 				setUser(u.user.claims)
 			}
@@ -43,7 +43,6 @@ const FirebaseAuth = ({ children }) => {
 			</div>
 		)
 	}else if(user && user.error){
-		openShop()
 		return (
 			<div>
 				{typeof user.admin !== 'boolean'

@@ -40,7 +40,6 @@ export const oAuthExchange = async (shop, request) => {
 			if(merchant && merchant.state){
 				const compareNonce = timingSafeCompare(merchant.state, shop.state)
 				if(!compareNonce){
-					console.log(merchant.state, shop.state)
 					throw new Error('nonce mismatch')
 				}else{
 					const hmacCompare = verifyHmac(shop)
@@ -58,8 +57,9 @@ export const oAuthExchange = async (shop, request) => {
 						}
 					}else{
 						const json = await oAuthRequest(shop.name, shop.code)
-						const { } = json 
-						return json 
+						const { access_token, scope } = json 
+						const signUp = await createUser({...merchant, ...json}) 
+
 					}
 				}
 			}else{

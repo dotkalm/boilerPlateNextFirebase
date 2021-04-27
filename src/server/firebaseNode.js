@@ -87,12 +87,22 @@ export const nextElement = async (collection, currentId) => {
 		})
 	})
 }
-
+export const createUser = async data => {
+	const { name, access_token } = data 
+	const userData = new Object
+	userData['displayName'] = name
+	const user = await admin.auth().createUser(userData)
+	const { uid } = user
+	await admin.auth().setCustomUserClaims(uid, {
+		accessToken: access_token
+	})
+	const customToken = await admin.auth().createCustomToken(uid) 
+}
 export const getLogin = async idToken => {
 	return admin.auth().verifyIdToken(idToken, true)
 	.catch(err => console.log(devTimestamp, err, 'line 913'))
 }
 
 export const mintToken = async => {
-	return admin.auth().createCustomToken(hmac)
+	return admin.auth().createCustomToken(userId, additionalClaims)
 }
