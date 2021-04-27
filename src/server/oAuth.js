@@ -1,4 +1,4 @@
-export const oAuthRequest = (shop, code) => {
+export const oAuthRequest = async (shop, code) => {
 	const body = {
 		client_id: process.env.SHOPIFY_API_KEY,
 		client_secret: process.env.SHOPIFY_API_SECRET,

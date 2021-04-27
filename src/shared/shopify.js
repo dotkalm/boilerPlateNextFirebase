@@ -12,14 +12,20 @@ const makeToken = async obj => {
 }
 
 export const shopifyServer = async ({ type, params }) => {
-	const args = prepareArgs(params)
-	if(args != ' '){
-		const idToken = params.hmac 
-		const mutation = makeMutation(params)
-		const request = getRequest(null, mutation)
-		const f = await fetch(`${backendUrl}/api/graphql`, request)
-		const rr = await f.json()
-		return rr
+	try{
+		const args = prepareArgs(params)
+		if(args != ' '){
+			const idToken = params.hmac 
+			const mutation = makeMutation(params)
+			console.log(mutation)
+			const request = getRequest(null, mutation)
+			const f = await fetch(`${backendUrl}/api/graphql`, request)
+			const rr = await f.json()
+			return rr
+		}
+	}catch(err){
+		console.log(err)
+		return err
 	}
 }
 export const openShop = async () => {
@@ -34,10 +40,6 @@ export const openShop = async () => {
 					const { redirectURL, name } = response.data.addStore
 					if(!redirectURL){
 						console.log(query, name)
-						//POST https://{shop}.myshopify.com/admin/oauth/access_token
-						//body client_id: The API key for the app, as defined in the Partner Dashboard.
-						//client_secret: The API secret key for the app, as defined in the Partner Dashboard.
-						//code: The authorization code provided in the redirect.
 						return name 
 					}else{
 						console.log({ redirectURL, name })

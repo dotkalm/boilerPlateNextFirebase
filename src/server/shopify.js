@@ -8,24 +8,19 @@ import { oAuthRequest } from './oAuth'
 
 export const verifyHmac = shopData => {
 
-	console.log(shopData, 8)
+	const { name } = shopData
+	console.log(shopData, 12)
 	const sansHmac = { ...shopData }  
 	delete sansHmac['hmac']
-	sansHmac['shop'] = shopData.name
 	delete sansHmac['name']
+	sansHmac['shop'] = name
 
-	for(const key in shopData){
-		if(key != 'hmac'){
-			sansHmac[key] = shopData[key]
-		}
-	}
-	
 	const unsortedKeys = Object.keys(sansHmac)
 	const keys = unsortedKeys.sort()
 	const newArray = new Array(keys.length).fill({key: null, value: null})
 	for(let i = 0; i < keys.length; i++){
 		const key = keys[i] 
-		newArray[i] = { key: keys[i], value: shopData[keys[i]] }
+		newArray[i] = { key: keys[i], value: sansHmac[key] }
 	}
 	const qS = makeQueryString(newArray)
 	console.log(qS, newArray)
@@ -33,17 +28,40 @@ export const verifyHmac = shopData => {
 		.update(qS)
 		.digest("hex"), 'utf-8')
 	const providedHmac = Buffer.from(shopData.hmac, 'utf-8')
-	console.log(hmac, '<------ NEW HMAC', 39)
-	console.log(providedHmac)
-	return timingSafeCompare(hmac, providedHmac)
+	const truth = timingSafeCompare(hmac, providedHmac)
+	console.log(hmac.toString(),'<------ NEW HMAC')
+	console.log(providedHmac.toString(), '<------ PROVIDED HMAC', truth)
+	return truth
 }
 
 export const oAuthExchange = async (shop, request) => {
-	const hmacCompare = await verifyHmac({...shop})
-	console.log(shop, hmacCompare)
-	const json = await oAuthRequest(shop.name, shop.code)
-	console.log(json, 45)
-	return { ...shop, ...json } 
+	try{
+		const merchant = await getDoc('merchants', shop.name)
+		if(merchant && merchant.error){
+			throw new Error(merchant.error)
+		}else{
+			if(merchant && merchant.state){
+				const compareNonce = timingSafeCompare(merchant.state, shop.state)
+				if(!compareNonce){
+					console.log(merchant.state, shop.state)
+					throw new Error('nonce mismatch')
+				}else{
+					const hmacCompare = await verifyHmac({...shop})
+					console.log(shop, hmacCompare, 54)
+					const hostname = Buffer.from(shop.host, 'base64').toString() 
+					console.log(hostname, 57)
+					const json = await oAuthRequest(shop.name, shop.code)
+					console.log(json, 59)
+					return { ...shop, ...json } 
+				}
+			}else{
+				throw new Error('no state')
+			}
+		}
+	}catch(err){
+		console.log(err)
+		return err
+	}
 }
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 
