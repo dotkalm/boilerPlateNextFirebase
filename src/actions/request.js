@@ -25,7 +25,7 @@ export const getRequest = (idToken, query) => {
 		},
 		mode: 'cors',
 		cache: 'default',
-		body: JSON.stringify({'query':query})
+		body: JSON.stringify({'query': query})
 	}) : ({
 
 		method: 'POST',
@@ -35,7 +35,7 @@ export const getRequest = (idToken, query) => {
 		},
 		mode: 'cors',
 		cache: 'default',
-		body: JSON.stringify({'query':query})
+		body: JSON.stringify({'query': query})
 	}) 
 	)
 }
