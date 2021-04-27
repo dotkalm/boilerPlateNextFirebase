@@ -49,7 +49,11 @@ export const setDoc = async (collectionName, obj, uid) => {
 		return err
 	}
 }
-
+export const updateDoc = async (collectionName, obj, uid) => {
+	return db.collection(collectionName).doc(uid).update(obj)
+	.then(() => 'success')
+	.catch(err => err)
+}
 export const getDoc = async (collectionName, uid) => {
 	const db = admin.firestore()
 	const doc = await db.collection(collectionName).doc(uid).get()
@@ -88,21 +92,26 @@ export const nextElement = async (collection, currentId) => {
 	})
 }
 export const createUser = async data => {
-	const { name, access_token } = data 
+	const db = admin.firestore()
+	const { name, access_token, scope } = data 
 	const userData = new Object
 	userData['displayName'] = name
 	const user = await admin.auth().createUser(userData)
 	const { uid } = user
-	await admin.auth().setCustomUserClaims(uid, {
-		accessToken: access_token
-	})
-	const customToken = await admin.auth().createCustomToken(uid) 
+	await updateDoc('merchants', {
+		state: db.FieldValue.delete(),
+		redirectURL: db.FieldValue.delete(),
+		hmac: db.FieldValue.delete(),
+		accessToken: access_token,
+		scope: scope,
+	}, uid)
+	return uid
 }
 export const getLogin = async idToken => {
 	return admin.auth().verifyIdToken(idToken, true)
 	.catch(err => console.log(devTimestamp, err, 'line 913'))
 }
 
-export const mintToken = async => {
-	return admin.auth().createCustomToken(userId, additionalClaims)
+export const mintToken = async userId => {
+	return admin.auth().createCustomToken(userId)
 }

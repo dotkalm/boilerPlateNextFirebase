@@ -43,12 +43,13 @@ export const oAuthExchange = async (shop, request) => {
 					throw new Error('nonce mismatch')
 				}else{
 					const hmacCompare = verifyHmac(shop)
-					const shopRegExp = shop.name.match(shopRegex)
+					const { name } = shop
+					const shopRegExp = name.match(shopRegex)
 					if(!hmacCompare){
 						throw new Error('hmac mismatch')
 					}else if(!shopRegExp){
-						if(shop.name.match(/^http/)){
-							const httpsRegExp = shop.name.match(httpsRegex)
+						if(name.match(/^http/)){
+							const httpsRegExp = name.match(httpsRegex)
 							if(!httpsRegExp){
 								throw new Error('bad shopname')
 							}
@@ -56,9 +57,11 @@ export const oAuthExchange = async (shop, request) => {
 							throw new Error('bad shopname')
 						}
 					}else{
-						const json = await oAuthRequest(shop.name, shop.code)
+						const json = await oAuthRequest(name, shop.code)
 						const { access_token, scope } = json 
-						const signUp = await createUser({...merchant, ...json}) 
+						const uid = await createUser({...merchant, ...json}) 
+						const jwt = await mintToken(uid)
+						return { name, jwt } 
 
 					}
 				}

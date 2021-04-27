@@ -221,8 +221,8 @@ export const AddrType = new GraphQLObjectType({
 	name: 'Addr',
 	description: 'addr from us census',
 	fields: () => ({
-		gid       : {type: GraphQLInt },
-		tlid      : {type: GraphQLInt },
+		gid       : {type: GraphQLInt 	 },
+		tlid      : {type: GraphQLInt 	 },
 		fromhn    : {type: GraphQLString },
 		tohn      : {type: GraphQLString },
 		side      : {type: GraphQLString },
@@ -230,8 +230,8 @@ export const AddrType = new GraphQLObjectType({
 		plus4     : {type: GraphQLString },
 		fromtyp   : {type: GraphQLString },
 		totyp     : {type: GraphQLString },
-		fromarmid : {type: GraphQLInt },
-		toarmid   : {type: GraphQLInt },
+		fromarmid : {type: GraphQLInt 	 },
+		toarmid   : {type: GraphQLInt 	 },
 		arid      : {type: GraphQLString },
 		mtfcc     : {type: GraphQLString },
 		statefp   : {type: GraphQLString },
@@ -240,18 +240,21 @@ export const AddrType = new GraphQLObjectType({
 export const ShopType = new GraphQLObjectType({
 	name: 'Shop',
 	description: '',
+	interfaces: [nodeInterface],
 	fields: () => ({
+		id					 : 				  globalIdField(),
 		name			 	 : {	type: GraphQLString	},
 		redirectURL	 : {	type: GraphQLString	},
-		access_token : {	type: GraphQLString	},
+		jwt					 : {	type: GraphQLString	},
 		scope				 : {	type: GraphQLString	},
+		installedAt  : {	type: GraphQLFloat  },
 	})
 })
 export const PlaceType = new GraphQLObjectType({
 	name: 'Place',
 	description: 'place from us census',
 	fields: () => ({
-		gid      : { type: GraphQLInt }, 
+		gid      : { type: GraphQLInt 	 }, 
 		statefp  : { type: GraphQLString }, 
 		placefp  : { type: GraphQLString }, 
 		placens  : { type: GraphQLString }, 
@@ -265,8 +268,8 @@ export const PlaceType = new GraphQLObjectType({
 		pcinecta : { type: GraphQLString }, 
 		mtfcc    : { type: GraphQLString }, 
 		funcstat : { type: GraphQLString }, 
-		aland    : { type: GraphQLInt }, 
-		awater   : { type: GraphQLInt }, 
+		aland    : { type: GraphQLInt 	 }, 
+		awater   : { type: GraphQLInt 	 }, 
 		intptlat : { type: GraphQLString }, 
 		intptlon : { type: GraphQLString }, 
 		shape    : { type: GraphQLString },
