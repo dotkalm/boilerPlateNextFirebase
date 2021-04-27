@@ -1,5 +1,6 @@
 import { getDoc, mintToken, setDoc } from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
+import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
 
@@ -54,7 +55,8 @@ export const checkShop = async (parent, args, request) => {
 			return { redirectURL }
 		}
 	}else{
-		console.log(merchant, args.shop)
+		const { referer } =  request.headers
+		console.log(merchant, args.shop, referer, 57)
 		return merchant 
 	}
 }

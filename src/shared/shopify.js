@@ -24,15 +24,16 @@ export const shopifyServer = async ({ type, params }) => {
 }
 export const openShop = async () => {
 	const { router } = Router
-	const { query } = router
-	if(query != null){
-		if(Object.keys(query).length > 0){
-			const obj = { type: 'shop', params: query }
-			const response = await shopifyServer(obj)
-			if(response && response.data && response.data.addStore){
-				console.log(response.data.addStore, router.query)
-				const { redirectURL, name } = response.data.addStore
-				return Router.push(redirectURL) 
+	if(router != null){
+		const { query } = router
+		if(query != null){
+			if(Object.keys(query).length > 0){
+				const obj = { type: 'shop', params: query }
+				const response = await shopifyServer(obj)
+				if(response && response.data && response.data.addStore){
+					const { redirectURL, name } = response.data.addStore
+					return Router.push(redirectURL) 
+				}
 			}
 		}
 	}
