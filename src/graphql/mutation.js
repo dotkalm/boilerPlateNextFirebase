@@ -27,7 +27,6 @@ const Mutation = new GraphQLObjectType({
 				},
 				resolve(parent, args, request){
 					if(args.shop && args.shop.state !== 'undefined'){
-						console.log(args.shop, 30)
 						return oAuthExchange(args.shop, request)
 					}else{
 						console.log(args.shop, 33)

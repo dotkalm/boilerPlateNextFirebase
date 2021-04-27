@@ -23,6 +23,7 @@ const FirebaseAuth = ({ children }) => {
 		}
 
 	}
+	console.log(Router.router)
 	if(shop === null){
 		openShop()
 	}

@@ -29,12 +29,20 @@ export const openShop = async () => {
 		if(query != null){
 			if(Object.keys(query).length > 0){
 				const obj = { type: 'shop', params: query }
-				console.log(query)
 				const response = await shopifyServer(obj)
 				if(response && response.data && response.data.addStore){
 					const { redirectURL, name } = response.data.addStore
-					console.log({ redirectURL, name })
-					return Router.push(redirectURL) 
+					if(!redirectURL){
+						console.log(query, name)
+						//POST https://{shop}.myshopify.com/admin/oauth/access_token
+						//body client_id: The API key for the app, as defined in the Partner Dashboard.
+						//client_secret: The API secret key for the app, as defined in the Partner Dashboard.
+						//code: The authorization code provided in the redirect.
+						return name 
+					}else{
+						console.log({ redirectURL, name })
+						return Router.push(redirectURL) 
+					}
 				}
 			}
 		}

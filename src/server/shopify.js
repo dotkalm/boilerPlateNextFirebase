@@ -5,7 +5,11 @@ import crypto from 'crypto'
 import timingSafeCompare from 'tsscmp'
 
 export const verifyHmac = shopData => {
-	const sansHmac = new Object
+	console.log(shopData, 8)
+	const sansHmac = { ...shopData }  
+	delete sansHmac['hmac']
+	sansHmac['shop'] = shopData.name
+	delete sansHmac['name']
 
 	for(const key in shopData){
 		if(key != 'hmac'){
@@ -14,18 +18,13 @@ export const verifyHmac = shopData => {
 	}
 	
 	const unsortedKeys = Object.keys(sansHmac)
-	unsortedKeys.push('state')
 	const keys = unsortedKeys.sort()
 
 	
 	const newArray = new Array(keys.length).fill({key: null, value: null})
 	for(let i = 0; i < keys.length; i++){
 		const key = keys[i] 
-		if(key === 'state'){
-			newArray[i] = { key: keys[i], value: nonce }
-		}else{
-			newArray[i] = { key: keys[i], value: shopData[keys[i]] }
-		}
+		newArray[i] = { key: keys[i], value: shopData[keys[i]] }
 	}
 	const qS = makeQueryString(newArray)
 	const hmac = Buffer.from(crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
@@ -34,14 +33,12 @@ export const verifyHmac = shopData => {
 	const providedHmac = Buffer.from(shopData.hmac, 'utf-8')
 	console.log(hmac, '<------ NEW HMAC', 39)
 	console.log(providedHmac)
-	const good = timingSafeCompare(hmac, providedHmac)
-	return good
+	return timingSafeCompare(hmac, providedHmac)
 }
 
 export const oAuthExchange = async (shop, request) => {
-		const { name } = shop 
-		const merchant = await getDoc('merchants', name)
-		return { name : 'NO' }
+	const hmacCompare = await verifyHmac(shop) 
+	return { name : new String(hmacCompare) }
 }
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 
