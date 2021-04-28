@@ -15,7 +15,7 @@ const makeToken = async obj => {
 export const shopifyServer = async ({ type, params }) => {
 	try{
 		const args = prepareArgs(params)
-		if(args != ' '){
+		if(args != ' ' && params.hmac){
 			const idToken = params.hmac 
 			const mutation = makeMutation(params)
 			const request = getRequest(null, mutation)
@@ -28,30 +28,43 @@ export const shopifyServer = async ({ type, params }) => {
 		return err
 	}
 }
-export const openShop = async () => {
+export const routerQuery = new Promise((res, rej) => {
+	const { router } = Router
+	if(router != null){
+		const { query } = router
+		if(query != null){
+			if(Object.keys(query).length > 0){
+				res(query)
+			}
+		}
+	}
+}) 
+export const oAuthCallback = async query => {
 	try{
-		const { router } = Router
-		if(router != null){
-			const { query } = router
-			if(query != null){
-				if(Object.keys(query).length > 0){
-					const obj = { type: 'shop', params: query }
-					const response = await shopifyServer(obj)
-					if(response && response.data && response.data.addStore){
-						const { redirectURL } = response.data.addStore
-						if(!redirectURL){
-							const oo = response.data.addStore
-							const { jwt, name, uid } = oo	
-							const user = await signInWithCustomToken(jwt)
-							const shop = await getIdTokenResult()
-							console.log(shop)
-							return shop
-						}else{
-							console.log({ redirectURL, name })
-							return Router.push(redirectURL) 
-						}
-					}
-				}
+		const obj = { type: 'shop', params: query }
+		const response = await shopifyServer(obj)
+		if(response !== undefined){
+			const oo = response.data.addStore
+			const { jwt, name, uid } = oo	
+			const user = await signInWithCustomToken(jwt)
+			const shop = await getIdTokenResult()
+			return { user, shop } 
+		}
+	}catch(err){
+		console.log(err)
+		return err
+	}
+}
+export const openShop = async query => {
+	try{
+		const obj = { type: 'shop', params: query }
+		const response = await shopifyServer(obj)
+		if(response){
+			console.log(response.data)
+			if(response.data && response.data.addStore){
+				const { addStore } = response.data
+				const { redirectURL } = addStore
+				return redirectURL
 			}
 		}
 	}catch(err){

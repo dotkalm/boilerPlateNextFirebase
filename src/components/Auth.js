@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { checkLogged, login, logOut, emailLogin } from '../actions/auth'
-import { openShop } from '../shared/shopify'
+import { openShop, oAuthCallback } from '../shared/shopify'
 import AuthHeader from './AuthHeader'
 import useSWR from "swr";
 import Router, { useRouter } from 'next/router'
 
-const FirebaseAuth = ({ children }) => {
+const Auth = ({ children, ...props }) => {
 	const router = useRouter()
 	const [ user, setUser ] = useState(null)
 	const [ shop, setShop ] = useState(null)
@@ -22,20 +22,22 @@ const FirebaseAuth = ({ children }) => {
 		}
 
 	}
-	if(shop === null){
-		openShop().then(shop => {
-			if(shop){
-				for(const key in shop){
-					const value = shop[key]
-					console.log(value, key)
-					if(value && value['claims']){
-						setShop(value['claims'].shop)
-						setUser({shop: value['claims'].shop, admin: false})
-					}
-				}
+	console.log(props)
+	useEffect(() => {
+		if(router.query){
+			const { query } = router
+			if(shop === null && !query.jwt){
+				openShop(query).then(u => u !== undefined ? setShop(u) : shop)
+			}else if(!query.jwt && user === null){
+				const oAuthRedirectUrl = shop
+				console.log(props, oAuthRedirectUrl, 34)
+				router.push(oAuthRedirectUrl)
+			}else{
+				console.log(props, router)
 			}
-		})
-	}
+		}
+	}, [ shop, user, router ])
+
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
 	}
@@ -69,4 +71,4 @@ const FirebaseAuth = ({ children }) => {
 	}
 }
 
-export default FirebaseAuth
+export default Auth
