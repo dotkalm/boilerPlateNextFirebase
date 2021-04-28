@@ -50,6 +50,7 @@ export const setDoc = async (collectionName, obj, uid) => {
 	}
 }
 export const updateDoc = async (collectionName, obj, uid) => {
+	const db = admin.firestore()
 	return db.collection(collectionName).doc(uid).update(obj)
 	.then(() => 'success')
 	.catch(err => err)
@@ -92,20 +93,26 @@ export const nextElement = async (collection, currentId) => {
 	})
 }
 export const createUser = async data => {
-	const db = admin.firestore()
-	const { name, access_token, scope } = data 
-	const userData = new Object
-	userData['displayName'] = name
-	const user = await admin.auth().createUser(userData)
-	const { uid } = user
-	await updateDoc('merchants', {
-		state: db.FieldValue.delete(),
-		redirectURL: db.FieldValue.delete(),
-		hmac: db.FieldValue.delete(),
-		accessToken: access_token,
-		scope: scope,
-	}, uid)
-	return uid
+	try{
+		const { name, access_token, scope } = data 
+		const userData = new Object
+		userData['displayName'] = name
+		const user = await admin.auth().createUser(userData)
+		const { uid } = user
+		const FieldValue = admin.firestore.FieldValue
+		console.log(uid, 102)
+		await updateDoc('merchants', {
+			state: FieldValue.delete(),
+			redirectURL: FieldValue.delete(),
+			hmac: FieldValue.delete(),
+			accessToken: access_token,
+			scope: scope,
+		}, uid)
+		return uid
+	}catch(err){
+		console.log(err)
+		return err
+	}
 }
 export const getLogin = async idToken => {
 	return admin.auth().verifyIdToken(idToken, true)

@@ -244,6 +244,7 @@ export const ShopType = new GraphQLObjectType({
 	fields: () => ({
 		id					 : globalIdField(),
 		uid					 : {	type: GraphQLString	},
+		hmac				 : {	type: GraphQLString	},
 		name			 	 : {	type: GraphQLString	},
 		redirectURL	 : {	type: GraphQLString	},
 		jwt					 : {	type: GraphQLString	},

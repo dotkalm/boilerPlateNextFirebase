@@ -38,6 +38,7 @@ export const oAuthExchange = async (shop, request) => {
 			throw new Error(merchant.error)
 		}else{
 			if(merchant && merchant.state){
+				console.log(merchant.state, shop.state)
 				const compareNonce = timingSafeCompare(merchant.state, shop.state)
 				if(!compareNonce){
 					throw new Error('nonce mismatch')
@@ -60,6 +61,7 @@ export const oAuthExchange = async (shop, request) => {
 						const json = await oAuthRequest(name, shop.code)
 						const { access_token, scope } = json 
 						const uid = await createUser({...merchant, ...json})
+						console.log(uid)
 						const jwt = await mintToken(uid)
 						return { name, jwt }
 					}
@@ -80,6 +82,7 @@ export const checkShop = async (parent, shop, request) => {
 		const nonce = crypto.randomBytes(16).toString('base64') 
 		const redirectURL = `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
 		const data = { state: nonce, installedAt: timestamp, hmac, name, redirectURL }
+		console.log(data, redirectURL, 84)
 		const success = await setDoc('merchants', data, name)
 		if(success === 'SUCCESS'){
 			return { redirectURL }

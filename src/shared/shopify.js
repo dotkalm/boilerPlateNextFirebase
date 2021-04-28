@@ -17,7 +17,9 @@ export const shopifyServer = async ({ type, params }) => {
 		if(args != ' '){
 			const idToken = params.hmac 
 			const mutation = makeMutation(params)
+			console.log(mutation)
 			const request = getRequest(null, mutation)
+			console.log(request)
 			const f = await fetch(`${backendUrl}/api/graphql`, request)
 			const rr = await f.json()
 			return rr

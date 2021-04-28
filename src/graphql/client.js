@@ -17,9 +17,10 @@ export const makeMutation = object => {
 						${string}
 					}
 			){
+				uid
 				name
 				redirectURL
-				access_token
+				jwt	
 				scope
 			}
 		}
