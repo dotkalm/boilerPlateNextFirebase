@@ -13,7 +13,6 @@ export const verifyHmac = shopData => {
 	delete sansHmac['hmac']
 	delete sansHmac['name']
 	sansHmac['shop'] = name
-
 	const unsortedKeys = Object.keys(sansHmac)
 	const keys = unsortedKeys.sort()
 	const newArray = new Array(keys.length).fill({key: null, value: null})
@@ -61,9 +60,8 @@ export const oAuthExchange = async (shop, request) => {
 						const json = await oAuthRequest(name, shop.code)
 						const { access_token, scope } = json 
 						const uid = await createUser({...merchant, ...json})
-						console.log(uid)
 						const jwt = await mintToken(uid)
-						return { name, jwt }
+						return { name, jwt, uid }
 					}
 				}
 			}else{

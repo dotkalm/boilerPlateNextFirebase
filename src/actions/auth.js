@@ -54,6 +54,14 @@ export const signIn = auth => {
 		return idToken
 	})
 }
+export const signInWithCustomToken = async jwt => {
+	try{
+		const user = await firebase.auth.signInWithCustomToken(jwt)
+		return user
+	}catch(err){
+		console.log(err)
+	}
+}
 export const checkLogged = new Promise((resolve, reject) => { 
 	const handleAuthStateChanged = async user => {
 		const token = await getIdToken()

@@ -24,8 +24,8 @@ const FirebaseAuth = ({ children }) => {
 
 	}
 	if(shop === null){
-		openShop()
-		//here we should have session tokens 
+		openShop().then(() => {
+		})
 	}
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
