@@ -37,11 +37,14 @@ export const oAuthExchange = async (shop, request) => {
 			throw new Error(merchant.error)
 		}else{
 			if(merchant && merchant.state){
+				const { state } = merchant
 				const array = request.headers.referer.split('&')
-				const nonce = array.find(e => e.match(/^state/)
-				const compareNonce = timingSafeCompare(merchant.state, nonce)
+				const regex = new RegExp('^state=')
+				const nonceComponent = array.find(e => e.match(regex))
+				const nonce = decodeURIComponent(nonceComponent.replace(regex, ''))
+				const compareNonce = timingSafeCompare(state, nonce)
 				if(!compareNonce){
-					console.log(merchant.state, nonce)
+					console.log(state, nonce)
 					throw new Error('nonce mismatch')
 				}else{
 					const hmacCompare = verifyHmac(shop)
