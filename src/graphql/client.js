@@ -26,3 +26,4 @@ export const makeMutation = object => {
 	`
 	return mutation
 }
+

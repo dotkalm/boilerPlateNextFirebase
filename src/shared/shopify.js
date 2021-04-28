@@ -40,7 +40,8 @@ export const openShop = async () => {
 					if(!redirectURL){
 						const oo = response.data.addStore
 						console.log(oo, 42)
-						return response.data.addStore
+						const { jwt, name, uid } = oo	
+						return Router.push(`/${uid}`) 
 					}else{
 						console.log({ redirectURL, name })
 						return Router.push(redirectURL) 

@@ -1,7 +1,7 @@
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
 
-import { getDoc, mintToken, setDoc } from './firebaseNode'
+import { getDoc, mintToken, setDoc, createUser } from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
 import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import { oAuthRequest } from './oAuth'
@@ -59,10 +59,9 @@ export const oAuthExchange = async (shop, request) => {
 					}else{
 						const json = await oAuthRequest(name, shop.code)
 						const { access_token, scope } = json 
-						const uid = await createUser({...merchant, ...json}) 
+						const uid = await createUser({...merchant, ...json})
 						const jwt = await mintToken(uid)
-						return { name, jwt } 
-
+						return { name, jwt }
 					}
 				}
 			}else{

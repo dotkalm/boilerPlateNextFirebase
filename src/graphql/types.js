@@ -239,15 +239,27 @@ export const AddrType = new GraphQLObjectType({
 })
 export const ShopType = new GraphQLObjectType({
 	name: 'Shop',
-	description: '',
+	description: 'a merchant storefront',
 	interfaces: [nodeInterface],
 	fields: () => ({
-		id					 : 				  globalIdField(),
+		id					 : globalIdField(),
+		uid					 : {	type: GraphQLString	},
 		name			 	 : {	type: GraphQLString	},
 		redirectURL	 : {	type: GraphQLString	},
 		jwt					 : {	type: GraphQLString	},
 		scope				 : {	type: GraphQLString	},
 		installedAt  : {	type: GraphQLFloat  },
+	})
+})
+export const ShopSessions = new GraphQLObjectType({
+	name: 'ShopSessions',
+	description: 'a merchant storefront session',
+	interfaces: [nodeInterface],
+	fields: () => ({
+		id					 : globalIdField(),
+		uid					 : {	type: GraphQLString	},
+		jwt					 : {	type: GraphQLString	},
+		ms	    		 : {	type: GraphQLFloat  },
 	})
 })
 export const PlaceType = new GraphQLObjectType({
