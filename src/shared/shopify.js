@@ -3,7 +3,7 @@ import { getDoc } from '../actions/firebase'
 import { makeMutation } from '../graphql/client'
 import { demoQuery, demoHeader } from './const'
 import { defaultOptions, queryParams, getRequest } from '../actions/request'
-import { signInWithCustomToken } from '../actions/auth'
+import { signInWithCustomToken, getIdTokenResult } from '../actions/auth'
 import Router from 'next/router'
 let backendUrl = process.env.GRAPHQL_SERVER
 
@@ -18,9 +18,7 @@ export const shopifyServer = async ({ type, params }) => {
 		if(args != ' '){
 			const idToken = params.hmac 
 			const mutation = makeMutation(params)
-			console.log(mutation)
 			const request = getRequest(null, mutation)
-			console.log(request)
 			const f = await fetch(`${backendUrl}/api/graphql`, request)
 			const rr = await f.json()
 			return rr
@@ -43,11 +41,11 @@ export const openShop = async () => {
 						const { redirectURL } = response.data.addStore
 						if(!redirectURL){
 							const oo = response.data.addStore
-							console.log(oo, 42)
 							const { jwt, name, uid } = oo	
 							const user = await signInWithCustomToken(jwt)
-							console.log(user, 49)
-							return Router.push(`/`)
+							const shop = await getIdTokenResult()
+							console.log(shop)
+							return shop
 						}else{
 							console.log({ redirectURL, name })
 							return Router.push(redirectURL) 

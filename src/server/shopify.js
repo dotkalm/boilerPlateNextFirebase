@@ -1,7 +1,7 @@
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
 
-import { getDoc, mintToken, setDoc, createUser } from './firebaseNode'
+import { getDoc, mintToken, setDoc, createUser, setClaims } from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
 import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import { oAuthRequest } from './oAuth'
@@ -37,9 +37,11 @@ export const oAuthExchange = async (shop, request) => {
 			throw new Error(merchant.error)
 		}else{
 			if(merchant && merchant.state){
-				console.log(merchant.state, shop.state)
-				const compareNonce = timingSafeCompare(merchant.state, shop.state)
+				const array = request.headers.referer.split('&')
+				const nonce = array.find(e => e.match(/^state/)
+				const compareNonce = timingSafeCompare(merchant.state, nonce)
 				if(!compareNonce){
+					console.log(merchant.state, nonce)
 					throw new Error('nonce mismatch')
 				}else{
 					const hmacCompare = verifyHmac(shop)
@@ -60,8 +62,14 @@ export const oAuthExchange = async (shop, request) => {
 						const json = await oAuthRequest(name, shop.code)
 						const { access_token, scope } = json 
 						const uid = await createUser({...merchant, ...json})
-						const jwt = await mintToken(uid)
-						return { name, jwt, uid }
+						const claims = await setClaims(uid, { shop: name }) 
+						if(claims !== 'SUCCESS'){
+							throw new Error(claims)
+						}else{
+							const jwt = await mintToken(uid)
+							console.log(uid, claims, 68)
+							return { name, jwt, uid }
+						}
 					}
 				}
 			}else{

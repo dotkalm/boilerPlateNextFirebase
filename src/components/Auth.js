@@ -12,7 +12,6 @@ const FirebaseAuth = ({ children }) => {
 	const uFunc = async () => {
 		try{
 			const u = await checkLogged
-			console.log(u, 15)
 			if(u.user.claims){
 				setUser(u.user.claims)
 			}
@@ -24,14 +23,24 @@ const FirebaseAuth = ({ children }) => {
 
 	}
 	if(shop === null){
-		openShop().then(() => {
+		openShop().then(shop => {
+			if(shop){
+				for(const key in shop){
+					const value = shop[key]
+					console.log(value, key)
+					if(value && value['claims']){
+						setShop(value['claims'].shop)
+						setUser({shop: value['claims'].shop, admin: false})
+					}
+				}
+			}
 		})
 	}
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)
 	}
 
-	if(user && (user.admin || user.guest)){
+	if(user && (user.admin || user.guest || user.shop)){
 		const childrenWithProps = React
 			.Children
 			.map(children, child => React

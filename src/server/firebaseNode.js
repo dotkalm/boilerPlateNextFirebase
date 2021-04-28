@@ -92,6 +92,14 @@ export const nextElement = async (collection, currentId) => {
 		})
 	})
 }
+export const setClaims = async (uid, claims) => {
+	try{
+		return admin.auth().setCustomUserClaims(uid, claims)
+			.then(() => 'SUCCESS')
+	}catch(err){
+		return err
+	}
+}
 export const createUser = async data => {
 	try{
 		const { name, access_token, scope } = data 
@@ -100,14 +108,13 @@ export const createUser = async data => {
 		const user = await admin.auth().createUser(userData)
 		const { uid } = user
 		const FieldValue = admin.firestore.FieldValue
-		console.log(uid, 102)
 		await updateDoc('merchants', {
 			state: FieldValue.delete(),
 			redirectURL: FieldValue.delete(),
 			hmac: FieldValue.delete(),
 			accessToken: access_token,
 			scope: scope,
-		}, uid)
+		}, name)
 		return uid
 	}catch(err){
 		console.log(err)

@@ -6,7 +6,7 @@ import Auth from '../../components/Auth'
 const InstallFlow = props => {
   return (
 		<Auth>
-			callback
+			installing	
 		</Auth>
   )
 }

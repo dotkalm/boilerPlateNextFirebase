@@ -7,11 +7,7 @@ export const getIdToken = () => firebase && firebase.auth.currentUser !== null &
 export const getIdTokenResult = () => firebase && firebase.auth.currentUser !== null && firebase.auth.currentUser
 	.getIdTokenResult()
 	.then(idTokenResult => {
-		if(!idTokenResult.claims.admin){
-			return !idTokenResult.claims.guest ? false : idTokenResult 
-		}else{
 			return idTokenResult 
-		}
 	})
 	.catch(err => {
 		console.log(err)
@@ -37,11 +33,7 @@ export const login = async provider => {
 	}
 	if(auth){
 		const result = await getIdTokenResult()
-		if(result && result.claims && result.claims.admin){
-			Router.push('/')
-		}else{
-			return result
-		}
+		return result
 	}
 	return auth 
 }
@@ -71,8 +63,9 @@ export const checkLogged = new Promise((resolve, reject) => {
 			const obj = { 
 				uid, 
 				token, 
-				user: isAdmin, 
-				isAdmin: isAdmin !== false ? true : false 
+				user: isAdmin.user, 
+				isAdmin: isAdmin.user && isAdmin.user.claims.admin ? true : false,
+
 			}
 			return resolve(obj)
 		}else{
