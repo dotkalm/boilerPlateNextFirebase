@@ -37,6 +37,15 @@ export const addShopType = new GraphQLInputObjectType({
 		code: { type: GraphQLString },
 	})
 })
+
+export const VerifyHmacInput = new GraphQLInputObjectType({
+	name: 'VerifyHmacType',
+	fields: () => ({
+		shop			: { type: new GraphQLNonNull(GraphQLString) },
+		hmac			: { type: new GraphQLNonNull(GraphQLString) },
+		timestamp	: { type: new GraphQLNonNull(GraphQLFloat)  },
+	})
+})
 export const SessionInput = new GraphQLInputObjectType({
 	name: 'ShopSessionType',
 	fields: () => ({

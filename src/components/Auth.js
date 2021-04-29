@@ -10,7 +10,7 @@ const Auth = ({ children, ...props }) => {
 	useEffect(() => {
 		if(router.query){
 			const { query } = router
-			console.log(query)
+			console.log(query, shop, user)
 			if(shop === null && user === null){
 				openShop(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
 			}else if(shop && !user){

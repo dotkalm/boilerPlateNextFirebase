@@ -10,6 +10,8 @@ import {
 	CountyType,
 	ShopType,
 	ShopSession,
+	VerifyHmacInput,
+	ValidateHmacType,
 } from './types'
 import { SessionInput } from './inputTypes'
 import { decodeSession } from '../server/shopify'
@@ -143,13 +145,17 @@ const RootQuery = new GraphQLObjectType({
 					})
 				}
 			},
-			documentation: {
-				type: documentationConnection,
-				resolve: (parentValue, args, r) => {
-					return getCollection('documentation')
-						.then(arr => {
-							return connectionFromArray(arr, args)
-						})
+			ValidateHmac: {
+				type: ValidateHmacType,
+				description: 'validate hmac',
+				args: {
+					session: { type: VerifyHmacInput } 
+				},
+				resolve(parent, args, request){
+					return decodeSession(parent, args.session, request).then(r => {
+						console.log(r)
+						return r
+					})
 				}
 			},
 			node: nodeField,

@@ -253,6 +253,15 @@ export const ShopType = new GraphQLObjectType({
 		installedAt  : {	type: GraphQLFloat  },
 	})
 })
+export const ValidateHmacType = new GraphQLObjectType({
+	name: 'ShopSessions',
+	description: 'a merchant storefront session',
+	fields: () => ({
+		valid     : {	type: GraphQLBoolean },
+		installed : {	type: GraphQLBoolean },
+		shop	    : {	type: GraphQLString	},
+	})
+})
 export const ShopSession = new GraphQLObjectType({
 	name: 'ShopSessions',
 	description: 'a merchant storefront session',
