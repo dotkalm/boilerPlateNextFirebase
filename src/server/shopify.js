@@ -1,7 +1,7 @@
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
-
-import { getDoc, mintToken, setDoc, createUser, setClaims } from './firebaseNode'
+import jwt from 'jsonwebtoken'
+import { getDoc, createUser, setClaims } from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
 import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import { oAuthRequest } from './oAuth'
@@ -21,7 +21,6 @@ export const verifyHmac = shopData => {
 		newArray[i] = { key: keys[i], value: sansHmac[key] }
 	}
 	const qS = makeQueryString(newArray)
-	console.log(newArray)
 	const hmac = Buffer.from(crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
 		.update(qS)
 		.digest("hex"), 'utf-8')
@@ -69,9 +68,8 @@ export const oAuthExchange = async (shop, request) => {
 						if(claims !== 'SUCCESS'){
 							throw new Error(claims)
 						}else{
-							const jwt = await mintToken(uid)
 							console.log(uid, claims, 68)
-							return { name, jwt, uid }
+							return { name, uid}
 						}
 					}
 				}
@@ -85,7 +83,18 @@ export const oAuthExchange = async (shop, request) => {
 	}
 }
 export const decodeSession = async (parent, shop, request) => {
-	console.log(shop, request.Headers)
+	try{
+		if(!verifyHmac(shop)){
+			throw new Error('invalid hmac')
+		}else{
+			const { host } = shop
+			const b = Buffer.from(host, 'base64')
+			const shopHost = b.toString()
+			console.log(shopHost)
+		}
+	}catch(err){
+		return err
+	}
 }
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 

@@ -39,7 +39,16 @@ export const getCollection = async (collectionName, queryArray)  => {
 		)
 	})
 }
-export const setDoc = async (collectionName, obj, uid) => {
+export const addDoc = async (collectionName, obj) => {
+	try{
+		const db = admin.firestore()
+		const doc = await db.collection(collectionName).add(obj)
+		return doc.id
+	}catch(err){
+		console.log(err)
+		return err
+	}
+}export const setDoc = async (collectionName, obj, uid) => {
 	try{
 		const db = admin.firestore()
 		return db.collection(collectionName).doc(uid).set(obj)
@@ -102,7 +111,10 @@ export const setClaims = async (uid, claims) => {
 }
 export const createUser = async data => {
 	try{
-		const { name, access_token, scope } = data 
+		const { name, access_token, scope, session } = data 
+		if(!session){
+			throw new Error('no session')
+		}
 		const userData = new Object
 		userData['displayName'] = name
 		const user = await admin.auth().createUser(userData)
@@ -115,7 +127,8 @@ export const createUser = async data => {
 			accessToken: access_token,
 			scope: scope,
 		}, name)
-		return uid
+		const sessionId = await addDoc('sessions', { uid, timestamp: FieldValue.serverTimestamp(), name, session })
+		return { uid, sessionId }
 	}catch(err){
 		console.log(err)
 		return err

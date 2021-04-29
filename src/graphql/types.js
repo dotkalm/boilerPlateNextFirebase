@@ -247,6 +247,7 @@ export const ShopType = new GraphQLObjectType({
 		hmac				 : {	type: GraphQLString	},
 		name			 	 : {	type: GraphQLString	},
 		redirectURL	 : {	type: GraphQLString	},
+		session 		 : {	type: GraphQLString	},
 		jwt					 : {	type: GraphQLString	},
 		scope				 : {	type: GraphQLString	},
 		installedAt  : {	type: GraphQLFloat  },
@@ -255,10 +256,8 @@ export const ShopType = new GraphQLObjectType({
 export const ShopSession = new GraphQLObjectType({
 	name: 'ShopSessions',
 	description: 'a merchant storefront session',
-	interfaces: [nodeInterface],
 	fields: () => ({
 		uid	  		: {	type: GraphQLString	},
-		valid			: {	type: GraphQLBoolean },
 		hmac  		: {	type: GraphQLString	},
 		jwt 		  : {	type: GraphQLString	},
 		name 	 		: {	type: GraphQLString	},

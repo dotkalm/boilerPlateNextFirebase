@@ -1,5 +1,4 @@
 import prepareArgs from './utils/prepareArgs'
-import { getDoc } from '../actions/firebase'
 import { makeMutation, getStore } from '../graphql/client'
 import { demoQuery, demoHeader } from './const'
 import { defaultOptions, queryParams, getRequest } from '../actions/request'
@@ -8,10 +7,10 @@ import Router from 'next/router'
 
 export const exchangeSessionToken = async params => {
 	try{
-		const { session } = params 
 		console.log(params)
+		const { session } = params 
 		const store = getStore(params)
-		const request = getRequest(session, store)
+		const request = getRequest(`Bearer ${session}`, store)
 		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 		const rr = await f.json()
 		return rr
@@ -74,7 +73,6 @@ export const addMerchant = async params => {
 export const openShop = async query => {
 	try{
 		const q = await routerQuery
-		console.log(q)
 		const current = await checkMerchant
 		if(!current){
 			return addMerchant(query)
@@ -82,7 +80,6 @@ export const openShop = async query => {
 			return current
 		}
 	}catch(err){
-		console.log(err, 35)
 		return addMerchant(query)
 	}
 }

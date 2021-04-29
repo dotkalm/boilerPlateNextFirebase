@@ -2,7 +2,15 @@ export const makeParams = object => {
 	let string = ''	
 	for(const key in object){
 		const value = object[key]
-		if(!isNaN(value * value)){
+
+		const isBoolean = element => {
+			if(element === String(true) || element === String(false)){
+				return true
+			}else{
+				return false
+			}
+		}
+		if(!isNaN(value * value) || isBoolean(value)){
 			string = `${string} ${key}: ${value}`
 		}else{
 			string = `${string} ${key === 'shop' ? 'name' : key}: "${value}"`
@@ -25,11 +33,12 @@ export const makeMutation = object => {
 				redirectURL
 				jwt	
 				scope
+				jwt
 			}
 		}
 	`
 }
-export const getStore = async object => {
+export const getStore = object => {
 	const string = makeParams(object)
 	return `
 		{

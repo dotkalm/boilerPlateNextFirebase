@@ -137,7 +137,10 @@ const RootQuery = new GraphQLObjectType({
 					session: { type: SessionInput } 
 				},
 				resolve(parent, args, request){
-					return decodeSession(parent, args, request)
+					return decodeSession(parent, args.session, request).then(r => {
+						console.log(r)
+						return r
+					})
 				}
 			},
 			documentation: {
