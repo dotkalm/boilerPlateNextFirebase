@@ -4,6 +4,7 @@ import Router from 'next/router'
 const firebase = getFirebase()
 
 export const getIdToken = () => firebase && firebase.auth.currentUser !== null && firebase.auth.currentUser.getIdToken(true)
+
 export const getIdTokenResult = () => firebase && firebase.auth.currentUser !== null && firebase.auth.currentUser
 	.getIdTokenResult()
 	.then(idTokenResult => {
@@ -38,7 +39,7 @@ export const login = async provider => {
 	return auth 
 }
 export const logOut = () => {
-	return firebase.auth.signOut()
+	return firebase.auth.signOut().then(() => Router.router.push('/'))
 }
 export const signIn = auth => {
 	getIdToken()
@@ -67,6 +68,7 @@ export const checkLogged = new Promise((resolve, reject) => {
 				isAdmin: isAdmin.user && isAdmin.user.claims.admin ? true : false,
 
 			}
+			console.log(obj)
 			return resolve(obj)
 		}else{
 			return reject("NOT AUTHORIZED")

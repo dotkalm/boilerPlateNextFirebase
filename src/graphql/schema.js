@@ -124,6 +124,7 @@ const RootQuery = new GraphQLObjectType({
 					},
 				},
 				resolve: (parentValue, args, r) => {
+					console.log(args, r.headers.Authorization)
 					return getCounty(args)
 				}
 			},

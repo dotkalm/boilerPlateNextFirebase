@@ -5,8 +5,9 @@ import FindCenter from '../shared/utils/findCenter'
 import { LoaderWrapper } from './style'
 import Loader from './Loader'
 import { fetchBoundary } from '../actions/boundaries'
-const MapTools = props => {
-	const { height, width } = props.ui
+
+const MapTools = ({ ui, ...props }) => {
+	const { height, width } = ui
 
 	const [ loadingState, setLoadingState ] = useState('open')
 	const [ paths, setPaths ] = useState([])
@@ -24,15 +25,17 @@ const MapTools = props => {
 			const state = 'California'
 			fetchBoundary({ type: 'County', params: { county, state } })
 				.then(geom => {
-					const { intptlat, intptlon, the_geom } = geom
-					setCenter({lat: intptlat, lng: intptlon})
-					setFetchingState('done')
-					const { edges } = the_geom
-					for(let i = 0; i < edges.length; i++){
-						const { node } = edges[i]
-						edges[i] = node
+					if(geom){
+						const { intptlat, intptlon, the_geom } = geom
+						setCenter({lat: intptlat, lng: intptlon})
+						setFetchingState('done')
+						const { edges } = the_geom
+						for(let i = 0; i < edges.length; i++){
+							const { node } = edges[i]
+							edges[i] = node
+						}
+						setPaths([edges])
 					}
-					setPaths([edges])
 				})
 		}
 	}, [ boundaries, fetchingState, center ])

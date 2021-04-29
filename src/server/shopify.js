@@ -91,14 +91,14 @@ export const checkShop = async (parent, shop, request) => {
 		const nonce = crypto.randomBytes(16).toString('base64') 
 		const redirectURL = `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
 		const data = { state: nonce, installedAt: timestamp, hmac, name, redirectURL }
-		console.log(data, redirectURL, 84)
+		console.log(data, redirectURL, 94)
 		const success = await setDoc('merchants', data, name)
 		if(success === 'SUCCESS'){
 			return { redirectURL }
 		}
 	}else if(merchant && !merchant.error){
 		const { referer } =  request.header
-		console.log(merchant, args.shop, referer, 57)
+		console.log(merchant, args.shop, referer, 101)
 		return merchant 
 	}
 }

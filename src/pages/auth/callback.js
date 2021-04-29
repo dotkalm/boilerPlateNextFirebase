@@ -8,7 +8,9 @@ const InstallFlow = props => {
 	const [ store, setStore ] = useState(null)
 	useEffect(() => {
 		if(store === null){
-			oAuthCallback(router.query).then(s => router.push('../../', s))
+			oAuthCallback(router.query).then(s => s !== undefined ? setStore(s) : s)
+		}else{
+			router.push(`https://${store.shop.claims.shop}`)
 		}
 	}, store)
   return (
