@@ -16,7 +16,7 @@ import {
 	SessionInput,
 	VerifyHmacInput,
 } from './inputTypes'
-import { decodeSession, verifyHmac } from '../server/shopify'
+import { decodeSession, verifyHmac, makeRedirectUrl, beginUser } from '../server/shopify'
 import { geocode, getCounty } from '../server/geocode'
 import { queryLocal } from '../server/sqlite'
 import { time } from '../server/time'
@@ -156,7 +156,7 @@ const RootQuery = new GraphQLObjectType({
 				resolve(parent, args, request){
 					const validHmac = verifyHmac(args.params)	
 					if(!validHmac){
-						return { valid: validHmac } 
+						return { valid: validHmac, status: 200, message: 'invalid' } 
 					}else{
 						return getDoc('merchants', args.params.name).then(({ error, uid }) => {
 							let installed
@@ -168,12 +168,8 @@ const RootQuery = new GraphQLObjectType({
 									installed: true 
 								}
 							}else{
-								//add user here
-								return {
-									shop: args.params.name,
-									valid : validHmac,
-									installed: false
-								}
+								const { name } = args.params
+								return beginUser(name, validHmac)
 							}
 						})
 					}

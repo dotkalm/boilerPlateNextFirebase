@@ -31,9 +31,10 @@ export const makeMutation = object => {
 				uid
 				name
 				redirectURL
-				jwt	
-				scope
+				session	
 				jwt
+				scope
+				installedAt
 			}
 		}
 	`
@@ -48,6 +49,7 @@ export const validateHmac = object => {
 				shop
 				valid
 				installed
+				redirectUrl
 			}
 		}
 	`

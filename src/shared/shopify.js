@@ -73,12 +73,16 @@ export const addMerchant = async params => {
 }
 export const openShop = async query => {
 	try{
-		const d = await checkMerchant(query)
-		if(d !== undefined){
-			const { data } = d
-			if(data && data.ValidateHmac !== undefined){
-				const { valid, installed } = data.ValidateHmac
-				return { valid, installed }
+		if(query.hmac){
+			console.log(query)
+			const d = await checkMerchant(query)
+			console.log(d)
+			if(d !== undefined){
+				const { data } = d
+				if(data && data.ValidateHmac && data.ValidateHmac !== undefined){
+					const { valid, installed } = data.ValidateHmac
+					return { valid, installed }
+				}
 			}
 		}
 	}catch(err){

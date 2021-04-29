@@ -11,18 +11,16 @@ const Auth = ({ children, ...props }) => {
 
 	useEffect(() => {
 		if(query){
+			console.log(shop, user)
 			if(shop === null && user === null){
 				openShop(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
 			}else if(shop && shop.valid && !shop.installed){
-				addMerchant(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
+				router.push(shop.redirectURL)
 			}else if(shop && !user){
 				console.log(shop)
 				if(shop && typeof(shop) !== 'string'){
 					setShop(shop.token)
 					setUser(shop.claims)
-				}else if(shop && typeof(shop) === 'string'){
-					const oAuthRedirectUrl = shop
-					router.push(oAuthRedirectUrl)
 				}
 			}
 		}

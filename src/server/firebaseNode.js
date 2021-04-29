@@ -113,15 +113,14 @@ export const setClaims = async (uid, claims) => {
 }
 export const createUser = async data => {
 	try{
-		const { name, access_token, scope, session } = data 
+		console.log(data, 116)
+		const { name } = data 
 		const userData = new Object
 		userData['displayName'] = name
 		const user = await admin.auth().createUser(userData)
 		const { uid } = user
-		const FieldValue = admin.firestore.FieldValue
-		const row = await setDoc('merchants', data, uid)
-		const sessionId = await addDoc('sessions', { uid, timestamp: FieldValue.serverTimestamp(), name })
-		return { uid, sessionId } 
+		const jwt = await mintToken(uid)
+		return { uid, jwt } 
 	}catch(err){
 		console.log(err)
 		return err

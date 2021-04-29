@@ -1,7 +1,7 @@
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
 import jwt from 'jsonwebtoken'
-import { getDoc, createUser, setClaims } from './firebaseNode'
+import { getDoc, createUser, setClaims, setDoc } from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
 import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import { oAuthRequest } from './oAuth'
@@ -68,7 +68,6 @@ export const oAuthExchange = async (shop, request) => {
 						const json = await oAuthRequest(name, shop.code)
 						console.log(json)
 						const { access_token, scope } = json 
-						const uid = await createUser({...merchant, ...json})
 						const claims = await setClaims(uid, { shop: name }) 
 						if(claims !== 'SUCCESS'){
 							throw new Error(claims)
@@ -87,6 +86,10 @@ export const oAuthExchange = async (shop, request) => {
 		return err
 	}
 }
+export const nonce = crypto.randomBytes(16).toString('base64') 
+export const makeRedirectUrl = name => {
+	return `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
+}
 export const decodeSession = async (parent, shop, request) => {
 	try{
 		if(!verifyHmac(shop)){
@@ -102,21 +105,18 @@ export const decodeSession = async (parent, shop, request) => {
 		return err
 	}
 }
+export const beginUser = async (name, valid) => {
+	const { uid, jwt } = await createUser({...merchant, ...json})
+	return { uid, jwt } 
+}
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)
-	if(merchant && merchant.error){
-		const nonce = crypto.randomBytes(16).toString('base64') 
-		const redirectURL = `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
-		const data = { state: nonce, installedAt: timestamp, hmac, name, redirectURL }
-		console.log(data, redirectURL, 94)
-		const success = await setDoc('merchants', data, name)
-		if(success === 'SUCCESS'){
-			return { redirectURL, name }
-		}
-	}else if(merchant && !merchant.error){
+	if(merchant && !merchant.error){
 		const { referer } =  request.header
 		console.log(merchant, args.shop, referer, 101)
 		return merchant 
+	}else if(merchant && merchant.error){
+		console.log(shop)
 	}
 }
