@@ -48,7 +48,8 @@ export const addDoc = async (collectionName, obj) => {
 		console.log(err)
 		return err
 	}
-}export const setDoc = async (collectionName, obj, uid) => {
+}
+export const setDoc = async (collectionName, obj, uid) => {
 	try{
 		const db = admin.firestore()
 		return db.collection(collectionName).doc(uid).set(obj)

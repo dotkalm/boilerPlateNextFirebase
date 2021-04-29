@@ -10,11 +10,13 @@ import {
 	CountyType,
 	ShopType,
 	ShopSession,
-	VerifyHmacInput,
 	ValidateHmacType,
 } from './types'
-import { SessionInput } from './inputTypes'
-import { decodeSession } from '../server/shopify'
+import { 
+	SessionInput,
+	VerifyHmacInput,
+} from './inputTypes'
+import { decodeSession, verifyHmac } from '../server/shopify'
 import { geocode, getCounty } from '../server/geocode'
 import { queryLocal } from '../server/sqlite'
 import { time } from '../server/time'
@@ -149,13 +151,14 @@ const RootQuery = new GraphQLObjectType({
 				type: ValidateHmacType,
 				description: 'validate hmac',
 				args: {
-					session: { type: VerifyHmacInput } 
+					params: { type: VerifyHmacInput } 
 				},
 				resolve(parent, args, request){
-					return decodeSession(parent, args.session, request).then(r => {
-						console.log(r)
-						return r
-					})
+					const validHmac = verifyHmac(args.params)				
+					return {
+						shop: args.params.shop,
+						valid : validHmac,
+					}
 				}
 			},
 			node: nodeField,

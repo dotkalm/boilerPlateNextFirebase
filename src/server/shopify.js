@@ -7,26 +7,30 @@ import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import { oAuthRequest } from './oAuth'
 
 export const verifyHmac = shopData => {
-
-	const { name } = shopData
-	const sansHmac = { ...shopData }  
-	delete sansHmac['hmac']
-	delete sansHmac['name']
-	sansHmac['shop'] = name
-	const unsortedKeys = Object.keys(sansHmac)
-	const keys = unsortedKeys.sort()
-	const newArray = new Array(keys.length).fill({key: null, value: null})
-	for(let i = 0; i < keys.length; i++){
-		const key = keys[i] 
-		newArray[i] = { key: keys[i], value: sansHmac[key] }
+	try{
+		const { name } = shopData
+		const sansHmac = { ...shopData }  
+		delete sansHmac['hmac']
+		delete sansHmac['name']
+		sansHmac['shop'] = !name ? shopData['shop'] : name
+		const unsortedKeys = Object.keys(sansHmac)
+		const keys = unsortedKeys.sort()
+		const newArray = new Array(keys.length).fill({key: null, value: null})
+		for(let i = 0; i < keys.length; i++){
+			const key = keys[i] 
+			newArray[i] = { key: keys[i], value: sansHmac[key] }
+		}
+		const qS = makeQueryString(newArray)
+		const hmac = Buffer.from(crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
+			.update(qS)
+			.digest("hex"), 'utf-8')
+		const providedHmac = Buffer.from(shopData.hmac, 'utf-8')
+		const truth = timingSafeCompare(hmac.toString(), providedHmac.toString())
+		return truth
+	}catch(err){
+		console.log(err)
+		throw new Error(err)
 	}
-	const qS = makeQueryString(newArray)
-	const hmac = Buffer.from(crypto.createHmac("sha256", process.env.SHOPIFY_API_SECRET)
-		.update(qS)
-		.digest("hex"), 'utf-8')
-	const providedHmac = Buffer.from(shopData.hmac, 'utf-8')
-	const truth = timingSafeCompare(hmac.toString(), providedHmac.toString())
-	return truth
 }
 
 export const oAuthExchange = async (shop, request) => {

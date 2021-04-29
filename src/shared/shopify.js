@@ -70,15 +70,12 @@ export const addMerchant = async params => {
 		}
 	}
 }
-export const openShop = async query => {
+export const openShop = async () => {
 	try{
 		const q = await routerQuery
-		const current = await checkMerchant
-		if(!current){
-			return addMerchant(query)
-		}else{
-			return current
-		}
+		console.log(q)
+		const current = await checkMerchant(q)
+		console.log(current)
 	}catch(err){
 		return addMerchant(query)
 	}

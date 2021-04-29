@@ -38,6 +38,20 @@ export const makeMutation = object => {
 		}
 	`
 }
+export const validateHmac = object => {
+	const string = makeParams(object)
+	return `
+		{
+			ValidateHmac(
+				params: { ${string} }
+			){
+				shop
+				valid
+				installed
+			}
+		}
+	`
+}
 export const getStore = object => {
 	const string = makeParams(object)
 	return `

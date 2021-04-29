@@ -254,7 +254,7 @@ export const ShopType = new GraphQLObjectType({
 	})
 })
 export const ValidateHmacType = new GraphQLObjectType({
-	name: 'ShopSessions',
+	name: 'ValidateHmacGood',
 	description: 'a merchant storefront session',
 	fields: () => ({
 		valid     : {	type: GraphQLBoolean },
