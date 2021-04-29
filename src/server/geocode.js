@@ -4,6 +4,7 @@ import { queryLocal } from './sqlite'
 export const geocode = async ({ address, quantity }, request, db) => {
 	const idToken = request.headers.authorization
 	const user = await getLogin(idToken)
+	console.log(idToken, 7)
 	const result = new Promise((resolve, reject) => {
     const textString = `
 		SELECT g.rating, 
@@ -23,9 +24,10 @@ export const geocode = async ({ address, quantity }, request, db) => {
 			}
 		})
 	})
-	const { admin, guest } = user 
-	if(admin || guest){
+	const { admin, guest, shop } = user 
+	if(admin || guest || shop){
 		const p = await result 
+		console.log(p.rows)
 		return p.rows
 	}else{
 		return []

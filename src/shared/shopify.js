@@ -1,17 +1,23 @@
 import prepareArgs from './utils/prepareArgs'
 import { getDoc } from '../actions/firebase'
-import { makeMutation } from '../graphql/client'
+import { makeMutation, getStore } from '../graphql/client'
 import { demoQuery, demoHeader } from './const'
 import { defaultOptions, queryParams, getRequest } from '../actions/request'
-import { signInWithCustomToken, getIdTokenResult, checkLogged } from '../actions/auth'
+import { checkMerchant } from '../actions/auth'
 import Router from 'next/router'
-let backendUrl = process.env.GRAPHQL_SERVER
 
-const makeToken = async obj => {
-	const { hmac, shop, timestamp } = obj 
-	return hmac
-}
-export const exchangeSessionToken = async sessionToken => {
+export const exchangeSessionToken = async params => {
+	try{
+		const { session } = params 
+		const store = getStore(params)
+		const request = getRequest(session, store)
+		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
+		const rr = await f.json()
+		return rr
+	}catch(err){
+		console.log(err)
+		return err
+	}
 }
 export const shopifyServer = async ({ type, params, token }) => {
 	try{
@@ -19,7 +25,7 @@ export const shopifyServer = async ({ type, params, token }) => {
 		if(args != ' ' && params.hmac){
 			const mutation = makeMutation(params)
 			const request = getRequest(token, mutation)
-			const f = await fetch(`${backendUrl}/api/graphql`, request)
+			const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 			const rr = await f.json()
 			return rr
 		}
@@ -46,10 +52,7 @@ export const oAuthCallback = async query => {
 		if(response !== undefined){
 			const oo = response.data.addStore
 			const { jwt, name, uid } = oo	
-			const user = await signInWithCustomToken(jwt)
-			const shop = await getIdTokenResult()
-			console.log({ user, shop })
-			return { user, shop } 
+			return uid 
 		}
 	}catch(err){
 		console.log(err)
@@ -60,7 +63,6 @@ export const unlockDoor = async params => {
 	const obj = { type: 'shop', params, token: null }
 	const response = await shopifyServer(obj)
 	if(response){
-		console.log(response.data)
 		if(response.data && response.data.addStore){
 			const { addStore } = response.data
 			const { redirectURL } = addStore
@@ -70,13 +72,12 @@ export const unlockDoor = async params => {
 }
 export const openShop = async query => {
 	try{
-		const current = await checkLogged
-		console.log(current)
+		console.log(query)
+		const current = await checkMerchant
 		if(!current){
 			return unlockDoor(query)
 		}else{
 			const shop = await getIdTokenResult()
-			console.log(shop)
 			return shop
 		}
 	}catch(err){

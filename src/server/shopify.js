@@ -84,6 +84,9 @@ export const oAuthExchange = async (shop, request) => {
 		return err
 	}
 }
+export const decodeSession = async (parent, shop, request) => {
+	console.log(shop, request.Headers)
+}
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 
 	const merchant = await getDoc('merchants', name)

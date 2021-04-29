@@ -28,11 +28,23 @@ export const { nodeInterface, nodeField } = nodeDefinitions(
 export const addShopType = new GraphQLInputObjectType({
 	name: 'AddShopType',
 	fields: () => ({
+		hmac: { type: new GraphQLNonNull(GraphQLString) },
 		name: { type: new GraphQLNonNull(GraphQLString) },
 		timestamp: { type: new GraphQLNonNull(GraphQLFloat) },
-		hmac: { type: new GraphQLNonNull(GraphQLString) },
 		state: { type: GraphQLString },
 		host: { type: GraphQLString },
 		code: { type: GraphQLString },
+	})
+})
+export const SessionInput = new GraphQLInputObjectType({
+	name: 'ShopSessionType',
+	fields: () => ({
+		name								: { type: new GraphQLNonNull(GraphQLString) },
+		hmac								: { type: new GraphQLNonNull(GraphQLString) },
+		session 						: {	type: new GraphQLNonNull(GraphQLString)	},
+		timestamp						: { type: new GraphQLNonNull(GraphQLFloat) },
+		host							  : {	type: GraphQLString	},
+		locale						  : {	type: GraphQLString	},
+		new_design_language : {	type: GraphQLBoolean },
 	})
 })

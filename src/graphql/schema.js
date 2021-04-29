@@ -8,7 +8,11 @@ import {
 	PredictionConnection,
 	AddressResults,
 	CountyType,
+	ShopType,
+	ShopSession,
 } from './types'
+import { SessionInput } from './inputTypes'
+import { decodeSession } from '../server/shopify'
 import { geocode, getCounty } from '../server/geocode'
 import { queryLocal } from '../server/sqlite'
 import { time } from '../server/time'
@@ -62,9 +66,7 @@ const RootQuery = new GraphQLObjectType({
 							}
 						})
 					}else{
-						console.log(args, 'startDb')
 						return parentValue.db().connect().then(client => {
-							console.log('db started')
 							db = client
 							return geocode(args, request, client).then(array => {
 								return {
@@ -126,6 +128,16 @@ const RootQuery = new GraphQLObjectType({
 				resolve: (parentValue, args, r) => {
 					console.log(args, r.headers.Authorization)
 					return getCounty(args)
+				}
+			},
+			ShopSession: {
+				type: ShopSession,
+				description: 'authenticate shop from session token',
+				args: {
+					session: { type: SessionInput } 
+				},
+				resolve(parent, args, request){
+					return decodeSession(parent, args, request)
 				}
 			},
 			documentation: {

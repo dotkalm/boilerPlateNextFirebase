@@ -1,7 +1,6 @@
 import { countyFragment } from './fragments'
 import { defaultOptions, queryParams, getRequest } from './request'
 import prepareArgs from '../shared/utils/prepareArgs'
-import { getIdToken } from './auth'
 
 let backendUrl = process.env.GRAPHQL_SERVER
 

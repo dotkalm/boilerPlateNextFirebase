@@ -1,5 +1,4 @@
-export const makeMutation = object => {
-	const { hmac, shop, timestamp, state, host, code } = object
+export const makeParams = object => {
 	let string = ''	
 	for(const key in object){
 		const value = object[key]
@@ -9,7 +8,11 @@ export const makeMutation = object => {
 			string = `${string} ${key === 'shop' ? 'name' : key}: "${value}"`
 		}
 	}
-	const mutation = `
+	return string
+}
+export const makeMutation = object => {
+	const string = makeParams(object)
+	return `
 		mutation{
 			addStore(
 				shop:
@@ -25,6 +28,21 @@ export const makeMutation = object => {
 			}
 		}
 	`
-	return mutation
 }
-
+export const getStore = async object => {
+	const string = makeParams(object)
+	return `
+		{
+			ShopSession(
+				session: { ${string} }
+			){
+				uid
+				valid
+				hmac
+				jwt
+				name
+				remaining
+			}
+		}
+	`
+}

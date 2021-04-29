@@ -1,61 +1,18 @@
-import getFirebase from '../shared/firebaseClient'
 import Router from 'next/router'
 
-const firebase = getFirebase()
-
-export const getIdToken = () => firebase && firebase.auth.currentUser !== null && firebase.auth.currentUser.getIdToken(true)
-
-export const getIdTokenResult = () => firebase && firebase.auth.currentUser !== null && firebase.auth.currentUser
-	.getIdTokenResult()
-	.then(idTokenResult => {
-			return idTokenResult 
-	})
-	.catch(err => {
-		console.log(err)
-		return err
-	})
-
-export const loginWithGoogle = () => {
-	firebase.googleProvider
-		.addScope('email')
-	
-	return firebase.auth.signInWithPopup(firebase.googleProvider)
-}
-export const loginWithTwitter = () => {
-	return firebase.auth.signInWithPopup(firebase.twitterProvider)
-}
-export const login = async provider => {
-	let auth 
-	if(provider === 'g'){
-		auth = await loginWithGoogle()
+export const checkMerchant = new Promise((resolve, reject) => {
+	const { router } = Router 
+	if(router && router.query){
+		const { query } = router
+		if(query.hmac && query.session){
+			console.log(query)
+		}else{
+			//LOG IN AS ADMIN
+			//create SHOP
+		}
 	}
-	if(provider === 't'){
-		auth = await loginWithTwitter()
-	}
-	if(auth){
-		const result = await getIdTokenResult()
-		return result
-	}
-	return auth 
-}
-export const logOut = () => {
-	return firebase.auth.signOut().then(() => Router.router.push('/'))
-}
-export const signIn = auth => {
-	getIdToken()
-	.then(idToken => {
-		return idToken
-	})
-}
-export const signInWithCustomToken = async jwt => {
-	try{
-		const user = await firebase.auth.signInWithCustomToken(jwt)
-		return user
-	}catch(err){
-		console.log(err)
-	}
-}
-export const checkLogged = new Promise((resolve, reject) => { 
+})
+export const checkAdminLogged = new Promise((resolve, reject) => { 
 	const handleAuthStateChanged = async user => {
 		const token = await getIdToken()
 		const isAdmin = await getIdTokenResult() 
@@ -68,35 +25,10 @@ export const checkLogged = new Promise((resolve, reject) => {
 				isAdmin: isAdmin.user && isAdmin.user.claims.admin ? true : false,
 
 			}
-			console.log(obj)
+			console.log(obj,  user)
 			return resolve(obj)
 		}else{
 			return reject("NOT AUTHORIZED")
 		}
 	}
-	if(firebase){
-		return firebase.auth.onAuthStateChanged(handleAuthStateChanged)
-	}
 })
-export const emailLogin = async (email, password) => {
-	try {
-		const auth = await firebase.auth
-			.signInWithEmailAndPassword(email, password)
-			.catch(err => {
-				return { ...err, error: true }
-			})
-		if(auth){
-			auth.additionalUserInfo['profile'] = { email }
-			const result = await getIdTokenResult()
-			if(result.claims.admin){
-				Router.push('/upload')
-			}else if(result.claims.guest){
-				Router.push('/tiger')
-			}else{
-				return auth
-			}
-		}
-	} catch(err){
-		return { ...err, error: true }
-	}
-}

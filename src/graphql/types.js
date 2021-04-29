@@ -252,15 +252,17 @@ export const ShopType = new GraphQLObjectType({
 		installedAt  : {	type: GraphQLFloat  },
 	})
 })
-export const ShopSessions = new GraphQLObjectType({
+export const ShopSession = new GraphQLObjectType({
 	name: 'ShopSessions',
 	description: 'a merchant storefront session',
 	interfaces: [nodeInterface],
 	fields: () => ({
-		id					 : globalIdField(),
-		uid					 : {	type: GraphQLString	},
-		jwt					 : {	type: GraphQLString	},
-		ms	    		 : {	type: GraphQLFloat  },
+		uid	  		: {	type: GraphQLString	},
+		valid			: {	type: GraphQLBoolean },
+		hmac  		: {	type: GraphQLString	},
+		jwt 		  : {	type: GraphQLString	},
+		name 	 		: {	type: GraphQLString	},
+		remaining : {	type: GraphQLFloat },
 	})
 })
 export const PlaceType = new GraphQLObjectType({

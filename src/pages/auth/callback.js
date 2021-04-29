@@ -10,7 +10,7 @@ const InstallFlow = props => {
 		if(store === null){
 			oAuthCallback(router.query).then(s => s !== undefined ? setStore(s) : s)
 		}else{
-			router.push(`https://${store.shop.claims.shop}`)
+			router.push(`${process.env.SSL_PREFIX}${store.shop.claims.shop}${process.env.SHOPIFY_ADMIN_SUFFIX}`)
 		}
 	}, store)
   return (

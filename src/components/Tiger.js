@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Button, TigerStyle } from './style'
-import { useRouter } from 'next/router'
 import statesSet from '../shared/statesSet'
 import { geocoderQuery } from '../actions/geocoder'
 import MapTools from './mapTool'
@@ -58,7 +57,7 @@ const Tiger = props => {
 		}
 		if(submitStatus === 'loading'){
 			console.log('request')
-			//requestGeocode()
+			requestGeocode()
 		}
 	}, apiCallDependencyArray)
 	const onChange = event => {
