@@ -9,6 +9,7 @@ import Router from 'next/router'
 export const exchangeSessionToken = async params => {
 	try{
 		const { session } = params 
+		console.log(params)
 		const store = getStore(params)
 		const request = getRequest(session, store)
 		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
@@ -59,7 +60,7 @@ export const oAuthCallback = async query => {
 		return err
 	}
 }
-export const unlockDoor = async params => {
+export const addMerchant = async params => {
 	const obj = { type: 'shop', params, token: null }
 	const response = await shopifyServer(obj)
 	if(response){
@@ -72,17 +73,17 @@ export const unlockDoor = async params => {
 }
 export const openShop = async query => {
 	try{
-		console.log(query)
+		const q = await routerQuery
+		console.log(q)
 		const current = await checkMerchant
 		if(!current){
-			return unlockDoor(query)
+			return addMerchant(query)
 		}else{
-			const shop = await getIdTokenResult()
-			return shop
+			return current
 		}
 	}catch(err){
 		console.log(err, 35)
-		return unlockDoor(query)
+		return addMerchant(query)
 	}
 }
 
