@@ -66,6 +66,7 @@ export const oAuthExchange = async (shop, request) => {
 						}
 					}else{
 						const json = await oAuthRequest(name, shop.code)
+						console.log(json)
 						const { access_token, scope } = json 
 						const uid = await createUser({...merchant, ...json})
 						const claims = await setClaims(uid, { shop: name }) 
@@ -97,6 +98,7 @@ export const decodeSession = async (parent, shop, request) => {
 			console.log(shopHost)
 		}
 	}catch(err){
+		console.log(err)
 		return err
 	}
 }
@@ -110,7 +112,7 @@ export const checkShop = async (parent, shop, request) => {
 		console.log(data, redirectURL, 94)
 		const success = await setDoc('merchants', data, name)
 		if(success === 'SUCCESS'){
-			return { redirectURL }
+			return { redirectURL, name }
 		}
 	}else if(merchant && !merchant.error){
 		const { referer } =  request.header

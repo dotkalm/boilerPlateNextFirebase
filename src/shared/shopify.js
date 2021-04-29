@@ -24,6 +24,7 @@ export const shopifyServer = async ({ type, params, token }) => {
 		const args = prepareArgs(params)
 		if(args != ' ' && params.hmac){
 			const mutation = makeMutation(params)
+			console.log(mutation)
 			const request = getRequest(token, mutation)
 			const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 			const rr = await f.json()
@@ -50,9 +51,9 @@ export const oAuthCallback = async query => {
 		const obj = { type: 'shop', params: query }
 		const response = await shopifyServer(obj)
 		if(response !== undefined){
-			const oo = response.data.addStore
-			const { jwt, name, uid } = oo	
-			return uid 
+			const oo = response
+			console.log(oo)
+			return oo
 		}
 	}catch(err){
 		console.log(err)
@@ -62,22 +63,26 @@ export const oAuthCallback = async query => {
 export const addMerchant = async params => {
 	const obj = { type: 'shop', params, token: null }
 	const response = await shopifyServer(obj)
-	if(response){
-		if(response.data && response.data.addStore){
-			const { addStore } = response.data
-			const { redirectURL } = addStore
-			return redirectURL
-		}
+	console.log(response, 66)
+	if(response && response.data && response.data.addStore){
+		const { addStore } = response.data
+		const { redirectURL } = addStore
+		console.log(response.data)
+		return redirectURL
 	}
 }
-export const openShop = async () => {
+export const openShop = async query => {
 	try{
-		const q = await routerQuery
-		console.log(q)
-		const current = await checkMerchant(q)
-		console.log(current)
+		const d = await checkMerchant(query)
+		if(d !== undefined){
+			const { data } = d
+			if(data && data.ValidateHmac !== undefined){
+				const { valid, installed } = data.ValidateHmac
+				return { valid, installed }
+			}
+		}
 	}catch(err){
-		return addMerchant(query)
+		console.log(err)
 	}
 }
 

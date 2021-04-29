@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { openShop, oAuthCallback, exchangeSessionToken } from '../shared/shopify'
-import { CheckMerchant } from '../actions/auth'
+import { openShop, oAuthCallback, exchangeSessionToken, addMerchant } from '../shared/shopify'
 import { useRouter } from 'next/router'
 
 const Auth = ({ children, ...props }) => {
@@ -8,12 +7,16 @@ const Auth = ({ children, ...props }) => {
 	const [ user, setUser ] = useState(null)
 	const [ shop, setShop ] = useState(null)
 
+	const { query } = router
+
 	useEffect(() => {
-		if(router.query){
-			const { query } = router
+		if(query){
 			if(shop === null && user === null){
 				openShop(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
+			}else if(shop && shop.valid && !shop.installed){
+				addMerchant(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
 			}else if(shop && !user){
+				console.log(shop)
 				if(shop && typeof(shop) !== 'string'){
 					setShop(shop.token)
 					setUser(shop.claims)
@@ -23,7 +26,7 @@ const Auth = ({ children, ...props }) => {
 				}
 			}
 		}
-	}, [ shop, user, router ])
+	}, [ shop, user, query ])
 
 	const handleClick = async e => {
 		const twitter = await login(e.target.name)

@@ -154,10 +154,28 @@ const RootQuery = new GraphQLObjectType({
 					params: { type: VerifyHmacInput } 
 				},
 				resolve(parent, args, request){
-					const validHmac = verifyHmac(args.params)				
-					return {
-						shop: args.params.shop,
-						valid : validHmac,
+					const validHmac = verifyHmac(args.params)	
+					if(!validHmac){
+						return { valid: validHmac } 
+					}else{
+						return getDoc('merchants', args.params.name).then(({ error, uid }) => {
+							let installed
+							if(!error && uid){
+								installed = true
+								return {
+									shop: args.params.name,
+									valid : validHmac,
+									installed: true 
+								}
+							}else{
+								//add user here
+								return {
+									shop: args.params.name,
+									valid : validHmac,
+									installed: false
+								}
+							}
+						})
 					}
 				}
 			},

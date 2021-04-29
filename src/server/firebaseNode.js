@@ -49,6 +49,7 @@ export const addDoc = async (collectionName, obj) => {
 		return err
 	}
 }
+
 export const setDoc = async (collectionName, obj, uid) => {
 	try{
 		const db = admin.firestore()
@@ -113,23 +114,14 @@ export const setClaims = async (uid, claims) => {
 export const createUser = async data => {
 	try{
 		const { name, access_token, scope, session } = data 
-		if(!session){
-			throw new Error('no session')
-		}
 		const userData = new Object
 		userData['displayName'] = name
 		const user = await admin.auth().createUser(userData)
 		const { uid } = user
 		const FieldValue = admin.firestore.FieldValue
-		await updateDoc('merchants', {
-			state: FieldValue.delete(),
-			redirectURL: FieldValue.delete(),
-			hmac: FieldValue.delete(),
-			accessToken: access_token,
-			scope: scope,
-		}, name)
-		const sessionId = await addDoc('sessions', { uid, timestamp: FieldValue.serverTimestamp(), name, session })
-		return { uid, sessionId }
+		const row = await setDoc('merchants', data, uid)
+		const sessionId = await addDoc('sessions', { uid, timestamp: FieldValue.serverTimestamp(), name })
+		return { uid, sessionId } 
 	}catch(err){
 		console.log(err)
 		return err
