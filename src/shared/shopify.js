@@ -1,15 +1,14 @@
 import prepareArgs from './utils/prepareArgs'
-import { makeMutation, getStore } from '../graphql/client'
+import { makeMutation, requestJwt } from '../graphql/client'
 import { getRequest } from '../actions/request'
-import { checkMerchant } from '../actions/auth'
+import { validateHmac } from '../graphql/client'
 import Router from 'next/router'
 
-export const exchangeSessionToken = async params => {
+export const beginSession = async params => {
 	try{
-		console.log(params)
-		const { session } = params 
-		const store = getStore(params)
-		const request = getRequest(`Bearer ${session}`, store)
+		const store = requestJwt(params)
+		console.log(store)
+		const request = getRequest(null, store)
 		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 		const rr = await f.json()
 		return rr
@@ -50,9 +49,11 @@ export const oAuthCallback = async query => {
 		const obj = { type: 'shop', params: query }
 		const response = await shopifyServer(obj)
 		if(response !== undefined){
-			const oo = response
-			console.log(oo)
-			return oo
+			const { data } = response
+			if(data && data.addStore){
+				const { name } = data.addStore
+				return { name }
+			}
 		}
 	}catch(err){
 		console.log(err)
@@ -70,19 +71,34 @@ export const addMerchant = async params => {
 		return redirectURL
 	}
 }
+export const checkMerchant = async query => {
+	try{
+		const gql = validateHmac(query)
+		const request = getRequest(null, gql)
+		console.log(gql)
+		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
+		const rr = f.json()
+		return rr
+	}catch(err){
+		console.log(err)
+		return err
+	}
+}
 export const openShop = async query => {
 	try{
-		if(query.hmac){
+		if(query.hmac && !query.session){
 			console.log(query)
 			const d = await checkMerchant(query)
 			if(d && d.data){
-				console.log(d)
 				const { data } = d
 				if(data && data.ValidateHmac && data.ValidateHmac !== undefined){
-					const { valid, installed, jwt, redirectUrl } = data.ValidateHmac
-					return { valid, installed, jwt, redirectUrl }
+					const { valid, installed, redirectUrl } = data.ValidateHmac
+					return { valid, installed, redirectUrl }
 				}
 			}
+		}
+		if(query.hmac && query.session){
+			beginSession(query)
 		}
 	}catch(err){
 		console.log(err)

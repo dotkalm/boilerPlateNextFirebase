@@ -30,7 +30,7 @@ export const makeMutation = object => {
 					}
 			){
 				jwt
-				session
+				name
 			}
 		}
 	`
@@ -46,24 +46,20 @@ export const validateHmac = object => {
 				valid
 				installed
 				jwt
+				nonce
 				redirectUrl
 			}
 		}
 	`
 }
-export const getStore = object => {
+export const requestJwt = object => {
 	const string = makeParams(object)
 	return `
 		{
 			ShopSession(
 				session: { ${string} }
 			){
-				uid
-				valid
-				hmac
 				jwt
-				name
-				remaining
 			}
 		}
 	`

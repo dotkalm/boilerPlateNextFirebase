@@ -2,6 +2,9 @@ import crypto from 'crypto'
 import timingSafeCompare from 'tsscmp'
 import jwt from 'jsonwebtoken'
 import { 
+	deleteFields,
+	updateDoc,
+	getCollection,
 	getDoc, 
 	createUser, 
 	setClaims, 
@@ -40,54 +43,78 @@ export const verifyHmac = shopData => {
 	}
 }
 
+
+const parseNonce = request => {
+	const array = request.headers.referer.split('&')
+	const regex = new RegExp('^state=')
+	const nonceComponent = array.find(e => e.match(regex))
+	return decodeURIComponent(nonceComponent.replace(regex, ''))
+}
+
+export const retrieveJwt = async (params, request) => {
+	const hmacCompare = verifyHmac(shop)
+	const { name } = params
+	const queryArray = new Array(2)
+	queryArray[0] = {
+		field: 'name',
+		opperator: '==',
+		value: name
+	})
+	queryArray[1] = {
+		field: 'timestamp',
+		sort: 'desc'
+	})
+	const results = getCollection('sessions', queryArray)
+	console.log(results)
+}
 export const oAuthExchange = async (shop, request) => {
 	try{
-		const merchant = await getDoc('merchants', shop.name)
-		console.log(shop, 46)
-		if(merchant && merchant.error){
-			return {message: 'shop not in db', error: true}
-		}else if(merchant && !merchant.error && merchant.state){
-			const { state } = merchant
-			const array = request.headers.referer.split('&')
-			const regex = new RegExp('^state=')
-			const nonceComponent = array.find(e => e.match(regex))
-			const nonce = decodeURIComponent(nonceComponent.replace(regex, ''))
-			const compareNonce = timingSafeCompare(state, nonce)
-			console.log(shop, request.Headers)
+		if(!shop.state){
+			throw new Error('no state')
+		}else{
+			const nonce = parseNonce(request)
+			const object = { field: 'nonce', opperator: '==', value: nonce }
+			const [ session ] = await getCollection('sessions', [ object ])
+			const hmacCompare = verifyHmac(shop)
+			if(!hmacCompare){
+				throw new Error('hmac mismatch')
+			}
+			if(!session.user){
+				throw new Error('no user in session')
+			}
+			const { user } = session
+			if(!session.nonce){
+				throw new Error('no nonce in session')
+			}
+			const compareNonce = timingSafeCompare(session.nonce, nonce)
 			if(!compareNonce){
-				console.log(state, nonce)
 				throw new Error('nonce mismatch')
-			}else{
-				const hmacCompare = verifyHmac(shop)
-				const { name } = shop
-				const shopRegExp = name.match(shopRegex)
-				console.log(hmacCompare, name, shopRegExp)
-				if(!hmacCompare){
-					throw new Error('hmac mismatch')
-				}else if(!shopRegExp){
-					if(name.match(/^http/)){
-						const httpsRegExp = name.match(httpsRegex)
-						if(!httpsRegExp){
-							throw new Error('bad shopname')
-						}
-					}else{
+			}
+			const { name } = shop
+			const shopRegExp = name.match(shopRegex)
+			if(!shopRegExp){
+				console.log('wut', name, shopRegex)
+				if(name.match(/^http/)){
+					const httpsRegExp = name.match(httpsRegex)
+					if(!httpsRegExp){
 						throw new Error('bad shopname')
 					}
 				}else{
-					const json = await oAuthRequest(name, shop.code)
-					console.log(json)
-					const { access_token, scope } = json 
-					const claims = await setClaims(uid, { shop: name }) 
-					if(claims !== 'SUCCESS'){
-						throw new Error(claims)
-					}else{
-						console.log(uid, claims, 68)
-						return { name, uid}
-					}
+					throw new Error('bad shopname')
 				}
 			}
-		}else{
-			throw new Error('no state')
+			const json = await oAuthRequest(name, shop.code)
+			const { access_token, scope } = json 
+			if(!access_token){
+				throw new Error('no access token')
+			}
+			await updateDoc('merchants', {
+				scope,
+				accessToken: access_token,
+				lastUpdate: Date.now(),
+			}, user)
+			await deleteFields('sessions', ['nonce'], session.uid)
+			return { name }
 		}
 	}catch(err){
 		return err
@@ -112,12 +139,16 @@ export const decodeSession = async (parent, shop, request) => {
 	}
 }
 export const beginUser = async (name, valid) => {
-	const uid = await createUser({ name })
-	const nonce = crypto.randomBytes(16).toString('base64') 
-	const	sessionId = await addDoc('sessions', { nonce, uid })
-	const redirectUrl = makeRedirectUrl(name, nonce)
-	const jwt = await mintToken(uid, { sessionId })
-	return { nonce, redirectUrl, name, valid, jwt } 
+	if(!valid){
+		throw new Error("invalid hmac")
+	}else{
+		const uid = await createUser({ name })
+		const nonce = crypto.randomBytes(16).toString('base64') 
+		const redirectUrl = makeRedirectUrl(name, nonce)
+		const sessionId = await addDoc('sessions', { nonce, name, timestamp: Date.now(), user: uid })
+		await setDoc('merchants', { name, timestamp: Date.now() }, uid)
+		return { nonce, redirectUrl, name, valid }
+	}
 }
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 

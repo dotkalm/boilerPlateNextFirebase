@@ -18,7 +18,21 @@ if (!admin.apps.length) {
 		storageBucket: process.env.CLIENT_STORAGE_BUCKET,
 	});
 }
-
+export const deleteFields = async (collectionName, fieldsArray, uid) => {
+	try{
+		const db = admin.firestore()
+		const fieldValue = admin.firestore.FieldValue
+		const object = new Object
+		for(let i = 0; i < fieldsArray.length; i++){
+			const key = fieldsArray[i]
+			object[key] = fieldValue.delete()
+		}
+		return updateDoc(collectionName, object, uid)
+	}catch(err){
+		console.log(err)
+		return err
+	}
+}
 export const getCollection = async (collectionName, queryArray)  => {
 	const db = admin.firestore()
 	let collectionReference = db.collection(collectionName)
@@ -38,6 +52,7 @@ export const getCollection = async (collectionName, queryArray)  => {
 			.map(e => ({...e.data(), uid : e.id}))
 		)
 	})
+	.catch(err => err)
 }
 export const addDoc = async (collectionName, obj) => {
 	try{

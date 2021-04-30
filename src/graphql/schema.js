@@ -163,21 +163,21 @@ const RootQuery = new GraphQLObjectType({
 					if(!validHmac){
 						return { valid: validHmac, status: 200, message: 'invalid' } 
 					}else{
-						return getDoc('merchants', args.params.name).then(({ error, uid }) => {
+						const q = { field: 'name', opperator: '==', value: args.params.name } 
+						return getCollection('merchants', [ q ]).then(([ merchant ]) => {
 							let installed
-							if(!error && uid){
+							if(!merchant){
+								const { name } = args.params
+								return beginUser(name, validHmac).then(p => {
+									return p
+								})
+							}else{
 								installed = true
 								return {
 									shop: args.params.name,
 									valid : validHmac,
 									installed: true 
 								}
-							}else{
-								const { name } = args.params
-								return beginUser(name, validHmac).then(p => {
-									console.log(p, 178)
-									return p
-								})
 							}
 						})
 					}

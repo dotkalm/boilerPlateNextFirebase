@@ -52,9 +52,9 @@ export const SessionInput = new GraphQLInputObjectType({
 		name								: { type: new GraphQLNonNull(GraphQLString) },
 		hmac								: { type: new GraphQLNonNull(GraphQLString) },
 		session 						: {	type: new GraphQLNonNull(GraphQLString)	},
-		timestamp						: { type: new GraphQLNonNull(GraphQLFloat) },
-		host							  : {	type: GraphQLString	},
-		locale						  : {	type: GraphQLString	},
-		new_design_language : {	type: GraphQLBoolean },
+		timestamp						: { type: new GraphQLNonNull(GraphQLFloat)  },
+		host							  : {	type: new GraphQLNonNull(GraphQLString)	},
+		locale						  : {	type: new GraphQLNonNull(GraphQLString)	},
+		new_design_language : {	type: new GraphQLNonNull(GraphQLBoolean)} 
 	})
 })
