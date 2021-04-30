@@ -16,7 +16,12 @@ import {
 	SessionInput,
 	VerifyHmacInput,
 } from './inputTypes'
-import { decodeSession, verifyHmac, makeRedirectUrl, beginUser } from '../server/shopify'
+import { 
+	decodeSession, 
+	verifyHmac, 
+	makeRedirectUrl, 
+	beginUser 
+} from '../server/shopify'
 import { geocode, getCounty } from '../server/geocode'
 import { queryLocal } from '../server/sqlite'
 import { time } from '../server/time'
@@ -169,7 +174,10 @@ const RootQuery = new GraphQLObjectType({
 								}
 							}else{
 								const { name } = args.params
-								return beginUser(name, validHmac)
+								return beginUser(name, validHmac).then(p => {
+									console.log(p, 178)
+									return p
+								})
 							}
 						})
 					}

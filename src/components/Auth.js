@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { signInWithCustomClaim } from '../actions/auth'
 import { openShop, oAuthCallback, exchangeSessionToken, addMerchant } from '../shared/shopify'
 import { useRouter } from 'next/router'
 
@@ -14,8 +15,16 @@ const Auth = ({ children, ...props }) => {
 			console.log(shop, user)
 			if(shop === null && user === null){
 				openShop(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
-			}else if(shop && shop.valid && !shop.installed){
-				router.push(shop.redirectURL)
+			}else if(shop && !shop.installed && shop.valid && !user){
+				const { jwt } = shop
+				if(typeof(jwt) === 'string'){
+					signInWithCustomClaim(jwt).then(({ user })=> {
+						console.log(user, shop.redirectUrl)
+						if(user && user.uid){
+							router.push(shop.redirectUrl)
+						}
+					})
+				}
 			}else if(shop && !user){
 				console.log(shop)
 				if(shop && typeof(shop) !== 'string'){

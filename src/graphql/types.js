@@ -258,8 +258,10 @@ export const ValidateHmacType = new GraphQLObjectType({
 	fields: () => ({
 		valid     	 : {	type: GraphQLBoolean },
 		installed 	 : {	type: GraphQLBoolean },
-		shop	    	 : {	type: GraphQLString	},
-		redirectUrl	 : {	type: GraphQLString	},
+		nonce 			 : {	type: GraphQLString  },
+		jwt	      	 : {	type: GraphQLString	 },
+		shop	    	 : {	type: GraphQLString	 },
+		redirectUrl	 : {	type: GraphQLString	 },
 	})
 })
 export const ShopSession = new GraphQLObjectType({

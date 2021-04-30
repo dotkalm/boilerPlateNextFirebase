@@ -1,7 +1,14 @@
 import crypto from 'crypto' 
 import timingSafeCompare from 'tsscmp'
 import jwt from 'jsonwebtoken'
-import { getDoc, createUser, setClaims, setDoc } from './firebaseNode'
+import { 
+	getDoc, 
+	createUser, 
+	setClaims, 
+	setDoc, 
+	mintToken, 
+	addDoc 
+} from './firebaseNode'
 import { makeQueryString } from '../shared/utils/queryString'
 import { shopRegex, httpsRegex } from '../shared/utils/shopifyValidation'
 import { oAuthRequest } from './oAuth'
@@ -37,7 +44,7 @@ export const oAuthExchange = async (shop, request) => {
 	try{
 		const merchant = await getDoc('merchants', shop.name)
 		if(merchant && merchant.error){
-			throw new Error(merchant.error)
+			throw new Error(merchant)
 		}else{
 			if(merchant && merchant.state){
 				const { state } = merchant
@@ -46,6 +53,7 @@ export const oAuthExchange = async (shop, request) => {
 				const nonceComponent = array.find(e => e.match(regex))
 				const nonce = decodeURIComponent(nonceComponent.replace(regex, ''))
 				const compareNonce = timingSafeCompare(state, nonce)
+				console.log(shop, request.Headers)
 				if(!compareNonce){
 					console.log(state, nonce)
 					throw new Error('nonce mismatch')
@@ -82,12 +90,10 @@ export const oAuthExchange = async (shop, request) => {
 			}
 		}
 	}catch(err){
-		console.log(err)
 		return err
 	}
 }
-export const nonce = crypto.randomBytes(16).toString('base64') 
-export const makeRedirectUrl = name => {
+export const makeRedirectUrl = (name, nonce) => {
 	return `https://${name}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_API_SCOPES}&redirect_uri=${process.env.SHOPIFY_APP_URL}/auth/callback&state=${nonce}`
 }
 export const decodeSession = async (parent, shop, request) => {
@@ -106,8 +112,12 @@ export const decodeSession = async (parent, shop, request) => {
 	}
 }
 export const beginUser = async (name, valid) => {
-	const { uid, jwt } = await createUser({...merchant, ...json})
-	return { uid, jwt } 
+	const uid = await createUser({ name })
+	const nonce = crypto.randomBytes(16).toString('base64') 
+	const	sessionId = await addDoc('sessions', { nonce, uid })
+	const redirectUrl = makeRedirectUrl(name, nonce)
+	const jwt = await mintToken(uid, { sessionId })
+	return { nonce, redirectUrl, name, valid, jwt } 
 }
 export const checkShop = async (parent, shop, request) => {
 	const { name, timestamp, hmac } = shop 

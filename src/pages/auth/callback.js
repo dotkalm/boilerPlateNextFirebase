@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'next/router'
-import App from '../../components/App'
+import { checkLogged } from '../../shared/auth'
 import { oAuthCallback } from '../../shared/shopify'
 
 const InstallFlow = props => {
@@ -21,3 +21,4 @@ const InstallFlow = props => {
   )
 }
 export default withRouter(InstallFlow)
+

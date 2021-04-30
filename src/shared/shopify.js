@@ -2,7 +2,7 @@ import prepareArgs from './utils/prepareArgs'
 import { makeMutation, getStore } from '../graphql/client'
 import { demoQuery, demoHeader } from './const'
 import { defaultOptions, queryParams, getRequest } from '../actions/request'
-import { checkMerchant } from '../actions/auth'
+import { checkMerchant, getIdToken, checkLogged } from '../actions/auth'
 import Router from 'next/router'
 
 export const exchangeSessionToken = async params => {
@@ -19,16 +19,15 @@ export const exchangeSessionToken = async params => {
 		return err
 	}
 }
-export const shopifyServer = async ({ type, params, token }) => {
+export const shopifyServer = async ({ type, params }) => {
 	try{
 		const args = prepareArgs(params)
 		if(args != ' ' && params.hmac){
 			const mutation = makeMutation(params)
-			console.log(mutation)
-			const request = getRequest(token, mutation)
+			console.log(mutation, user)
+			const request = getRequest(null, mutation)
 			const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 			const rr = await f.json()
-			return rr
 		}
 	}catch(err){
 		console.log(err)
@@ -76,12 +75,12 @@ export const openShop = async query => {
 		if(query.hmac){
 			console.log(query)
 			const d = await checkMerchant(query)
-			console.log(d)
-			if(d !== undefined){
+			if(d && d.data){
+				console.log(d)
 				const { data } = d
 				if(data && data.ValidateHmac && data.ValidateHmac !== undefined){
-					const { valid, installed } = data.ValidateHmac
-					return { valid, installed }
+					const { valid, installed, jwt, redirectUrl } = data.ValidateHmac
+					return { valid, installed, jwt, redirectUrl }
 				}
 			}
 		}

@@ -42,8 +42,8 @@ export const getCollection = async (collectionName, queryArray)  => {
 export const addDoc = async (collectionName, obj) => {
 	try{
 		const db = admin.firestore()
-		const doc = await db.collection(collectionName).add(obj)
-		return doc.id
+		return db.collection(collectionName).add(obj)
+			.then(doc => doc.id)
 	}catch(err){
 		console.log(err)
 		return err
@@ -119,8 +119,7 @@ export const createUser = async data => {
 		userData['displayName'] = name
 		const user = await admin.auth().createUser(userData)
 		const { uid } = user
-		const jwt = await mintToken(uid)
-		return { uid, jwt } 
+		return uid 
 	}catch(err){
 		console.log(err)
 		return err
@@ -131,6 +130,6 @@ export const getLogin = async idToken => {
 	.catch(err => console.log(devTimestamp, err, 'line 913'))
 }
 
-export const mintToken = async userId => {
-	return admin.auth().createCustomToken(userId)
+export const mintToken = async (userId, additionalClaims) => {
+	return admin.auth().createCustomToken(userId, additionalClaims)
 }

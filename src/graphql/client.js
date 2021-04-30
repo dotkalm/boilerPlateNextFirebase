@@ -19,6 +19,7 @@ export const makeParams = object => {
 	return string
 }
 export const makeMutation = object => {
+	console.log(object)
 	const string = makeParams(object)
 	return `
 		mutation{
@@ -28,13 +29,8 @@ export const makeMutation = object => {
 						${string}
 					}
 			){
-				uid
-				name
-				redirectURL
-				session	
 				jwt
-				scope
-				installedAt
+				session
 			}
 		}
 	`
@@ -49,6 +45,7 @@ export const validateHmac = object => {
 				shop
 				valid
 				installed
+				jwt
 				redirectUrl
 			}
 		}
