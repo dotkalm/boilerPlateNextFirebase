@@ -51,40 +51,36 @@ const parseNonce = request => {
 	return decodeURIComponent(nonceComponent.replace(regex, ''))
 }
 
-const compareTimes = async (previous, current) => {
-	const a = Date(previous).split(" ")
-	const b = Date(previous).split(" ")
+const compareTimes = (previous, current) => {
+	console.log(previous, current, '<---previous, current')
+	const a = Date(previous).split(" GMT")
+	const b = Date(current).split(" GMT")
 	const differences = new Array
-	for(let i = 0; i < a.length; i++){
-		if(a[i] !== b[i]){
-			differences.push(i)
-		}
-	}
-	console.log(differences)
+	return { a : a[0], b : b[0] }
 }
-export const retrieveJwt = async (params, request) => {
+export const retrieveJwt = async (args, request) => {
 	try{
-		const hmacCompare = verifyHmac(params)
-		const { name, timestamp } = params
-		const queryArray = new Array(2)
-		queryArray[0] = {
+		const validHmac = verifyHmac(args)
+		if(!validHmac){
+			throw new Error('invalid hmac')
+		}
+		const { name, timestamp } = args
+		const queryArray = [{ 
 			field: 'name',
 			opperator: '==',
 			value: name
-		}
-		queryArray[1] = {
+		},{
 			field: 'timestamp',
 			sort: 'desc' 
-		}
+		}]
 		const [ mRS ] = await getCollection('sessions', queryArray, 1)
 		if(!mRS){
 			throw new Error('no sessions for this shop')
 		}
-		const difference = compareTimes(mRS, timeStamp)
-		console.log(ms)
-		const validHmac = verifyHmac(params)
-		if(!validHmac){
-			throw new Error('invalid hmac')
+		console.log(mRS, 80)
+		const msDiff = (timestamp * 1000) - mRS.timestamp 
+		if((msDiff * .000001) > 1){
+			throw new Error("long handshaek")
 		}
 	}catch(err){
 		console.log(err)
