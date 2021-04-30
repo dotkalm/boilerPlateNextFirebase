@@ -51,25 +51,45 @@ const parseNonce = request => {
 	return decodeURIComponent(nonceComponent.replace(regex, ''))
 }
 
+const compareTimes = async (previous, current) => {
+	const a = Date(previous).split(" ")
+	const b = Date(previous).split(" ")
+	const differences = new Array
+	for(let i = 0; i < a.length; i++){
+		if(a[i] !== b[i]){
+			differences.push(i)
+		}
+	}
+	console.log(differences)
+}
 export const retrieveJwt = async (params, request) => {
-	const hmacCompare = verifyHmac(params)
-	const { name, timestamp } = params
-	const queryArray = new Array(2)
-	queryArray[0] = {
-		field: 'name',
-		opperator: '==',
-		value: name
+	try{
+		const hmacCompare = verifyHmac(params)
+		const { name, timestamp } = params
+		const queryArray = new Array(2)
+		queryArray[0] = {
+			field: 'name',
+			opperator: '==',
+			value: name
+		}
+		queryArray[1] = {
+			field: 'timestamp',
+			sort: 'desc' 
+		}
+		const [ mRS ] = await getCollection('sessions', queryArray, 1)
+		if(!mRS){
+			throw new Error('no sessions for this shop')
+		}
+		const difference = compareTimes(mRS, timeStamp)
+		console.log(ms)
+		const validHmac = verifyHmac(params)
+		if(!validHmac){
+			throw new Error('invalid hmac')
+		}
+	}catch(err){
+		console.log(err)
+		return err
 	}
-	queryArray[1] = {
-		field: 'timestamp',
-		sort: 'desc' 
-	}
-	const results = await getCollection('sessions', queryArray, 1)
-	console.log(timestamp, results)
-	console.log(results.map(e => ({
-		time: Date(e.timestamp),
-		ms: (timestamp * 1000) - e.timestamp
-	})), 80)
 }
 export const oAuthExchange = async (shop, request) => {
 	try{
