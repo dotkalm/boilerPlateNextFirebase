@@ -1,7 +1,6 @@
 import crypto from "crypto"
 import string_decoder from "string_decoder"
 
-// Generate a new random string for each sign-in
 export const generateNonce = function(length) {
   const decoder = new string_decoder.StringDecoder("ascii")
   const buf = Buffer.alloc(length)

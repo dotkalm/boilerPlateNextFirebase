@@ -43,7 +43,10 @@ export const verifyHmac = shopData => {
 export const oAuthExchange = async (shop, request) => {
 	try{
 		const merchant = await getDoc('merchants', shop.name)
-		if(merchant && !merchant.error && merchant.state){
+		console.log(shop, 46)
+		if(merchant && merchant.error){
+			return {message: 'shop not in db', error: true}
+		}else if(merchant && !merchant.error && merchant.state){
 			const { state } = merchant
 			const array = request.headers.referer.split('&')
 			const regex = new RegExp('^state=')
@@ -84,8 +87,7 @@ export const oAuthExchange = async (shop, request) => {
 				}
 			}
 		}else{
-				throw new Error('no state')
-			}
+			throw new Error('no state')
 		}
 	}catch(err){
 		return err

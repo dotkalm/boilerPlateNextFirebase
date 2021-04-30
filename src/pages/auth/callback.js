@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'next/router'
-import { checkLogged } from '../../shared/auth'
 import { oAuthCallback } from '../../shared/shopify'
 
 const InstallFlow = props => {

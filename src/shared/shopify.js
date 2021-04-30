@@ -1,8 +1,7 @@
 import prepareArgs from './utils/prepareArgs'
 import { makeMutation, getStore } from '../graphql/client'
-import { demoQuery, demoHeader } from './const'
-import { defaultOptions, queryParams, getRequest } from '../actions/request'
-import { checkMerchant, getIdToken, checkLogged } from '../actions/auth'
+import { getRequest } from '../actions/request'
+import { checkMerchant } from '../actions/auth'
 import Router from 'next/router'
 
 export const exchangeSessionToken = async params => {
@@ -19,6 +18,7 @@ export const exchangeSessionToken = async params => {
 		return err
 	}
 }
+
 export const shopifyServer = async ({ type, params }) => {
 	try{
 		const args = prepareArgs(params)
@@ -51,6 +51,7 @@ export const oAuthCallback = async query => {
 		const response = await shopifyServer(obj)
 		if(response !== undefined){
 			const oo = response
+			console.log(oo)
 			return oo
 		}
 	}catch(err){
