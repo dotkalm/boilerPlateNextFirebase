@@ -64,7 +64,7 @@ export const retrieveJwt = async (args, request) => {
 		if(!validHmac){
 			throw new Error('invalid hmac')
 		}
-		const { name, timestamp } = args
+		const { name, timestamp, host } = args
 		const queryArray = [{ 
 			field: 'name',
 			opperator: '==',
@@ -77,11 +77,17 @@ export const retrieveJwt = async (args, request) => {
 		if(!mRS){
 			throw new Error('no sessions for this shop')
 		}
-		console.log(mRS, 80)
 		const msDiff = (timestamp * 1000) - mRS.timestamp 
-		if((msDiff * .000001) > 1){
+		console.log({ msDiff })
+		if((msDiff * .00001) > 1){
 			throw new Error("long handshaek")
 		}
+		const rh = request.headers
+		const { user } = mRS
+		const b = Buffer.from(host, 'base64') 
+		const jwt = await mintToken(user, { host: b.toString() })
+		console.log({ host: rh.host, referer: rh.referer, origin: rh.orgin })
+		return { jwt } 
 	}catch(err){
 		console.log(err)
 		return err

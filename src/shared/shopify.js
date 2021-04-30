@@ -6,9 +6,9 @@ import Router from 'next/router'
 
 export const beginSession = async params => {
 	try{
+		console.log(params)
 		const store = requestJwt(params)
-		console.log(store)
-		const request = getRequest(null, store)
+		const request = getRequest(params.jwt || null, store)
 		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 		const rr = await f.json()
 		return rr
@@ -75,7 +75,6 @@ export const checkMerchant = async query => {
 	try{
 		const gql = validateHmac(query)
 		const request = getRequest(null, gql)
-		console.log(gql)
 		const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 		const rr = f.json()
 		return rr
@@ -98,7 +97,10 @@ export const openShop = async query => {
 			}
 		}
 		if(query.hmac && query.session){
-			beginSession(query)
+			const response = await beginSession(query)
+			if(response && response.data && response.data.requestJwt){
+				return response.data.requestJwt
+			}
 		}
 	}catch(err){
 		console.log(err)

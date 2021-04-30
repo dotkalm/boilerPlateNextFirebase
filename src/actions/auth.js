@@ -11,30 +11,32 @@ const getIdTokenResult = () => firebase && firebase.auth.currentUser !== null &&
 		return err
 	})
 
-export const signInWithCustomClaim = async jwt => {
-	return firebase.auth.signInWithCustomToken(jwt).then(user => {
-		console.log(user)
-		return user
+export const signInWithJwt = async jwt => {
+	return firebase.auth.signInWithCustomToken(jwt).then(({ user }) => {
+		const { displayName, refreshToken } = user
+		return { shop: displayName, refreshToken } 
 	})
 }
-export const checkLogged = new Promise((resolve, reject) => { 
-	const handleAuthStateChanged = async () => {
-		try{
-			const user = await getIdTokenResult() 
-			if(user && user.uid){
-				const { uid, name } = user
-				const obj = { uid, name }
-				resolve(obj)
-			}else{
-				throw new Error('NOT AUTHORIZED')
+export const checkLogged = () => {
+	return new Promise((resolve, reject) => { 
+		const handleAuthStateChanged = async () => {
+			try{
+				const user = await getIdTokenResult() 
+				if(user && user.uid){
+					const { uid, name } = user
+					const obj = { uid, name }
+					resolve(obj)
+				}else{
+					throw new Error('NOT AUTHORIZED')
+				}
+			}catch(err){
+				console.log(err)
+				return err
 			}
-		}catch(err){
-			console.log(err)
-			return err
 		}
-	}
-	if(firebase){
-		firebase.auth.onAuthStateChanged(handleAuthStateChanged)
-	}
-})
+		if(firebase){
+			firebase.auth.onAuthStateChanged(handleAuthStateChanged)
+		}
+	})
+}
 

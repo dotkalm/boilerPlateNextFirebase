@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { signInWithJwt } from '../actions/auth'
 import { openShop } from '../shared/shopify'
 import { useRouter } from 'next/router'
 
@@ -8,8 +9,8 @@ const Auth = ({ children, ...props }) => {
 	const [ shop, setShop ] = useState(null)
 
 	const { query } = router
-
 	useEffect(() => {
+		console.log(shop, user, query)
 		if(query){
 			if(shop === null && user === null){
 				openShop(query).then(u => u !== undefined && u !== 'NOT AUTHORIZED' ? setShop(u) : shop)
@@ -21,10 +22,9 @@ const Auth = ({ children, ...props }) => {
 				}
 				console.log(shop)
 			}else if(shop && shop.jwt){
-				console.log(shop)
+				const { jwt } = shop
+				signInWithJwt(jwt).then(u => setUser(u))
 			}
-		}else{
-			console.log(router)
 		}
 	}, [ shop, user, query ])
 
@@ -33,7 +33,7 @@ const Auth = ({ children, ...props }) => {
 			router.push(shop.redirectUrl)
 		}
 	}
-	if(user && user.shop){
+	if(user && user.shop && user.refreshToken){
 		const childrenWithProps = React
 			.Children
 			.map(children, child => React
