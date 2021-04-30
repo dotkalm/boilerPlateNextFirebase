@@ -24,10 +24,10 @@ export const shopifyServer = async ({ type, params }) => {
 		const args = prepareArgs(params)
 		if(args != ' ' && params.hmac){
 			const mutation = makeMutation(params)
-			console.log(mutation, user)
 			const request = getRequest(null, mutation)
 			const f = await fetch(`${process.env.GRAPHQL_SERVER}/api/graphql`, request)
 			const rr = await f.json()
+			return rr
 		}
 	}catch(err){
 		console.log(err)
@@ -51,7 +51,6 @@ export const oAuthCallback = async query => {
 		const response = await shopifyServer(obj)
 		if(response !== undefined){
 			const oo = response
-			console.log(oo)
 			return oo
 		}
 	}catch(err){

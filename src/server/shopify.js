@@ -43,49 +43,47 @@ export const verifyHmac = shopData => {
 export const oAuthExchange = async (shop, request) => {
 	try{
 		const merchant = await getDoc('merchants', shop.name)
-		if(merchant && merchant.error){
-			throw new Error(merchant)
-		}else{
-			if(merchant && merchant.state){
-				const { state } = merchant
-				const array = request.headers.referer.split('&')
-				const regex = new RegExp('^state=')
-				const nonceComponent = array.find(e => e.match(regex))
-				const nonce = decodeURIComponent(nonceComponent.replace(regex, ''))
-				const compareNonce = timingSafeCompare(state, nonce)
-				console.log(shop, request.Headers)
-				if(!compareNonce){
-					console.log(state, nonce)
-					throw new Error('nonce mismatch')
-				}else{
-					const hmacCompare = verifyHmac(shop)
-					const { name } = shop
-					const shopRegExp = name.match(shopRegex)
-					if(!hmacCompare){
-						throw new Error('hmac mismatch')
-					}else if(!shopRegExp){
-						if(name.match(/^http/)){
-							const httpsRegExp = name.match(httpsRegex)
-							if(!httpsRegExp){
-								throw new Error('bad shopname')
-							}
-						}else{
+		if(merchant && !merchant.error && merchant.state){
+			const { state } = merchant
+			const array = request.headers.referer.split('&')
+			const regex = new RegExp('^state=')
+			const nonceComponent = array.find(e => e.match(regex))
+			const nonce = decodeURIComponent(nonceComponent.replace(regex, ''))
+			const compareNonce = timingSafeCompare(state, nonce)
+			console.log(shop, request.Headers)
+			if(!compareNonce){
+				console.log(state, nonce)
+				throw new Error('nonce mismatch')
+			}else{
+				const hmacCompare = verifyHmac(shop)
+				const { name } = shop
+				const shopRegExp = name.match(shopRegex)
+				console.log(hmacCompare, name, shopRegExp)
+				if(!hmacCompare){
+					throw new Error('hmac mismatch')
+				}else if(!shopRegExp){
+					if(name.match(/^http/)){
+						const httpsRegExp = name.match(httpsRegex)
+						if(!httpsRegExp){
 							throw new Error('bad shopname')
 						}
 					}else{
-						const json = await oAuthRequest(name, shop.code)
-						console.log(json)
-						const { access_token, scope } = json 
-						const claims = await setClaims(uid, { shop: name }) 
-						if(claims !== 'SUCCESS'){
-							throw new Error(claims)
-						}else{
-							console.log(uid, claims, 68)
-							return { name, uid}
-						}
+						throw new Error('bad shopname')
+					}
+				}else{
+					const json = await oAuthRequest(name, shop.code)
+					console.log(json)
+					const { access_token, scope } = json 
+					const claims = await setClaims(uid, { shop: name }) 
+					if(claims !== 'SUCCESS'){
+						throw new Error(claims)
+					}else{
+						console.log(uid, claims, 68)
+						return { name, uid}
 					}
 				}
-			}else{
+			}
+		}else{
 				throw new Error('no state')
 			}
 		}

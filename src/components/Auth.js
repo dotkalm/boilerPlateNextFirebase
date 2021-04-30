@@ -21,7 +21,7 @@ const Auth = ({ children, ...props }) => {
 					signInWithCustomClaim(jwt).then(({ user })=> {
 						console.log(user, shop.redirectUrl)
 						if(user && user.uid){
-							router.push(shop.redirectUrl)
+							setUser(user)
 						}
 					})
 				}
@@ -30,6 +30,11 @@ const Auth = ({ children, ...props }) => {
 				if(shop && typeof(shop) !== 'string'){
 					setShop(shop.token)
 					setUser(shop.claims)
+				}
+			}else{
+				console.log(user)
+				if(user.displayName === query.shop){
+					router.push(shop.redirectUrl)
 				}
 			}
 		}
