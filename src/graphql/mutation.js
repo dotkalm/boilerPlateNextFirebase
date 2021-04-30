@@ -33,7 +33,7 @@ const Mutation = new GraphQLObjectType({
 					session: { type: SessionInput }
 				},
 				resolve(parent, args, request){
-					console.log(args.session)
+					console.log(args.session, '< ---- session , requestJwt')
 					if(args.session){
 						return retrieveJwt(args.session, request).then(object => {
 							return object

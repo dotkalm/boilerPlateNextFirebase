@@ -73,6 +73,7 @@ export const retrieveJwt = async (args, request) => {
 		if(match){
 			match['valid'] = true
 			match['installed'] = true
+			console.log('match from session id', 'now take refresh token and send new jwt')
 			return match
 		}
 		const queryArray = [{ 
@@ -97,7 +98,6 @@ export const retrieveJwt = async (args, request) => {
 		const b = Buffer.from(host, 'base64') 
 		const sesh = { msDiff, session, referer: rh.referer, host: b.toString() }
 		const jwt = await mintToken(user, sesh)
-		sesh['jwt'] = jwt
 		await updateDoc('sessions', sesh, mRS.uid)
 		return { jwt, valid: true, installed: true }
 	}catch(err){

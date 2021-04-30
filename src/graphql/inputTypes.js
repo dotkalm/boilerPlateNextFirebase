@@ -24,7 +24,18 @@ export const { nodeInterface, nodeField } = nodeDefinitions(
 		const { type, id } = fromGlobalId(globalId)
 	},
 )
-
+export const updateSession = new GraphQLInputObjectType({ 
+	name: 'updateSession',
+	fields: () => ({
+		hmac: { type: new GraphQLNonNull(GraphQLString) },
+		name: { type: new GraphQLNonNull(GraphQLString) },
+		timestamp: { type: new GraphQLNonNull(GraphQLFloat) },
+		session: { type: GraphQLString },
+		state: { type: GraphQLString },
+		host: { type: GraphQLString },
+		code: { type: GraphQLString },
+	})
+})
 export const addShopType = new GraphQLInputObjectType({
 	name: 'AddShopType',
 	fields: () => ({

@@ -143,7 +143,7 @@ const RootQuery = new GraphQLObjectType({
 				type: ShopSession,
 				description: 'authenticate shop from session token',
 				args: {
-					session: { type: SessionInput } 
+					session: { type: SessionInput },
 				},
 				resolve(parent, args, request){
 					return decodeSession(parent, args.session, request).then(r => {
