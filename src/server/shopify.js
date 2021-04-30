@@ -52,20 +52,24 @@ const parseNonce = request => {
 }
 
 export const retrieveJwt = async (params, request) => {
-	const hmacCompare = verifyHmac(shop)
-	const { name } = params
+	const hmacCompare = verifyHmac(params)
+	const { name, timestamp } = params
 	const queryArray = new Array(2)
 	queryArray[0] = {
 		field: 'name',
 		opperator: '==',
 		value: name
-	})
+	}
 	queryArray[1] = {
 		field: 'timestamp',
-		sort: 'desc'
-	})
-	const results = getCollection('sessions', queryArray)
-	console.log(results)
+		sort: 'desc' 
+	}
+	const results = await getCollection('sessions', queryArray, 1)
+	console.log(timestamp, results)
+	console.log(results.map(e => ({
+		time: Date(e.timestamp),
+		ms: (timestamp * 1000) - e.timestamp
+	})), 80)
 }
 export const oAuthExchange = async (shop, request) => {
 	try{

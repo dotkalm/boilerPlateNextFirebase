@@ -33,7 +33,7 @@ export const deleteFields = async (collectionName, fieldsArray, uid) => {
 		return err
 	}
 }
-export const getCollection = async (collectionName, queryArray)  => {
+export const getCollection = async (collectionName, queryArray, limit)  => {
 	const db = admin.firestore()
 	let collectionReference = db.collection(collectionName)
 	if(queryArray){
@@ -45,6 +45,9 @@ export const getCollection = async (collectionName, queryArray)  => {
 				collectionReference = collectionReference.orderBy(field, sort)
 			}
 		}
+	}
+	if(limit){
+		collectionReference = collectionReference.limit(limit)
 	}
 	return collectionReference.get()
 	.then(querySnapshot => {
@@ -140,6 +143,13 @@ export const createUser = async data => {
 		return err
 	}
 }
+export const deleteRow = async (collectionName, uid) => {
+	const db = admin.firestore()
+	return db.collection(collectionName).doc(uid).delete()
+	.then(() => 'success')
+	.catch(err => err)
+}
+
 export const getLogin = async idToken => {
 	return admin.auth().verifyIdToken(idToken, true)
 	.catch(err => console.log(devTimestamp, err, 'line 913'))

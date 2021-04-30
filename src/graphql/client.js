@@ -55,12 +55,10 @@ export const validateHmac = object => {
 export const requestJwt = object => {
 	const string = makeParams(object)
 	return `
-		{
-			ShopSession(
-				session: { ${string} }
-			){
-				jwt
+		mutation{
+			requestJwt(session:{ ${string} }){
+					jwt
+				}
 			}
-		}
 	`
 }

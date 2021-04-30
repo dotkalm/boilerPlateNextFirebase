@@ -19,6 +19,7 @@ const {
 } = graphql
 import { 
 	oAuthExchange, 
+	retrieveJwt,
 } from '../server/shopify'
 
 const Mutation = new GraphQLObjectType({
@@ -32,6 +33,7 @@ const Mutation = new GraphQLObjectType({
 					session: { type: SessionInput }
 				},
 				resolve(parent, args, request){
+					console.log(args.session)
 					if(args.session){
 						return retrieveJwt(args.session, request).then(object => {
 							console.log(object, 31)
