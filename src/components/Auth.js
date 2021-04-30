@@ -21,7 +21,7 @@ const Auth = ({ children, ...props }) => {
 					setUser({displayName: query.shop})
 				}
 				console.log(shop)
-			}else if(shop && shop.jwt){
+			}else if(shop && shop.jwt && !user){
 				const { jwt } = shop
 				signInWithJwt(jwt).then(u => setUser(u))
 			}

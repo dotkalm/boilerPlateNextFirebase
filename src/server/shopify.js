@@ -52,7 +52,6 @@ const parseNonce = request => {
 }
 
 const compareTimes = (previous, current) => {
-	console.log(previous, current, '<---previous, current')
 	const a = Date(previous).split(" GMT")
 	const b = Date(current).split(" GMT")
 	const differences = new Array
@@ -64,7 +63,18 @@ export const retrieveJwt = async (args, request) => {
 		if(!validHmac){
 			throw new Error('invalid hmac')
 		}
-		const { name, timestamp, host } = args
+		const { name, timestamp, host, session } = args
+		const qArr = [{
+			field: 'session',
+			opperator: '==',
+			value: session 
+		}]
+		const [ match ] = await getCollection('sessions', qArr, 1)
+		if(match){
+			match['valid'] = true
+			match['installed'] = true
+			return match
+		}
 		const queryArray = [{ 
 			field: 'name',
 			opperator: '==',
@@ -85,9 +95,11 @@ export const retrieveJwt = async (args, request) => {
 		const rh = request.headers
 		const { user } = mRS
 		const b = Buffer.from(host, 'base64') 
-		const jwt = await mintToken(user, { host: b.toString() })
-		console.log({ host: rh.host, referer: rh.referer, origin: rh.orgin })
-		return { jwt } 
+		const sesh = { msDiff, session, referer: rh.referer, host: b.toString() }
+		const jwt = await mintToken(user, sesh)
+		sesh['jwt'] = jwt
+		await updateDoc('sessions', sesh, mRS.uid)
+		return { jwt, valid: true, installed: true }
 	}catch(err){
 		console.log(err)
 		return err

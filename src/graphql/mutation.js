@@ -36,7 +36,6 @@ const Mutation = new GraphQLObjectType({
 					console.log(args.session)
 					if(args.session){
 						return retrieveJwt(args.session, request).then(object => {
-							console.log(object, 31)
 							return object
 						})
 					}
