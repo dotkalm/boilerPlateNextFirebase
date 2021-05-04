@@ -4,7 +4,6 @@ firestore.rules
 firebase.json		
 firestore.indexes.json
 ui-debug.log
-parsedjsonquery.js
 .runtimeconfig.json
 serviceAccount.json
 *.pem
