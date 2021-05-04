@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import App from '../components/App'
 import Auth from '../components/Auth'
-import Tiger from '../components/Tiger' 
-import removeUndefined from '../shared/utils/removeUndefined'
 
 const Home = ({ userAgent, auth }) => {
 	const [ ui, setUi ] = useState({ width: true, height: true })
@@ -27,19 +25,15 @@ const Home = ({ userAgent, auth }) => {
   return (
 		<Auth>
 			<App>
-				<Tiger
-					ui={ui}
-				/>
+				BOILERPLATE
 			</App>
 		</Auth>
   )
 }
 
 export const getStaticProps = async ({ req }) => {
-	let userAgent
-	const obj = { userAgent } 
-	removeUndefined(obj)
-	return { props: { ...obj } }
+	const userAgent = req.headers.userAgent
+	return { props: { userAgent: userAgent ? userAgent : '' } }
 }
 
 export default Home
