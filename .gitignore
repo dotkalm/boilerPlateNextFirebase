@@ -1,4 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+firestore-debug.log	
+firestore.rules		
+firebase.json		
+firestore.indexes.json
+ui-debug.log
 parsedjsonquery.js
 .runtimeconfig.json
 serviceAccount.json
