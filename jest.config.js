@@ -1,4 +1,7 @@
 module.exports = {
+		setupFiles: [
+			'dotenv/config'
+    ],
     collectCoverageFrom: [
       '**/*.{js,jsx,ts,tsx}',
       '!**/*.d.ts',
@@ -15,5 +18,5 @@ module.exports = {
     ],
     moduleNameMapper: {
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-    },
+    }
   }

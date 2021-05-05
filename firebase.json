@@ -17,15 +17,15 @@
     }
   },
   "hosting": {
-		"site": "placeholder",
-		"cleanUrls": true,
-		"public": "public/",
-		"rewrites": [
-			{
-				"source": "**",
-				"function": "nextjsFunc"
-			}
-		]
+    "site": "placeholder",
+    "cleanUrls": true,
+    "public": "public/",
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "nextjsFunc"
+      }
+    ]
   },
   "functions": {
     "runtime": "nodejs10",
@@ -55,4 +55,3 @@
     "template": "remoteconfig.template.json"
   }
 }
-
