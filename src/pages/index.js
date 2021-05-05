@@ -5,7 +5,9 @@ const Home = props => {
   return (
 		<main>
 			<App>
-				BOILERPLATE
+				<span>
+						BOILERPLATE
+				</span>
 			</App>
 		</main>
   )

@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { mount } from 'enzyme'
-import IndexPage from '../src/pages/index'
+import Home from '../../src/pages/index'
 
 describe('Pages', () => {
   describe('Index', () => {
     it('should render without throwing an error', function () {
-      const wrap = mount(<IndexPage/>)
-      expect(wrap.find('div').text()).toBe('Hello Next.js')
+      const wrap = mount(<Home/>)
+      expect(wrap.find('span').text()).toBe('BOILERPLATE')
     })
   })  
 })
+
