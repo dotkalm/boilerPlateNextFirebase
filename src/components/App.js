@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Header from './Header'
 import Head from "next/head";
 import Link from "next/link";
 import useSWR from "swr";
