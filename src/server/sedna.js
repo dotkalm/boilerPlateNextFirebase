@@ -1,7 +1,9 @@
 import fetch from 'node-fetch'
+import { xmlHttpRequest } from 'xmlhttprequest'
+import decodeXml from '../shared/utils/decodeXml'
 
-console.log(process.env)
-export const getRequest = async () => {
+
+export const getRequest = async (apiRoute, methodRoute, paramsObject) => {
 	try{
 		const request = {
 			method: 'GET',
@@ -12,12 +14,24 @@ export const getRequest = async () => {
 			mode: 'cors',
 			cache: 'default',
 		}
-		const url = process.env.SEDNA_DOMAIN 
-		console.log(url)
+		const { SEDNA_DOMAIN, SEDNA_AGENT_FIELD, SEDNA_AGENT, SEDNA_LOCALE_EN } = process.env
+		paramsObject[SEDNA_AGENT_FIELD] = SEDNA_AGENT
+		paramsObject['lg'] = SEDNA_LOCALE_EN 
+
+		const params = new URLSearchParams()
+		for(const key in paramsObject){
+			params.append( key, paramsObject[key] )
+		}
+		params.sort()
+		const baseUrl = [SEDNA_DOMAIN, apiRoute, methodRoute].join('')
+		const url = `${baseUrl}?${params.toString()}`
 		const f = await fetch(url, request)
 		const response = await f.text()
-		return response
+		const json = decodeXml(response)
+		console.log(json)
+		return json 
 	}catch(err){
+		console.log(err)
 		return err
 	}
 }
