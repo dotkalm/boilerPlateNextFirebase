@@ -14,8 +14,6 @@ serviceAccount.json
 /node_modules
 /.pnp
 .pnp.js
-src/next.config.js
-next.config.js
 # testing
 /coverage
 /ui_images

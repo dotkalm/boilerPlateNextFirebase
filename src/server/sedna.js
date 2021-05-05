@@ -13,6 +13,7 @@ export const getRequest = async () => {
 			cache: 'default',
 		}
 		const url = process.env.SEDNA_DOMAIN 
+		console.log(url)
 		const f = await fetch(url, request)
 		const response = await f.text()
 		return response
