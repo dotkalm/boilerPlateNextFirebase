@@ -20,7 +20,6 @@ const decodeXml = xmlData => {
 			arrayMode: false, 
 			attrValueProcessor: (val, attrName) => {
 				const r = he.decode(val, {isAttributeValue: true})
-				console.log(r)
 				return r
 			},
 			tagValueProcessor : a => {

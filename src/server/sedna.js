@@ -1,9 +1,24 @@
 import fetch from 'node-fetch'
 import { xmlHttpRequest } from 'xmlhttprequest'
 import decodeXml from '../shared/utils/decodeXml'
+import orderedParams from '../shared/orderedParams'
 
+const { 
+	SEDNA_API_DOMAIN, 
+	SEDNA_API_ROUTE, 
+	SEDNA_DESTINATIONS_ROUTE,
+	SEDNA_AGENT_FIELD,
+	SEDNA_AGENT,
+	DEFAULT_LOCALE,
+} = process.env
 
-export const getRequest = async (apiRoute, methodRoute, paramsObject) => {
+export const sednaRoute = apiRoute => {
+	const apiMap = {
+		'destinations': SEDNA_DESTINATIONS_ROUTE 
+	}
+	return [ SEDNA_API_DOMAIN, SEDNA_API_ROUTE, apiMap[apiRoute] ].join('')
+}
+export const getXmlRequest = async (baseUrl, paramsObject) => {
 	try{
 		const request = {
 			method: 'GET',
@@ -14,22 +29,15 @@ export const getRequest = async (apiRoute, methodRoute, paramsObject) => {
 			mode: 'cors',
 			cache: 'default',
 		}
-		const { SEDNA_DOMAIN, SEDNA_AGENT_FIELD, SEDNA_AGENT, SEDNA_LOCALE_EN } = process.env
-		paramsObject[SEDNA_AGENT_FIELD] = SEDNA_AGENT
-		paramsObject['lg'] = SEDNA_LOCALE_EN 
 
-		const params = new URLSearchParams()
-		for(const key in paramsObject){
-			params.append( key, paramsObject[key] )
-		}
-		params.sort()
-		const baseUrl = [SEDNA_DOMAIN, apiRoute, methodRoute].join('')
-		const url = `${baseUrl}?${params.toString()}`
+		paramsObject['lg'] = process.env[`SEDNA_LOCALE_${DEFAULT_LOCALE}`]
+		paramsObject[SEDNA_AGENT_FIELD] = SEDNA_AGENT
+		const params = orderedParams(paramsObject)
+		const url = `${baseUrl}${params}`
+		console.log(url)
 		const f = await fetch(url, request)
 		const response = await f.text()
-		const json = decodeXml(response)
-		console.log(json)
-		return json 
+		return decodeXml(response)
 	}catch(err){
 		console.log(err)
 		return err

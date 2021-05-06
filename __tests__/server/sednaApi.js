@@ -1,21 +1,19 @@
-import { postRequest, getRequest } from '../../src/server/sedna'
+import { getXmlRequest, sednaRoute } from '../../src/server/sedna'
 
 test('sedna low level', async () => {
-	const { SEDNA_API_ROUTE, SEDNA_DESTINATIONS_ROUTE } = process.env
+	const url = sednaRoute('destinations')
 	const params = {}
-  const data = await getRequest(SEDNA_API_ROUTE, SEDNA_DESTINATIONS_ROUTE, params)
-  expect(typeof(data)).toBe('object')
-  expect(data['destinations']).not.toEqual(undefined)
-  expect(data['destinations']['destination']).not.toEqual(undefined)
-	const d = data['destinations']['destination']
-  expect(d).toBe('come sail away')
+  const data = await getXmlRequest(url, params)
+	expect(data).not.toBe(undefined)
+	console.log(data)
+	expect(data.destinations).not.toBe(undefined)
 })
 
 test('the fetch fails with an error', async () => {
   try {
-		const { SEDNA_API_ROUTE, SEDNA_DESTINATIONS_ROUTE } = process.env
+		const url = sednaRoute('destinations')
 		const params = {}
-    await getRequest(SEDNA_API_ROUTE, SEDNA_DESTINATIONS_ROUTE, params)
+    await getXmlRequest(url, params)
   } catch (e) {
     expect(e).toMatch('error')
   }
