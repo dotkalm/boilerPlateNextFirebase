@@ -2,5 +2,6 @@
 
 ## jest added
 ## sample tests loaded 
+## firebase removed, custom server removed, leverage vercel deployment
 
 
