@@ -1,29 +1,30 @@
 require('dotenv').config()
-module.exports = {
-	async redirects() {
-		return [
-			{
-				source: '/auth/callback/redirect',
-				destination: '/',
-				permanent: true,
-			},
-		]
-	},
-	webpack: (config, { isServer }) => {
-		if (!isServer) {
-			config.node = { }
+const defaultExport = () => {
+	const importEnvFromRoot = () => {
+		const env = {}
+		const keys = Object.keys(process.env)
+		const index = keys.findIndex(e => e === 'NODE_ENV') + 1
+		const lengthOfArray = keys.length - index 
+		const newArray = new Array(lengthOfArray) 
+		for(let i = 0; i < lengthOfArray; i++){
+			const element = Object.keys(process.env)[i + index]
+			env[element] = process.env[element]
 		}
-		return config
-	},
-	distDir: './next',
-	images:{
-		domains: [ 'firebasestorage.googleapis.com', 'storage.cloud.google.com', 'storage.googleapis.com' ],
-	},
-	externals: [ 'commonjs2 firebase-admin' ],
-	"presets": ["next/babel"],
-	"plugins": [["styled-components", { "ssr": true, "displayName": true }]],
-	env: {
-		RUNTIME_ENV: process.env.NODE_ENV,
+		return env
 	}
+	const o = {
+		webpack: (config, { isServer }) => {
+			if (!isServer) {
+				config.node = { }
+			}
+			return config
+		},
+		distDir: './next',
+		externals: [ 'commonjs2' ],
+		"presets": ["next/babel"],
+		"plugins": [["styled-components", { "ssr": true, "displayName": true }]],
+		env: importEnvFromRoot(),
+	}
+	return o
 }
-
+module.exports = defaultExport() 
