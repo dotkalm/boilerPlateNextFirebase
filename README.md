@@ -1,7 +1,3 @@
-## 2021 isomorphic react app using next js served with firebase functions/hosting
-
-## jest added
+## 2021 react app using next js 
 ## sample tests loaded 
-## firebase removed, custom server removed, leverage vercel deployment
-
 
