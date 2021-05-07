@@ -24,7 +24,11 @@ export const sednaGet = async (baseUrl, paramsObject) => {
 		const params = orderedParams(paramsObject)
 		const url = `${baseUrl}${params}`
 		const jsonTree = await requestXml(url)
-		return jsonRecurse(jsonTree, {})
+		const data = jsonRecurse(jsonTree, {})
+		const [ fKey ] = Object.keys(data)
+		const map = data[fKey]
+		const [ result ] = Object.keys(map)
+		return map[result]
 	}catch(err){
 		console.log(err)
 		return err
