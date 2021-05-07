@@ -1,4 +1,4 @@
-import { getXmlRequest, sednaRoute } from '../../src/server/sedna'
+import { getXmlRequest, sednaRoute } from '../../src/server/services/sedna'
 
 test('sedna low level', async () => {
 	const url = sednaRoute('destinations')
@@ -6,6 +6,7 @@ test('sedna low level', async () => {
   const data = await getXmlRequest(url, params)
 	expect(data).not.toBe(undefined)
 	expect(data.destinations).not.toBe(undefined)
+	expect(Array.isArray(data.destinations)).toBe(true)
 })
 
 test('the fetch fails with an error', async () => {
