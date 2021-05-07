@@ -3,7 +3,7 @@ import {
 	FieldInput,
 } from './inputTypes'
 import { 
-	FieldType,
+	DestinationType,
 } from './types'
 const {
 	GraphQLString,
@@ -22,7 +22,7 @@ const Mutation = new GraphQLObjectType({
 	fields: (args, request) => {
 		return ({
 			basic: {
-				type: FieldType,
+				type: DestinationType,
 				description: 'field',
 				args: {
 					session: { type: FieldInput }

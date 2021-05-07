@@ -1,7 +1,9 @@
 import * as graphql from 'graphql'
 import Mutation from './mutation'
+import { getDestinations } from '../actions/sail'
 import { 
 	FieldType,
+	DestinationType,
 } from './types'
 import {
 	FieldInput,
@@ -22,14 +24,14 @@ const RootQuery = new GraphQLObjectType({
 	name: 'Query',
 	fields: (args, request) => {
 		return {
-			field: {
-				type: FieldType,
-				description: 'generic input ',
+			destinations: {
+				type: DestinationType,
+				description: 'a destination that has boats',
 				args: {
 					params: { type: FieldInput } 
 				},
 				resolve(parent, args, request){
-					return {} 
+					return getDestinations(args, request)
 				}
 			},
 		}

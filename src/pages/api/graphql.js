@@ -1,5 +1,5 @@
 import { graphqlHTTP } from 'express-graphql'
-import Schema from '../../graphql/schema'
+import Schema from '../../server/graphql/schema'
 
 const graphQLConfigs = {
 	schema: Schema

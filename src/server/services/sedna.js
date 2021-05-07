@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import { xmlHttpRequest } from 'xmlhttprequest'
-import decodeXml from '../shared/utils/decodeXml'
-import orderedParams from '../shared/orderedParams'
+import decodeXml from '../../shared/utils/decodeXml'
+import orderedParams from '../../shared/orderedParams'
 
 const { 
 	SEDNA_API_DOMAIN, 
@@ -36,7 +36,9 @@ export const getXmlRequest = async (baseUrl, paramsObject) => {
 		const url = `${baseUrl}${params}`
 		const f = await fetch(url, request)
 		const response = await f.text()
-		return decodeXml(response)
+		const decoded = decodeXml(response)
+		console.log(decoded)
+		return decoded
 	}catch(err){
 		console.log(err)
 		return err
