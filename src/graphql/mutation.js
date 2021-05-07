@@ -1,11 +1,9 @@
 import * as graphql from "graphql"
 import {
-	addShopType,
-	SessionInput,
+	FieldInput,
 } from './inputTypes'
 import { 
-	ShopType,
-	ShopSession
+	FieldType,
 } from './types'
 const {
 	GraphQLString,
@@ -17,43 +15,20 @@ const {
 	GraphQLList,
 	GraphQLBoolean,
 } = graphql
-import { 
-	oAuthExchange, 
-	retrieveJwt,
-} from '../server/shopify'
+
 
 const Mutation = new GraphQLObjectType({
 	name: 'Mutation',
 	fields: (args, request) => {
 		return ({
-			requestJwt: {
-				type: ShopSession,
-				description: 'a merchant session',
+			basic: {
+				type: FieldType,
+				description: 'field',
 				args: {
-					session: { type: SessionInput }
+					session: { type: FieldInput }
 				},
 				resolve(parent, args, request){
-					console.log(args.session, '< ---- session , requestJwt')
-					if(args.session){
-						return retrieveJwt(args.session, request).then(object => {
-							return object
-						})
-					}
-				}
-			},
-			addStore: {
-				type: ShopType,
-				description: 'a shop',
-				args: {
-					shop: { type: addShopType }
-				},
-				resolve(parent, args, request){
-					if(args.shop && args.shop.state){
-						return oAuthExchange(args.shop, request).then(object => {
-							console.log(object, 31)
-							return object
-						})
-					}
+					return {}
 				}
 			}
 		})

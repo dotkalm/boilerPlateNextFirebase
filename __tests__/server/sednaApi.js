@@ -5,7 +5,6 @@ test('sedna low level', async () => {
 	const params = {}
   const data = await getXmlRequest(url, params)
 	expect(data).not.toBe(undefined)
-	console.log(data)
 	expect(data.destinations).not.toBe(undefined)
 })
 

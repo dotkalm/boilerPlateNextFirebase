@@ -34,7 +34,6 @@ export const getXmlRequest = async (baseUrl, paramsObject) => {
 		paramsObject[SEDNA_AGENT_FIELD] = SEDNA_AGENT
 		const params = orderedParams(paramsObject)
 		const url = `${baseUrl}${params}`
-		console.log(url)
 		const f = await fetch(url, request)
 		const response = await f.text()
 		return decodeXml(response)

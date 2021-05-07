@@ -1,5 +1,5 @@
 require('dotenv').config()
-const defaultExport = () => {
+const defaultExport = context => {
 	const importEnvFromRoot = () => {
 		const env = {}
 		const keys = Object.keys(process.env)
@@ -13,18 +13,14 @@ const defaultExport = () => {
 		return env
 	}
 	const o = {
-		webpack: (config, { isServer }) => {
-			if (!isServer) {
-				config.node = { }
-			}
-			return config
-		},
 		distDir: './next',
-		externals: [ 'commonjs2' ],
 		"presets": ["next/babel"],
+		future: {
+			webpack5: true,
+		},
 		"plugins": [["styled-components", { "ssr": true, "displayName": true }]],
 		env: importEnvFromRoot(),
 	}
 	return o
 }
-module.exports = defaultExport() 
+module.exports = defaultExport()

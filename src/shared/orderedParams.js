@@ -4,7 +4,6 @@ const orderedParams = object => {
 		params.append( key, object[key] )
 	}
 	params.sort()
-	console.log(params)
 	return `?${params.toString()}`
 }
 export default orderedParams

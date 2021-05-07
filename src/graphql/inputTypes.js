@@ -1,13 +1,4 @@
 import * as graphql from 'graphql'
-import {
-	mutationWithClientMutationId,
-	connectionArgs,
-	connectionDefinitions,
-	connectionFromArray,
-	nodeDefinitions,
-	globalIdField,
-	fromGlobalId
-} from 'graphql-relay'
 const {
 	GraphQLBoolean,
 	GraphQLString,
@@ -19,13 +10,8 @@ const {
 	GraphQLList,
 	GraphQLInputObjectType,
 } = graphql
-export const { nodeInterface, nodeField } = nodeDefinitions(
-	globalId => {
-		const { type, id } = fromGlobalId(globalId)
-	},
-)
-export const fieldInput = new GraphQLInputObjectType({ 
-	name: 'basic field input',
+export const FieldInput = new GraphQLInputObjectType({ 
+	name: 'basicFieldInput',
 	fields: () => ({
 		name: { type: GraphQLString }
 	})
