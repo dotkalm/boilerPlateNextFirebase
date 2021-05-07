@@ -6,7 +6,7 @@ const decodeXml = xmlData => {
 		const options = {
 			attributeNamePrefix : "",
 			attrNodeName: "", 
-			textNodeName : "edge",
+			textNodeName : "",
 			ignoreAttributes : false,
 			ignoreNameSpace : false,
 			allowBooleanAttributes : false,

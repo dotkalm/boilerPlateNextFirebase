@@ -1,8 +1,6 @@
-import fetch from 'node-fetch'
-import { xmlHttpRequest } from 'xmlhttprequest'
-import decodeXml from '../../shared/utils/decodeXml'
+import requestXml from '../../shared/utils/requestXml'
 import orderedParams from '../../shared/orderedParams'
-
+import jsonRecurse from '../../shared/utils/recurse'
 const { 
 	SEDNA_API_DOMAIN, 
 	SEDNA_API_ROUTE, 
@@ -18,27 +16,16 @@ export const sednaRoute = apiRoute => {
 	}
 	return [ SEDNA_API_DOMAIN, SEDNA_API_ROUTE, apiMap[apiRoute] ].join('')
 }
-export const getXmlRequest = async (baseUrl, paramsObject) => {
+export const sednaGet = async (baseUrl, paramsObject) => {
 	try{
-		const request = {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/xml',
-				'Accept': 'application/xml',
-			},
-			mode: 'cors',
-			cache: 'default',
-		}
 
 		paramsObject['lg'] = process.env[`SEDNA_LOCALE_${DEFAULT_LOCALE}`]
 		paramsObject[SEDNA_AGENT_FIELD] = SEDNA_AGENT
 		const params = orderedParams(paramsObject)
 		const url = `${baseUrl}${params}`
-		const f = await fetch(url, request)
-		const response = await f.text()
-		const decoded = decodeXml(response)
-		console.log(decoded)
-		return decoded
+		const jsonTree = await requestXml(url)
+		const newObject = jsonRecurse(jsonTree, {})
+		return jsonTree
 	}catch(err){
 		console.log(err)
 		return err

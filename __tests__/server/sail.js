@@ -1,8 +1,7 @@
 import { getDestinations } from '../../src/server/actions/sail'
 
 test('sail low level', async () => {
-	const url = getDestinations('destinations')
-	console.log(url)
-	expect(url).not.toBe(undefined)
+	const data = await getDestinations('destinations')
+	expect(data).not.toBe(undefined)
 })
 
