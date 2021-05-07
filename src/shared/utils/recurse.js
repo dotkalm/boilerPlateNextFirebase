@@ -13,7 +13,6 @@ const jsonRecurse = (jsonObject, accumulator) => {
 			}
 		}
 	}
-	console.log(jsonObject,accumulator)
 	return accumulator
 }
 export default jsonRecurse
