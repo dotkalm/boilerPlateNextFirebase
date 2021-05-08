@@ -1,4 +1,5 @@
 import * as graphql from 'graphql'
+
 const {
 	GraphQLList,
 	GraphQLString,
@@ -7,18 +8,6 @@ const {
 	GraphQLID,
 } = graphql
 
-export const edgeType = new GraphQLObjectType({ 
-	name: 'edgeConnection',
-	description: 'edge of node connection',
-	fields: () => ({
-		node: { 
-			type: NodeType,
-			resolve: (p,args) => {
-				console.log(p)
-			}
-		},
-	})
-})
 export const DestinationConnection = new GraphQLObjectType({
 	name: 'vesselDestinationOrRegionConnection',
 	description: 'region of vessel connection',

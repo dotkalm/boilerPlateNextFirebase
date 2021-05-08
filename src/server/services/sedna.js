@@ -1,5 +1,5 @@
 import requestXml from '../../shared/utils/requestXml'
-import orderedParams from '../../shared/orderedParams'
+import orderedParams from '../../shared/utils/orderedParams'
 import jsonRecurse from '../../shared/utils/recurse'
 const { 
 	SEDNA_API_DOMAIN, 
