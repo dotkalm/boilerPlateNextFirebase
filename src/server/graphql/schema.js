@@ -4,6 +4,7 @@ import { getDestinations } from '../actions/sail'
 import { 
 	FieldType,
 	DestinationType,
+	DestinationConnection,
 } from './types'
 import {
 	FieldInput,
@@ -25,13 +26,16 @@ const RootQuery = new GraphQLObjectType({
 	fields: (args, request) => {
 		return {
 			destinations: {
-				type: DestinationType,
-				description: 'a destination that has boats',
+				type: DestinationConnection,
+				description: 'a destination that has countries, bases, marinas and vessels',
 				args: {
 					params: { type: FieldInput } 
 				},
 				resolve(parent, args, request){
-					return getDestinations(args, request)
+					return getDestinations(args, request).then(data => {
+						const { sednaData, bookingManager } = data 
+						return sednaData 
+					})
 				}
 			},
 		}
