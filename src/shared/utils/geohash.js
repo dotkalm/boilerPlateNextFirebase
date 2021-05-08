@@ -129,8 +129,6 @@ class Geohash {
 
 
     static adjacent(geohash, direction) {
-        // based on github.com/davetroy/geohash-js
-
         geohash = geohash.toLowerCase();
         direction = direction.toLowerCase();
 

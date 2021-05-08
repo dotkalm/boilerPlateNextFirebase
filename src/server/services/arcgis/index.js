@@ -26,3 +26,9 @@ export const gisGeocoder = async place => {
 		return err
 	}
 }
+
+export const defineGlobalId = async element => {
+	const { locationString } = element 
+	const place = await gisGeocoder(locationString)
+	return place
+}
