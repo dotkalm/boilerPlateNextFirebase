@@ -16,11 +16,11 @@ export const geocoderQueryOne = async place => {
 export const gisGeocoder = async place => {
 	try{
 		const geo = await geocoderQueryOne(place) 
-		const { extent, feature, name } = geo
+		const { feature, name } = geo
 		const { geometry } = feature
 		const { x , y } = geometry 
 		const geohash = geoEncode(y, x)
-		return { geohash, extent, lat: y, lng: x } 
+		return { geohash, lat: y, lng: x, gisName: name } 
 	}catch(err){
 		console.log(err)
 		return err

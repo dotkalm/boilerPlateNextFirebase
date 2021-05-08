@@ -182,3 +182,4 @@ class Geohash {
 }
 
 export const geoEncode = (lat, lng) => Geohash.encode(lat, lng)
+export const geoDecode = geohash => Geohash.decode(geohash)

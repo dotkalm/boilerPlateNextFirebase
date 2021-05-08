@@ -1,5 +1,6 @@
 import { allBasesAndMarinas } from '../../src/server/services/sedna'
 import { gisGeocoder } from '../../src/server/services/arcgis'
+import { geoDecode } from '../../src/shared/utils/geohash'
 
 let data 
 beforeAll(() => {
@@ -37,6 +38,18 @@ test('a locationString can return coordinates', async () => {
 	const [ dock ] = data 
 	const { locationString } = dock
 	const place = await gisGeocoder(locationString)
-	console.log(place)
 	expect(place).not.toBe(undefined)
+})
+
+test('a geohash can be decoded into lat lng within .0000001 accuracy', async () => {
+	const [ dock ] = data 
+	const { locationString } = dock
+	const place = await gisGeocoder(locationString)
+	const { geohash, lat, lng } = place
+	const result = geoDecode(geohash)
+	expect(place).not.toBe(undefined)
+	const yDif = Math.abs(result.lon - lng)
+	const xDif = Math.abs(result.lat - lat)
+	expect(yDif < .0000001).toBe(true)
+	expect(xDif < .0000001).toBe(true)
 })
