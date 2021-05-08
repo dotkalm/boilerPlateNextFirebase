@@ -1,6 +1,7 @@
 import requestXml from '../../shared/utils/requestXml'
 import orderedParams from '../../shared/utils/orderedParams'
 import jsonRecurse from '../../shared/utils/recurse'
+import { gisGeocoder } from './arcgis'
 const { 
 	SEDNA_API_DOMAIN, 
 	SEDNA_API_ROUTE, 
@@ -53,27 +54,27 @@ export const allBasesAndMarinas = async () => {
 			if(id_base || id_marina){
 				if(!marina){
 					if(id_marina){
-						marinasAndBases.push({ name, marinaId: id_marina })
+						marinasAndBases.push({ marinaId: id_marina, marina: name })
 					}else{
-						marinasAndBases.push({ name, baseId: id_base })
+						marinasAndBases.push({ baseId: id_base, base: name })
 					}
 				}else{
-					const index = marinasAndBases.findIndex(e => e.name === marina.name)
+					const index = marinasAndBases.findIndex(e => e.marina === marina.name)
 					marinasAndBases[index].baseId = id_base 
-					marinasAndBases[index].baseName = destination.name
+					marinasAndBases[index].base = destination.name
 				}
 			}else{
 				if(id_country){
 					if(!Array.isArray(base)){
 							const index = marinasAndBases.findIndex(e => e.baseId === base.id_base)	
 							marinasAndBases[index].countryId = id_country 
-							marinasAndBases[index].countryName = name
+							marinasAndBases[index].country = name
 					}else{
 						let index = 0
 						for(let i = 0; i < base.length; i++){
 							index = marinasAndBases.findIndex(e => e.baseId === base[i].id_base)
 							marinasAndBases[index].countryId = id_country 
-							marinasAndBases[index].countryName = name
+							marinasAndBases[index].country = name
 						}
 					}
 				}else{
@@ -98,8 +99,18 @@ export const allBasesAndMarinas = async () => {
 				}
 			}
 		}
-		return sednaGet(url, params, marinasAndBasesCallback).then(() => marinasAndBases)
-		.catch(err => console.log(err))
+		await sednaGet(url, params, marinasAndBasesCallback)
+		for(let i=0; i < marinasAndBases.length; i++){
+			const { marina, base, country, region } = marinasAndBases[i]
+			if(!marina){
+				marinasAndBases[i].locationString = [base, country].join(', ') 
+			}else{
+				marinasAndBases[i].locationString = [marina, base, country].join(', ') 
+			}
+			const { locationString } = marinasAndBases[i]	
+			marinasAndBases[i].locationString = locationString
+		}
+		return marinasAndBases 
 	}catch(err){
 		console.log(err)
 		return err
