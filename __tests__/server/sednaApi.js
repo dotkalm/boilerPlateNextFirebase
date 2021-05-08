@@ -1,12 +1,13 @@
-import { sednaGet, sednaRoute } from '../../src/server/services/sedna'
+import { sednaGet, sednaRoute, allBasesAndMarinas } from '../../src/server/services/sedna'
 
 test('sedna low level', async () => {
 	const url = sednaRoute('destinations')
 	const params = {}
   const data = await sednaGet(url, params)
-	console.log(data)
 	expect(data).not.toBe(undefined)
-	expect(Array.isArray(data.destinations)).toBe(true)
+	for(const key in data){
+		console.log(data[key])
+	}
 })
 
 test('the fetch fails with an error', async () => {

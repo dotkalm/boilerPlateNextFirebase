@@ -1,7 +1,7 @@
 import { geocoderQueryOne } from '../../src/server/services/arcgis'
 
 test('geo low level, query exactly matches response', async () => {
-	const locationsArray = ['Mediterranean Sea', 'Asia', 'Caribbean Sea']
+	const locationsArray = ['Mediterranean Sea', 'Asia', 'Caribbean Sea', 'Phuket']
 	for(let i =0; i < locationsArray.length; i++){
 		const locationQuery = locationsArray[i]
 		const data = await geocoderQueryOne(locationQuery)

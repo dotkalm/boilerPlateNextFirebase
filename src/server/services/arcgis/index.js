@@ -1,7 +1,6 @@
 import orderedParams from '../../../shared/utils/orderedParams'
 import { getRequest } from '../../../shared/utils/request'
 const { GEOCODER_URL } = process.env
-
 export const geocoderQueryOne = async place => {
 	const params = orderedParams({
 		f: 'json',
