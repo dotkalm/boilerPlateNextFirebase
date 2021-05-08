@@ -5,7 +5,6 @@ test('geo low level, query exactly matches response', async () => {
 	for(let i =0; i < locationsArray.length; i++){
 		const locationQuery = locationsArray[i]
 		const data = await geocoderQueryOne(locationQuery)
-		console.log(data)
 		expect(data.name).toEqual(locationQuery)
 		expect(Array.isArray(Object.keys(data.extent))).toBe(true)
 	}

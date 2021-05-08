@@ -1,4 +1,6 @@
 import { allBasesAndMarinas } from '../../src/server/services/sedna'
+import { gisGeocoder } from '../../src/server/services/arcgis'
+
 let data 
 beforeAll(() => {
 	return allBasesAndMarinas().then(d => {
@@ -31,4 +33,10 @@ test('all marinas/bases have locationStrings', () => {
 		expect(dock.locationString).not.toBe(undefined)
 	}
 })
-
+test('a locationString can return coordinates', async () => {
+	const [ dock ] = data 
+	const { locationString } = dock
+	const place = await gisGeocoder(locationString)
+	console.log(place)
+	expect(place).not.toBe(undefined)
+})
