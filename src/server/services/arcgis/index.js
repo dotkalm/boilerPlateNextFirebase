@@ -30,5 +30,17 @@ export const gisGeocoder = async place => {
 export const defineGlobalId = async element => {
 	const { locationString } = element 
 	const place = await gisGeocoder(locationString)
-	return place
+	return { ...element, ...place } 
 }
+export const defineGlobalIds = data => Promise.all(data.map(e => defineGlobalId(e)))
+	.then(newArray => { 
+		const a = newArray.sort((x,y) => {
+			if(x.geohash < y.geohash){
+				return -1 
+			}else{
+				return 1
+			}
+		})
+		console.log(a)
+		return a
+	})

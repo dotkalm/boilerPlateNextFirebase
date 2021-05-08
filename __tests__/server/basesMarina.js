@@ -1,5 +1,5 @@
 import { allBasesAndMarinas } from '../../src/server/services/sedna'
-import { gisGeocoder, defineGlobalId } from '../../src/server/services/arcgis'
+import { gisGeocoder, defineGlobalId, defineGlobalIds } from '../../src/server/services/arcgis'
 import { geoDecode } from '../../src/shared/utils/geohash'
 
 let data 
@@ -54,23 +54,6 @@ test('a geohash can be decoded into lat lng within .0000001 accuracy', async () 
 })
 
 test('a collection of regions can be sorted', async () => {
-	const newArray = new Array(data.length)
-	for(let i = 0; i < data.length; i++){
-		const dock = data[i]
-		const place = await defineGlobalId(dock)
-		newArray[i] = { ...dock, ...place } 
-	}
-	newArray.sort((x,y) => {
-		if(x.geohash > y.geohash){
-			return x
-		}else{
-			return y
-		}
-	})
-	for(let i = 0; i < newArray.length; i++){
-		const { gisName, country, region, base, lat, lng, geohash } = newArray[i]
-		console.log({ gisName, country, region, base, lat, lng, geohash })
-		expect(gisName).not.toBe(undefined)
-	}
+	const newArray = await defineGlobalIds(data)
 	expect(newArray).not.toBe(undefined)
 })
