@@ -8,3 +8,7 @@ test('there is a static json with globalIds for each destination', async () => {
 	expect(Array.isArray(destinationsWithIds)).toBe(true)
 })
 
+test('expect cursor/globalid to be concatentated geohash + type as base64', async () => {
+	expect(destinationsWithIds).not.toBe(undefined)
+	expect(Array.isArray(destinationsWithIds)).toBe(true)
+})

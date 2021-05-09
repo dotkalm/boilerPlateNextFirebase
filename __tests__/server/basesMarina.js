@@ -60,12 +60,9 @@ test('a collection of regions can be sorted, and saved as static file', async ()
 		const content = JSON.stringify(destinationsWithGlobalIds)
 		fs.writeFile('../../src/shared/utils/const/destinationsWithGlobalIds.json', content, err => {
 			if(!err){
-				console.log(content)
-				console.log('done')
 				expect(destinationsWithIds).not.toBe(undefined)
 				expect(Array.isArray(destinationsWithIds)).toBe(true)
 			}else{
-				console.log(err)
 				expect(err).toBe(undefined)
 				return err
 			}
