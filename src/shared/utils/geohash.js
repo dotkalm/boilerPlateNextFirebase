@@ -1,4 +1,5 @@
 const base32 = '0123456789bcdefghjkmnpqrstuvwxyz'
+
 class Geohash {
 	static encode(lat, lon, precision) {
 		if (typeof precision == 'undefined') {
@@ -7,7 +8,7 @@ class Geohash {
 				const posn = Geohash.decode(hash)
 				if (posn.lat==lat && posn.lon==lon) return hash
 			}
-			precision = 12; 
+			precision = 12
 		}
 
 		lat = Number(lat)
@@ -55,23 +56,20 @@ class Geohash {
 
 		return geohash
 	}
-
-
 	static decode(geohash) {
-			const bounds = Geohash.bounds(geohash); 
+		const bounds = Geohash.bounds(geohash)
 
-			const latMin = bounds.sw.lat, lonMin = bounds.sw.lon
-			const latMax = bounds.ne.lat, lonMax = bounds.ne.lon
+		const latMin = bounds.sw.lat, lonMin = bounds.sw.lon
+		const latMax = bounds.ne.lat, lonMax = bounds.ne.lon
 
-			let lat = (latMin + latMax)/2
-			let lon = (lonMin + lonMax)/2
+		let lat = (latMin + latMax)/2
+		let lon = (lonMin + lonMax)/2
 
-			lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10))
-			lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10))
+		lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10))
+		lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10))
 
-			return { lat: Number(lat), lon: Number(lon) }
+		return { lat: Number(lat), lon: Number(lon) }
 	}
-
 	static bounds(geohash) {
 		if (geohash.length == 0) throw new Error('Invalid geohash')
 
@@ -113,8 +111,7 @@ class Geohash {
 		}
 		return bounds
 	}
-
 }
 
-export const geoEncode = (lat, lng) => Geohash.encode(lat, lng)
+export const geoEncode = (lat, lng, precision) => Geohash.encode(lat, lng, precision)
 export const geoDecode = geohash => Geohash.decode(geohash)
