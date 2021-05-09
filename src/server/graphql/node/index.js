@@ -59,18 +59,12 @@ export const fromGlobalId = globalId => {
 	}
 }
 export const globalIdField = (typeName, idFetcher) => {
-  return {
-    description: 'The ID of an object',
-    type: new GraphQLNonNull(GraphQLID),
-    resolve: (obj, args, ctx, info) => {
-			let theTypeName
-			if(typeName){
-				theTypeName = info.parentType.name
-			}
-      return toGlobalId(
-        theTypeName,
-        idFetcher ? idFetcher(obj, ctx, info) : obj.id,
-      ),
-		}
-  }
+	return {
+		description: 'The ID of an object',
+		type: new GraphQLNonNull(GraphQLID),
+		resolve: (obj, args, ctx, info) => toGlobalId(
+			info.parentType.name,
+			idFetcher ? idFetcher(obj, ctx, info) : obj.id,
+		)
+	}
 }
