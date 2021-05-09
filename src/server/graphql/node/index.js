@@ -27,21 +27,25 @@ export const nodeDefinitions = (idFetcher, typeResolver) => {
         type: new GraphQLNonNull(GraphQLID),
         description: 'The ID of an object',
       }
-    }
+    },
+		resolve: (obj, { id }, context, info) => idFetcher(id, context, info),
   }
 
-  const nodesField = {
-    description: 'Fetches objects given their IDs',
-    type: new GraphQLNonNull(new GraphQLList(nodeInterface)),
-    args: {
-      ids: {
-        type: new GraphQLNonNull(
-          new GraphQLList(new GraphQLNonNull(GraphQLID)),
-        ),
-        description: 'The IDs of objects',
-      }
-    }
-  }
+	const nodesField = {
+		description: 'Fetches objects given their IDs',
+		type: new GraphQLNonNull(new GraphQLList(nodeInterface)),
+		args: {
+			ids: {
+				type: new GraphQLNonNull(
+					new GraphQLList(new GraphQLNonNull(GraphQLID)),
+				),
+				description: 'The IDs of objects',
+			}
+		},
+		resolve: (obj, { ids }, context, info) =>
+			ids.map((id) => idFetcher(id, context, info)),
+		}
+	}
 
   return { nodeInterface, nodeField, nodesField }
 }
