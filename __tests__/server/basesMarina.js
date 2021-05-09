@@ -1,6 +1,7 @@
 import { allBasesAndMarinas } from '../../src/server/services/sedna'
 import { gisGeocoder, defineGlobalId, defineAndSortGlobalIds } from '../../src/server/services/arcgis'
 import { geoDecode } from '../../src/shared/utils/geohash'
+import fs from 'fs'
 
 let data 
 beforeAll(() => {
@@ -53,7 +54,24 @@ test('a geohash can be decoded into lat lng within .0000001 accuracy', async () 
 	expect(xDif < .0000001).toBe(true)
 })
 
-test('a collection of regions can be sorted', async () => {
-	const newArray = await defineAndSortGlobalIds(data)
-	expect(newArray).not.toBe(undefined)
+test('a collection of regions can be sorted, and saved as static file', async () => {
+	try{
+		const destinationsWithGlobalIds = await defineAndSortGlobalIds(data)
+		const content = JSON.stringify(destinationsWithGlobalIds)
+		fs.writeFile('../../src/shared/utils/const/destinationsWithGlobalIds.json', content, err => {
+			if(!err){
+				console.log(content)
+				console.log('done')
+				expect(destinationsWithIds).not.toBe(undefined)
+				expect(Array.isArray(destinationsWithIds)).toBe(true)
+			}else{
+				console.log(err)
+				expect(err).toBe(undefined)
+				return err
+			}
+		})
+	}catch(err){
+		console.log(err)
+		return err
+	}
 }, 15000)
