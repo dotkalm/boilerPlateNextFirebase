@@ -16,7 +16,7 @@ const defaultExport = context => {
 		distDir: './next',
 		"presets": ["next/babel"],
 		future: {
-			webpack5: true,
+			webpack5: false,
 		},
 		"plugins": [["styled-components", { "ssr": true, "displayName": true }]],
 		env: importEnvFromRoot(),
