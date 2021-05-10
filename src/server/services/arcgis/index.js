@@ -19,7 +19,7 @@ export const gisGeocoder = async place => {
 		const { feature, name } = geo
 		const { geometry } = feature
 		const { x , y } = geometry 
-		const geohash = geoEncode(y, x)
+		const geohash = geoEncode(y, x, 6)
 		return { geohash, lat: y, lng: x, gisName: name } 
 	}catch(err){
 		console.log(err)

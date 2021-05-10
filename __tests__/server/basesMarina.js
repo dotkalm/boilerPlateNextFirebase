@@ -42,23 +42,13 @@ test('a locationString can return coordinates', async () => {
 	expect(place).not.toBe(undefined)
 })
 
-test('a geohash can be decoded into lat lng within .0000001 accuracy', async () => {
-	const [ dock ] = data 
-	const place = await defineGlobalId(dock)
-	const { geohash, lat, lng } = place
-	const result = geoDecode(geohash)
-	expect(place).not.toBe(undefined)
-	const yDif = Math.abs(result.lon - lng)
-	const xDif = Math.abs(result.lat - lat)
-	expect(yDif < .0000001).toBe(true)
-	expect(xDif < .0000001).toBe(true)
-})
+
 
 test('a collection of regions can be sorted, and saved as static file', async () => {
 	try{
 		const destinationsWithGlobalIds = await defineAndSortGlobalIds(data)
 		const content = JSON.stringify(destinationsWithGlobalIds)
-		fs.writeFile('../../src/shared/utils/const/destinationsWithGlobalIds.json', content, err => {
+		fs.writeFile('destinationsWithGlobalIds.json', content, err => {
 			if(!err){
 				expect(destinationsWithIds).not.toBe(undefined)
 				expect(Array.isArray(destinationsWithIds)).toBe(true)
