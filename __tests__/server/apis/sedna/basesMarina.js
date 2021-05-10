@@ -1,6 +1,6 @@
-import { allBasesAndMarinas } from '../../src/server/services/sedna'
-import { gisGeocoder, defineGlobalId, defineAndSortGlobalIds } from '../../src/server/services/arcgis'
-import { geoDecode } from '../../src/shared/utils/geohash'
+import { allBasesAndMarinas } from '../../../../src/server/services/sedna'
+import { gisGeocoder, defineGlobalId, defineAndSortGlobalIds } from '../../../../src/server/services/arcgis'
+import { geoDecode } from '../../../../src/shared/utils/geohash'
 import fs from 'fs'
 
 let data 
