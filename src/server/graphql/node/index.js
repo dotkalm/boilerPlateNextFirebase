@@ -43,8 +43,7 @@ export const nodeDefinitions = (idFetcher, typeResolver) => {
 			}
 		},
 		resolve: (obj, { ids }, context, info) =>
-			ids.map((id) => idFetcher(id, context, info)),
-		}
+		ids.map((id) => idFetcher(id, context, info)),
 	}
 
   return { nodeInterface, nodeField, nodesField }

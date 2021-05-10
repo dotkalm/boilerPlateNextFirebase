@@ -29,7 +29,10 @@ const RootQuery = new GraphQLObjectType({
 				type: DestinationConnection,
 				description: 'a destination that has countries, bases, marinas and vessels',
 				args: {
-					params: { type: FieldInput } 
+					date		 : { type: GraphQLFloat },
+					crew		 : { type: GraphQLBoolean }, 
+					days		 : { type: GraphQLInt }, 
+					geoRegion: { type: GraphQLString }, 
 				},
 				resolve(parent, args, request){
 					return getDestinations(args, request).then(data => {

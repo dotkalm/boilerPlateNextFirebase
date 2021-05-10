@@ -3,7 +3,7 @@ import {
 	fromGlobalId, 
 	globalIdField, 
 	nodeDefinitions 
-} from '../node'
+} from './node'
 const {
 	GraphQLList,
 	GraphQLString,
@@ -37,9 +37,11 @@ export const DestinationConnection = new GraphQLObjectType({
 	interfaces: [ nodeInterface ],
 	description: 'region of vessel connection',
 	fields: () => ({
+		id: globalIdField(),
 		edges: { 
-			type: new GraphQLList(DestinationType),
+			type: new GraphQLList(RegionType),
 			resolve: (p,args) => {
+				console.log(p, args)
 				return p
 			}
 		},

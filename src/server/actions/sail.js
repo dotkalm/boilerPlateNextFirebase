@@ -1,7 +1,7 @@
-import { sednaGet, sednaRoute } from '../services/sedna'
+import { allBasesAndMarinas } from '../services/sedna'
 export const getDestinations = async () => {
 	try{
-		const sednaData = await sednaGet(sednaRoute('destinations'), {})
+		const sednaData = await allBasesAndMarinas()
 		return { sednaData, bookingManager: [] } 
 	}catch(err){
 		console.log(err)
