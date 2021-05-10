@@ -82,7 +82,7 @@ export const allBasesAndMarinas = async () => {
 						if(!Array.isArray(country)){
 							const index = marinasAndBases.findIndex(e => e.countryId === country.id_country)
 							marinasAndBases[index].regionId = id_dest
-							marinasAndBases[index].regionName = name
+							marinasAndBases[index].region = name
 						}else{
 							for(let i = 0; i < country.length; i++){
 								const cid = country[i].id_country
