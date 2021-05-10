@@ -39,7 +39,6 @@ beforeAll(() => {
 		}
 		countryObject[country].add(country)
 	}
-	console.log(geohashes)
 })
 
 test('there is a static json with globalIds for each destination', async () => {

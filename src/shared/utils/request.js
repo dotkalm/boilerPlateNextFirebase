@@ -13,9 +13,9 @@ export const getRequest = async url => {
 	const response = await f.json()
 	return response
 }
-export const postRequest = async () => {
+export const postRequest = async (url, body) => {
 	try{
-		const body = { }
+		console.log(url)
 		const request = {
 			method: 'POST',
 			headers: {
@@ -26,8 +26,8 @@ export const postRequest = async () => {
 			cache: 'default',
 			body: JSON.stringify(body)
 		}
-		const f = await fetch(`https://www.google.com`, request)
-		const response = await f.text()
+		const f = await fetch(url, request)
+		const response = await f.json()
 		return response
 	}catch(err){
 		return err

@@ -1,5 +1,4 @@
-export const admin = require('firebase-admin');
-export const request = require('request')
+import admin from 'firebase-admin'
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -11,7 +10,7 @@ admin.initializeApp({
     client_id: process.env.FIREBASE_CLIENT_ID,
   }),
 })
-export const db = admin.firestore()
+const db = admin.firestore()
 
 export const getDoc = async (collectionName, docUid) => {
 	return db.collection(collectionName).doc(docUid)

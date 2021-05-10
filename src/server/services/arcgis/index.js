@@ -13,13 +13,14 @@ export const geocoderQueryOne = async place => {
 	const [ result ] = geo.locations
 	return result 
 }
-export const gisGeocoder = async place => {
+export const gisGeocoder = async (place, geoHashPrecision) => {
 	try{
-		const geo = await geocoderQueryOne(place) 
+		const geo = await geocoderQueryOne(place)
 		const { feature, name } = geo
 		const { geometry } = feature
 		const { x , y } = geometry 
-		const geohash = geoEncode(y, x, 6)
+		const precision = geoHashPrecision ? geoHashPrecision : 6
+		const geohash = geoEncode(y, x, precision)
 		return { geohash, lat: y, lng: x, gisName: name } 
 	}catch(err){
 		console.log(err)
