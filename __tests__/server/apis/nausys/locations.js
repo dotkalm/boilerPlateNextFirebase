@@ -20,7 +20,7 @@ test('retrieve locations from nausys api with a non empty array', () => {
 	expect(locations.length > 0).toBe(true)
 })
 
-test('retrieve locations from nausys api with a non empty array', async () => {
+test('retrieve locations from nausys api, geohash, merge w existing vendors', async () => {
 	const { locations } = data
 	for(let i=0;i<locations.length;i++){
 		const place = locations[i]
