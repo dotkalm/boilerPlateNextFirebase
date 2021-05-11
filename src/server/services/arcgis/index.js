@@ -28,14 +28,13 @@ export const geocoder = async (place, type) => {
 }
 export const gisGeocoder = async (place, geoHashPrecision) => {
 	try{
-		const geo = await geocoder(place, 'location')
-		console.log(geo)
-		const { feature, name } = geo
+		const geo = await geocoder({text: place}, 'location')
+		const [ { feature, name } ] = geo.locations
 		const { geometry } = feature
 		const { x , y } = geometry 
 		const precision = geoHashPrecision ? geoHashPrecision : 6
 		const geohash = geoEncode(y, x, precision)
-		return { geohash, lat: y, lng: x, gisName: name } 
+		return { geohash, lat: y, lng: x, defaultName: name } 
 	}catch(err){
 		console.log(err)
 		return err
