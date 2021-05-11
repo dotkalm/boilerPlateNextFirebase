@@ -62,10 +62,11 @@ export const requestJwt = object => {
 			}
 	`
 }
-export const basesRequest = () => {
+export const basesRequest = (object, type)=> {
+	const string = makeParams(object)
 	return `
 		{
-			bases(date:1620691110632){
+			${type}(${string}){
 				edges{
 					cursor
 					node{
