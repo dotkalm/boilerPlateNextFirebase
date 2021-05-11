@@ -12,54 +12,22 @@ const {
 	GraphQLID,
 } = graphql
 
+import { connectionDefinitions } from './connection'
+
 export const { nodeField, nodeInterface } = nodeDefinitions(
   globalId => {
-    const { type, id } = fromGlobalId(globalId)
-    switch (type) {
-      case 'Region':
-        return regionData.find((obj) => obj.id === id)
-      case 'Country':
-        return countryData.find((obj) => obj.id === id)
-      case 'Marina':
-        return countryData.find((obj) => obj.id === id)
-      case 'Base':
-        return baseData.find((obj) => obj.id === id)
-    }
+		console.log(globalId)
+		return globalId
   },
-  obj => { 
-		if (obj.name) {
-      return userType
-		}
-  }
 )
-export const DestinationConnection = new GraphQLObjectType({
-	name: 'VesselDestinationOrRegionConnection',
-	interfaces: [ nodeInterface ],
-	description: 'region of vessel connection',
-	fields: () => ({
-		id: globalIdField(),
-		edges: { 
-			type: new GraphQLList(RegionType),
-			resolve: (p,args) => {
-				console.log(p, args)
-				return p
-			}
-		},
-	})
-})
 export const RegionType = new GraphQLObjectType({
 	name: 'Region',
 	interfaces: [ nodeInterface ],
 	description: 'region of the world',
 	fields: () => ({
 		id: globalIdField(),
-		name : { 
-			type: GraphQLString, 
-			resolve: (p,args) => {
-				console.log(p)
-			}
-		},
 		apiServiceId: { type: GraphQLID },
+		name: { type: GraphQLString },
 		apiService: { type: GraphQLString },
 	})
 })
@@ -97,16 +65,6 @@ export const MarinaType = new GraphQLObjectType({
 	})
 })
 
-
-
-
-
-
-
-
-
-
-
 export const FieldType = new GraphQLObjectType({
 	name: 'aReturnField',
 	description: 'yourbasic return',
@@ -115,4 +73,7 @@ export const FieldType = new GraphQLObjectType({
 	})
 })
 
+export const { connectionType: DestinationConnection } = connectionDefinitions({
+	nodeType: RegionType
+})
 

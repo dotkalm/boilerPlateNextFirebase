@@ -1,7 +1,7 @@
 import requestXml from '../../shared/utils/requestXml'
 import orderedParams from '../../shared/utils/orderedParams'
 import jsonRecurse from '../../shared/utils/recurse'
-import { getCollection } from './firestoreNode'
+import { getCollection, addDoc } from './firestoreNode'
 import { gisGeocoder } from './arcgis'
 const { 
 	SEDNA_API_DOMAIN, 
@@ -115,20 +115,33 @@ export const allBasesAndMarinas = async () => {
 					const asset = marinasAndBases[i][assetKey]
 					const arrayKeys2 = [ ...arrayKeys ].splice(arrayKeys.indexOf(assetKey))
 					const array2 = arrayKeys2.splice(arrayKeys.indexOf(assetKey))
-					const locationString = arrayKeys2.map(k => marinasAndBases[i][k]).reverse().join(' ')
+					const locationString = arrayKeys2.map(k => marinasAndBases[i][k]).reverse().join(', ')
 					if(!vendorMap[assetKey]){
 						vendorMap[assetKey] = new Object
 					}
 					if(!vendorMap[assetKey][asset]){
-						const [ firstResult ] = await getCollection(assetKey, [[key, '==', value]])
+						const newKey = key.replace('vendor', 'sedna')
+						const [ firstResult ] = await getCollection(assetKey, [[newKey, '==', value]])
 						if(!firstResult){
 							const loc = await gisGeocoder(locationString === '' ? asset : locationString, 4)
 							const { geohash, lat, lng, gisName } = loc 
-							const oo = { geohash, lat, lng, vendorName: asset, name: gisName } 
-							oo[key] = value
+							const oo = { geohash, coords: { lat, lng },  sednaName: asset, arcgisName: gisName } 
+							oo[newKey] = value
 							oo.vendors = ['sedna']
-							console.log(oo, locationString)
+							if(assetKey === 'marina'){
+								oo.base = marinasAndBases[i].base
+								oo.country = marinasAndBases[i].country
+								oo.region = marinasAndBases[i].region
+							}
+							if(assetKey === 'base'){
+								oo.country = marinasAndBases[i].country
+								oo.region = marinasAndBases[i].region
+							}
+							if(assetKey === 'country'){
+								oo.region = marinasAndBases[i].region
+							}
 							vendorMap[assetKey][asset] = oo
+							await addDoc(assetKey, oo)
 						}else{
 							vendorMap[assetKey][asset] = firstResult
 						}
@@ -142,7 +155,6 @@ export const allBasesAndMarinas = async () => {
 				const { locationString } = marinasAndBases[i]	
 				marinasAndBases[i].locationString = locationString
 			}
-			console.log(vendorMap)
 			return marinasAndBases 
 		}else{
 			return baseArray

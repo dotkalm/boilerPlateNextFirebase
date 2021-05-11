@@ -1,15 +1,18 @@
 import admin from 'firebase-admin'
-
-admin.initializeApp({
-  credential: admin.credential.cert({
-    type: process.env.FIREBASE_TYPE,
-    project_id: process.env.FIREBASE_PROJECT_ID,
-    private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-    private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    client_email: process.env.FIREBASE_CLIENT_EMAIL,
-    client_id: process.env.FIREBASE_CLIENT_ID,
-  }),
-})
+if (!admin.apps.length) {
+	admin.initializeApp({
+		credential: admin.credential.cert({
+			type: process.env.FIREBASE_TYPE,
+			project_id: process.env.FIREBASE_PROJECT_ID,
+			private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+			private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+			client_email: process.env.FIREBASE_CLIENT_EMAIL,
+			client_id: process.env.FIREBASE_CLIENT_ID,
+		}),
+	})
+}else{
+	admin.app()
+}
 const db = admin.firestore()
 
 export const getDoc = async (collectionName, docUid) => {
@@ -22,6 +25,11 @@ export const getDoc = async (collectionName, docUid) => {
 			return 'not here'
 		}
 	})
+}
+export const addDoc = async (collectionName, obj) => {
+	return db.collection(collectionName).add(obj)
+	.then(doc => doc.id)
+	.catch(err => err)
 }
 export const setDoc = async (collectionName, obj, uid) => {
 	return db.collection(collectionName).doc(uid).set(obj)
