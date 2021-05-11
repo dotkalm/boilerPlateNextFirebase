@@ -62,3 +62,24 @@ export const requestJwt = object => {
 			}
 	`
 }
+export const basesRequest = () => {
+	return `
+		{
+			bases(date:1620691110632){
+				edges{
+					cursor
+					node{
+						name
+						apiService
+						apiServiceId
+					}
+				}
+				pageInfo{
+					endCursor
+					hasNextPage
+					hasPreviousPage
+				}
+			}
+		}
+	`
+}

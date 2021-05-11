@@ -28,7 +28,8 @@ const {
 
 const RootQuery = new GraphQLObjectType({
 	name: 'Query',
-	fields: (args, request) => {
+	fields: (parent, args, request) => {
+		console.log(parent, args)
 		return {
 			regions: {
 				type: RegionConnection,
