@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import timingSafeCompare from 'tsscmp'
 
 export const verifyHmac = (hmac, data) => {
-	const newHmac = Buffer.from(crypto.createHmac("sha256", process.env.SHARED_SECRET)
+	const newHmac = Buffer.from(crypto.createHmac("sha256", 'dfsfasdfqw')
 		.update(data)
 		.digest("hex"), 'utf-8')
 	console.log(data)

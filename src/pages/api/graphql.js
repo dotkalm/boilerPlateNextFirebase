@@ -7,7 +7,12 @@ const server = async (request, response, graphQLParams) => {
 		schema: Schema,
 		rootValue: (hmac, query) => {
 			const truth = verifyHmac(hmac, query)
-			return truth
+			if(!truth){
+				response.sendError("message goes here")
+
+			}else{
+				return truth
+			}
 		},
 		graphiql: true,
 		debug: true,
