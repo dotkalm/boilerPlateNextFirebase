@@ -1,3 +1,4 @@
+import { getCollection, updateDoc, addDoc, setDoc, getDoc } from '../../../../src/server/services/firestoreNode'
 import { getNausys } from '../../../../src/server/services/nausys'
 import { geocoder } from '../../../../src/server/services/arcgis'
 import { geoEncode } from '../../../../src/shared/utils/geohash'
@@ -41,8 +42,35 @@ test('retrieve locations from nausys api, geohash, merge w existing vendors', as
 			longitude = x
 			address = reverseAgain.address
 		}
-		const geohash = geoEncode(latitude, longitude, 6)
-		console.log(address, text, regionId, geohash)
+		const geohash = geoEncode(latitude, longitude, 7)
+		const g = { 
+			nausysLocationId: id,
+			nausysRegionId: regionId,
+			countryCode: address.CountryCode,
+			address: address.LongLabel,
+			locales: {},
+			defaultName: text,
+			geohash,
+		} 
+		for(const label in name){
+			const loc = label.replace('text','')
+			g.locales[loc] = name[label]
+		}
+		const exists = await getDoc('locations', geohash)
+		if(exists === 'not here'){
+			g.vendors = ['nausys']
+			await setDoc('locations', g, geohash)
+		}else{
+			if(exists.vendors && !exists.vendors.find(e => e === 'nausys')){
+				const updateObj = {
+					vendors: [...exists.vendors, 'nausys'],
+					...g
+				}
+				await updateDoc('locations', updateObj, geohash)
+			}
+		}
+
+		console.log(g)
 		expect(address).not.toBe(undefined)
 		expect(geohash).not.toBe(undefined)
 	}

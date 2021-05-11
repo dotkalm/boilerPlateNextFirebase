@@ -7,6 +7,7 @@ const {
 	NAUSYS_USERNAME,
 	NAUSYS_PASSWORD,
 	NAUSYS_REGIONS_ROUTE,
+	NAUSYS_CHARTER_COMPANIES_ROUTE,
 	NAUSYS_LOCATIONS_ROUTE,
 	NAUSYS_COUNTRIES_ROUTE,
 } = process.env
@@ -17,6 +18,7 @@ const routeMap = {
 	locations: NAUSYS_LOCATIONS_ROUTE,
 	regions: NAUSYS_REGIONS_ROUTE,
 	countries: NAUSYS_COUNTRIES_ROUTE,
+	companies: NAUSYS_CHARTER_COMPANIES_ROUTE,
 }
 
 export const getNausys = async route => {
