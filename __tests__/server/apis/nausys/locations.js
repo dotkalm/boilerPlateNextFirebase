@@ -44,6 +44,7 @@ test('retrieve locations from nausys api with a non empty array', async () => {
 		const geohash = geoEncode(latitude, longitude, 6)
 		console.log(address, text, regionId, geohash)
 		expect(address).not.toBe(undefined)
+		expect(geohash).not.toBe(undefined)
 	}
 }, 100000)
 

@@ -29,6 +29,7 @@ export const geocoder = async (place, type) => {
 export const gisGeocoder = async (place, geoHashPrecision) => {
 	try{
 		const geo = await geocoder(place, 'location')
+		console.log(geo)
 		const { feature, name } = geo
 		const { geometry } = feature
 		const { x , y } = geometry 
