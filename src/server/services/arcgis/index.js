@@ -1,21 +1,34 @@
 import orderedParams from '../../../shared/utils/orderedParams'
 import { getRequest } from '../../../shared/utils/request'
 import { geoEncode } from '../../../shared/utils/geohash'
-const { GEOCODER_URL } = process.env
-export const geocoderQueryOne = async place => {
-	const params = orderedParams({
-		f: 'json',
-		text: place,
-		maxLocation: 1 
-	}) 
-	const url = `${GEOCODER_URL}${params}`
-	const geo = await getRequest(url)
-	const [ result ] = geo.locations
-	return result 
+const { 
+	GEOCODER_URL,
+	DEFAULT_LOCALE
+} = process.env
+
+export const geocoder = async (place, type) => {
+	try{
+		const route = process.env[`GEOCODER_${type.toUpperCase()}`]
+		const paramsObject = { f: 'json', langCode: DEFAULT_LOCALE.toLowerCase() }
+		if(type === 'location'){
+			paramsObject.text = place.text
+			paramsObject.maxLocation = 1
+		}
+		if(type === 'reverse'){
+			paramsObject['location'] = place['location']
+		}
+		const params = orderedParams(paramsObject) 
+		const url = `${GEOCODER_URL}${route}${params}`
+		const geo = await getRequest(url)
+		return geo 
+	}catch(err){
+		console.log(err)
+		return err
+	}
 }
 export const gisGeocoder = async (place, geoHashPrecision) => {
 	try{
-		const geo = await geocoderQueryOne(place)
+		const geo = await geocoder(place, 'location')
 		const { feature, name } = geo
 		const { geometry } = feature
 		const { x , y } = geometry 
@@ -27,12 +40,3 @@ export const gisGeocoder = async (place, geoHashPrecision) => {
 		return err
 	}
 }
-
-export const defineGlobalId = async element => {
-	const { locationString } = element 
-	const place = await gisGeocoder(locationString)
-	return { ...element, ...place } 
-}
-
-export const defineAndSortGlobalIds = data => Promise.all(data.map(e => defineGlobalId(e)))
-	.then(newArray => newArray.sort((x,y) => x.geohash < y.geohash ? -1 : 1))

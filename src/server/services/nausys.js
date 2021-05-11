@@ -7,12 +7,14 @@ const {
 	NAUSYS_USERNAME,
 	NAUSYS_PASSWORD,
 	NAUSYS_LOCATIONS_ROUTE,
+	NAUSYS_COUNTRIES_ROUTE,
 } = process.env
 
 const routeMap = {
 	bases: NAUSYS_BASES_ROUTE,
 	booking: NAUSYS_BOOKING_ROUTE,
 	locations: NAUSYS_LOCATIONS_ROUTE,
+	countries: NAUSYS_COUNTRIES_ROUTE,
 }
 
 export const getNausys = async route => {
@@ -23,4 +25,7 @@ export const getNausys = async route => {
 	}
 	const response = await postRequest(url, body)
 	return response 
+}
+
+export const populateDB = async collectionName => {
 }
