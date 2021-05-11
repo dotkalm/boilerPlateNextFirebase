@@ -73,7 +73,16 @@ export const FieldType = new GraphQLObjectType({
 	})
 })
 
-export const { connectionType: DestinationConnection } = connectionDefinitions({
+export const { connectionType: RegionConnection } = connectionDefinitions({
 	nodeType: RegionType
+})
+export const { connectionType: CountryConnection } = connectionDefinitions({
+	nodeType: CountryType
+})
+export const { connectionType: BaseConnection } = connectionDefinitions({
+	nodeType: BaseType
+})
+export const { connectionType: MarinaConnection } = connectionDefinitions({
+	nodeType: MarinaType
 })
 

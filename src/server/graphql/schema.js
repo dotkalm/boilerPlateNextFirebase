@@ -3,7 +3,10 @@ import Mutation from './mutation'
 import { getDestinations } from '../actions/sail'
 import { 
 	FieldType,
-	DestinationConnection,
+	RegionConnection,
+	CountryConnection,
+	BaseConnection,
+	MarinaConnection,
 } from './types'
 import { 
 	connectionFromArray,
@@ -27,14 +30,65 @@ const RootQuery = new GraphQLObjectType({
 	name: 'Query',
 	fields: (args, request) => {
 		return {
-			destinations: {
-				type: DestinationConnection,
-				description: 'a destination that has vessels',
+			regions: {
+				type: RegionConnection,
+				description: 'a region that has vessels',
 				args: {
 					date		 : { type: GraphQLFloat },
 					crew		 : { type: GraphQLBoolean }, 
 					length	 : { type: GraphQLInt }, 
 					region   : { type: GraphQLString }, 
+					first		 : { type: GraphQLInt }, 
+					last		 : { type: GraphQLInt }, 
+				},
+				resolve(parent, args, request){
+					console.log(args)
+					return connectionFromArray([{name: 'me'}], args)
+				}
+			},
+			countries: {
+				type: CountryConnection,
+				description: 'a country that has vessels',
+				args: {
+					date		 : { type: GraphQLFloat },
+					crew		 : { type: GraphQLBoolean }, 
+					length	 : { type: GraphQLInt }, 
+					region   : { type: GraphQLString }, 
+					first		 : { type: GraphQLInt }, 
+					last		 : { type: GraphQLInt }, 
+				},
+				resolve(parent, args, request){
+					console.log(args)
+					return connectionFromArray([{name: 'me'}], args)
+				}
+			},
+			bases: {
+				type: BaseConnection,
+				description: 'a base that has vessels',
+				args: {
+					date		 : { type: GraphQLFloat },
+					crew		 : { type: GraphQLBoolean }, 
+					length	 : { type: GraphQLInt }, 
+					region   : { type: GraphQLString }, 
+					country  : { type: GraphQLString }, 
+					first		 : { type: GraphQLInt }, 
+					last		 : { type: GraphQLInt }, 
+				},
+				resolve(parent, args, request){
+					console.log(args)
+					return connectionFromArray([{name: 'me'}], args)
+				}
+			},
+			marinas: {
+				type: MarinaConnection,
+				description: 'a base that has vessels',
+				args: {
+					date		 : { type: GraphQLFloat },
+					crew		 : { type: GraphQLBoolean }, 
+					length	 : { type: GraphQLInt }, 
+					region   : { type: GraphQLString }, 
+					country  : { type: GraphQLString }, 
+					base 		 : { type: GraphQLString }, 
 					first		 : { type: GraphQLInt }, 
 					last		 : { type: GraphQLInt }, 
 				},
