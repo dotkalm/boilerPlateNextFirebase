@@ -1,9 +1,16 @@
 import { graphqlHTTP } from 'express-graphql'
 import Schema from '../../server/graphql/schema'
+import { verifyHmac } from '../../shared/utils/verifyHmac'
 
-const graphQLConfigs = {
-	schema: Schema
+const server = async (request, response, graphQLParams) => {
+	return {
+		schema: Schema,
+		rootValue: (hmac, query) => {
+			const truth = verifyHmac(hmac, query)
+			return truth
+		},
+		graphiql: true,
+		debug: true,
+	}
 }
-graphQLConfigs.graphiql = true
-graphQLConfigs.debug = true
-export default graphqlHTTP(graphQLConfigs)
+export default graphqlHTTP(server)
