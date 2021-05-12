@@ -6,34 +6,40 @@ const {
 	DEFAULT_LOCALE
 } = process.env
 let data
-let companies 
-beforeAll(async() => {
-	companies = getCollection('charterCompanies', [['limit', undefined, 1]])
-	const { company } = companies 
+beforeAll(async () => {
+	const companies = await getCollection('charterCompanies', [['limit', null, 1]])
+	console.log(companies)
+	const [ company ] = companies 
 	const { nausysCompanyId } = company
 	data = await getNausys('yachts', nausysCompanyId)
-})
+	data = { companies, data } 
+}, 200000)
 
 test('retrieve companies array from charterCompanies table with single row', () => {
+	console.log(data)
+	const { companies } = data 
 	expect(companies.length).toEqual(1)
 })
 
-test('retrieve yachts from nausys api using test companies as an iterator with status ok', () => {
-	const { status } = data
+test('retrieve yachts from nausys api using test companies as an iterator with status ok', async () => {
+	console.log(data)
+	const { status } = data.data
 	expect(status).toBe("OK")
 })
 
-test('retrieve yachts from nausys api using test companies as an iterator with a non empty array', () => {
-	const { yachts } = data
+test('retrieve yachts from nausys api using test companies as an iterator with a non empty array', async () => {
+	console.log(data)
+	const { yachts } = data.data
+	console.log(yachts)
 	expect(yachts.length > 0).toBe(true)
 })
 
 test('retrieve yachts from nausys api using test companies as an iterator and return models', async () => {
-	const { yachts } = data
+	console.log(data)
+	const { yachts } = data.data
 	for(let i=0;i<yachts.length;i++){
 		const yacht = yachts[i] 
 		console.log(yacht)
+		expect(yachts.length > 0).toBe(true)
 	}
-}, 100000)
-
-
+})
