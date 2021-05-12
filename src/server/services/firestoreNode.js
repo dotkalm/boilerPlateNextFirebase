@@ -41,7 +41,11 @@ export const getCollection = async (collectionName, queryArray)  => {
 	if(queryArray){
 		for(let i=0; i < queryArray.length; i++){
 			const [ field, opperator, value ] = queryArray[i]
-			collectionReference = collectionReference.where(field, opperator, value)
+			if(field === 'limit' && !opperator){
+				collectionReference = collectionReference.limit(value)
+			}else{
+				collectionReference = collectionReference.where(field, opperator, value)
+			}
 		}
 	}
 	return collectionReference.get()

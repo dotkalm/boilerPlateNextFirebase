@@ -26,9 +26,25 @@ test('retrieve companies from nausys api and return a country ', async () => {
 	for(let i=0;i<companies.length;i++){
 		const company = companies[i]
 		const { id, countryId } = company
-		console.log(id, company)
-		const [ country ] = await getCollection('countries', [[ 'nausysCountryId', '==', countryId ]])
-		expect(country).not.toBe(undefined)
+		const [ exists ] = await getCollection('charterCompanies', [[ 'nausysCompanyId', '==', id ]])
+		if(exists === undefined){
+			const [ country ] = await getCollection('countries', [[ 'nausysCountryId', '==', countryId ]])
+			expect(country).not.toBe(undefined)
+			company.nausysCompanyId = id
+			company.nausysCountryId = company.countryId
+			company.countryCode = country.uid
+			company.countryGeohash = country.geohash
+			company.bases = new Array
+			company.vendors = ['nausys'] 
+			delete company.id
+			delete company.countryId
+			const addedDoc = await addDoc('charterCompanies', company)
+			expect(Array.isArray(company.bases)).toEqual(true)
+			expect(typeof(addedDoc)).toEqual('string')
+		}else{
+			expect(typeof(exists.uid)).toEqual('string')
+			expect(Array.isArray(exists.bases)).toEqual(true)
+		}
 	}
 }, 100000)
 
