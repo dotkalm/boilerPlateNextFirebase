@@ -9,7 +9,13 @@ let data
 let companies 
 beforeAll(async() => {
 	companies = getCollection('charterCompanies', [['limit', undefined, 1]])
-	const [ company ] = companies
+	const { company } = companies 
+	const { nausysCompanyId } = company
+	data = await getNausys('yachts', nausysCompanyId)
+})
+
+test('retrieve companies array from charterCompanies table with single row', () => {
+	expect(companies.length).toEqual(1)
 })
 
 test('retrieve yachts from nausys api using test companies as an iterator with status ok', () => {
@@ -25,6 +31,8 @@ test('retrieve yachts from nausys api using test companies as an iterator with a
 test('retrieve yachts from nausys api using test companies as an iterator and return models', async () => {
 	const { yachts } = data
 	for(let i=0;i<yachts.length;i++){
+		const yacht = yachts[i] 
+		console.log(yacht)
 	}
 }, 100000)
 
